@@ -1,0 +1,10 @@
+eja	Copyright (C) 2007-2013 by Ubaldo Porcheddu <ubaldo@eja.it>
+
+This is a forking and extensible micro web server written in C and Lua that
+can serve static files and Lua code. 
+
+Lua code can also be executed from the console and commands can be passed
+via url.
+
+
+Check eja.sh script to compile and install it.
