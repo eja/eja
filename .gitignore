@@ -1,4 +1,8 @@
 eja
-lua
-lib/tv.lua
+eja.h
+eja.raw
+lua*
+lib/hls.lua
 lib/tibula.lua
+lib/tv.lua
+lib/key.lua

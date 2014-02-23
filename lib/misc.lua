@@ -1,21 +1,63 @@
--- Copyright (C) 2007-2013 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
-function ejaLog(value,...)
- print("LOG",string.format(value,...))
+function gt(a,b) return tostring(a)>tostring(b) end
+ 
+function lt(a,b) return tostring(a)<tostring(b) end
+  
+function eq(a,b) return tostring(a)==tostring(b) end
+
+function ge(a,b) return tostring(a)>=tostring(b) end
+ 
+function le(a,b) return tostring(a)<=tostring(b) end
+
+function sf(...) return string.format(...) end
+   
+
+function ejaExecute(v,...)
+ os.execute(string.format(v,...))
+end
+
+
+function ejaLog(level,message)
+ local fd=io.open(eja.opt.logFile,'a')
+ fd:write(os.date("%Y-%m-%d %T")..' '..level..' '..message..'\n')
+ fd:close()
+end
+
+
+function ejaError(value,...)
+ if ge(eja.opt.debug,1) then
+  ejaLog("E",string.format(value,...))
+ end
+end
+
+
+function ejaWarn(value,...)
+ if ge(eja.opt.debug,2) then 
+  ejaLog("W",string.format(value,...))
+ end
+end
+
+
+function ejaInfo(value,...)
+ if ge(eja.opt.debug,3) then 
+  ejaLog("I",string.format(value,...))
+ end
 end
 
 
 function ejaDebug(value,...)
- print("DBG",string.format(value,...))
+ if ge(eja.opt.debug,4) then 
+  ejaLog("D",string.format(value,...))
+ end
 end
 
 
-function ejaWarn(msg)
-end
-
-
-function ejaInfo(msg)
+function ejaTrace(value,...)
+ if ge(eja.opt.debug,5) then 
+  ejaLog("T",string.format(value,...))
+ end
 end
 
 
@@ -46,15 +88,26 @@ function ejaPrintf(value,...)
 end
 
 
-function ejaPidWrite(name)
- local pid=ejaFileRead('/proc/self/stat'):match('([%d]+) ')
- ejaFileWrite(eja.path..'/var/tmp/'..name..'.pid',pid)
+function ejaUp(value) 
+ return value:gsub('^%l',string.upper)
+end
+
+function ejaPidWrite(name,pid)
+ if not pid then
+  pid=ejaPid()
+ end
+ ejaFileWrite(eja.pathTmp..'eja.pid.'..name,pid)
 end
 
 
 function ejaPidKill(name) 
- local pid=ejaFileRead(eja.path..'/var/tmp/'..name..'.pid')
- if pid and tonumber(pid) > 0 then execute('kill -9 %d',pid) end
+ local pid=ejaFileRead(eja.pathTmp..'eja.pid.'..name,pid)
+ if pid and tonumber(pid) > 0 then 
+  if ejaKill(pid,9) == 0 then
+   ejaFileRemove(eja.pathTmp..'eja.pid.'..name)
+   ejaTrace('[kill] %d %s',pid,name)
+  end
+ end
 end
 
 
@@ -67,9 +120,9 @@ function ejaXmlEncode(str)
 end
 
 
-function ejaTableSort(t)	--return array and sorted indexed array
+function ejaTableSort(t)	
  a={}
- for k,v in pairs(t) do
+ for k,v in next,t do
   table.insert(a,k)
  end
  table.sort(a)

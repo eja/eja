@@ -1,10 +1,14 @@
--- Copyright (C) 2007-2013 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
+
+
+-- from eja.c
+-- function ejaFileStat(p) end
+-- function ejaDirList(d) end
+-- function ejaDirCreate(d) end
 
 
 function ejaFileCheck(f)
- local x=io.open(f,'r') --changes file access time...
- if x and x:read(1) then
-  x:close()
+ if ejaFileStat(f) then
   return true
  else
   return false
@@ -47,4 +51,46 @@ function ejaFileSize(f)
   else
    return -1
   end
+end
+
+
+function ejaFileCopy(fileIn,fileOut)
+ ejaExecute('cp "'..fileIn..'" "'..fileOut..'"')
+end
+
+
+function ejaFileRemove(f)
+ ejaExecute('rm "'..f..'"')
+end
+
+
+function ejaFileMove(old, new)
+ ejaExecute('mv "'..old..'" "'..new..'"')
+end
+
+
+function ejaDirListSort(d)	--sort alphabetically
+ local t=ejaDirList(d)
+ if type(t) == 'table' then 
+  table.sort(t)
+  return t
+ else
+  return false
+ end
+end
+
+
+function ejaDirListSafe(d)	--no hidden files
+ local t=ejaDirList(d)
+ local tt={}
+ if t then 
+  for k,v in next,t do
+   if v:match('^[^.]') then 
+    tt[#tt+1]=v
+   end
+  end
+  return tt
+ else
+  return false
+ end 
 end

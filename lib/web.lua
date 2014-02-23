@@ -1,21 +1,24 @@
--- Copyright (C) 2007-2013 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
 
-eja.lib['web']='ejaWeb'
-eja.help['web']='web gateway'
-eja.help['web-port']='web gateway port {35248}'
-eja.help['web-host']='web gateway listening ip {0.0.0.0}'
+
+eja.lib.web='ejaWeb'
+eja.lib.webStart='ejaWebStart'
+eja.lib.webStop='ejaWebStop'
+eja.help.web='web server'
+eja.help.webPort='web server port {35248}'
+eja.help.webHost='web server ip {0.0.0.0}'
 
 
 function ejaWeb()
  eja.web={}
  eja.web.count=0
  eja.web.timeout=100
- eja.web.host=eja.opt['web-host'] or '0.0.0.0'
- eja.web.port=eja.opt['web-port'] or 35248
- eja.web.path=eja.opt['web-path'] or 'var/web/'
+ eja.web.host=eja.opt.webHost or '0.0.0.0'
+ eja.web.port=eja.opt.webPort or 35248
+ eja.web.path=eja.opt.webPath or '/var/web/'
  eja.web.path=eja.path..eja.web.path
 
- ejaLog("[web] daemon on port %d",eja.web.port)
+ ejaInfo("[web] daemon on port %d",eja.web.port)
  local client=nil  
  local s=ejaSocketOpen(AF_INET,SOCK_STREAM,0)
  ejaSocketOptionSet(s,SOL_SOCKET,SO_REUSEADDR,1) 
@@ -44,7 +47,23 @@ function ejaWeb()
  end
 
 end
- 
+
+
+function ejaWebStart(...)
+ ejaWebStop()
+ eja.pid.web=ejaFork()
+ if eja.pid.web and eja.pid.web == 0 then
+  ejaWeb(...)
+ else
+  ejaPidWrite('web',eja.pid.web)
+ end
+end
+
+
+function ejaWebStop()
+ ejaPidKill('web')
+end
+
 
 function ejaWebThread(client,ip,port)
  local web={}
@@ -78,6 +97,7 @@ function ejaWebThread(client,ip,port)
  if web.request and web.request ~= '' then
   web.request=web.request:gsub('\r','')
   web.method,web.uri,web.protocolIn=web.request:match('(%w+) (.-) (.+)[\n]?')
+  if web.uri then web.uri=web.uri:gsub('/+','/') end
   if web.method then
    web.method=web.method:lower()
    if web.request:match('\n.+') then
@@ -151,22 +171,28 @@ function ejaWebThread(client,ip,port)
    local check=web.uri:sub(66)
    for v in authData:gmatch('(.-)\n') do
     if ejaSha256(v..web.remoteIp..check)==auth then 
-     web.auth=1 
+     web.auth=1; 
+     web.authKey=v;
      break
     elseif ejaSha256(v..web.remoteIp..(tostring(os.time()):sub(0,6)-1)..check)==auth then
      web.auth=2
+     web.authKey=v;
      break
     elseif ejaSha256(v..web.remoteIp..(tostring(os.time()):sub(0,6)+1)..check)==auth then
      web.auth=2
+     web.authKey=v;
      break
     elseif ejaSha256(v..web.remoteIp..(tostring(os.time()):sub(0,6)-0)..check)==auth then
      web.auth=3
+     web.authKey=v;
      break
     elseif ejaSha256(v..web.remoteIp..(tostring(os.time()):sub(0,7)-0)..check)==auth then
      web.auth=4
+     web.authKey=v;
      break
     elseif ejaSha256(v..web.remoteIp..(tostring(os.time()):sub(0,8)-0)..check)==auth then
      web.auth=5
+     web.authKey=v;
      break
     end
    end
@@ -189,7 +215,7 @@ function ejaWebThread(client,ip,port)
    if not web.headerOut['Content-Type'] then web.headerOut['Content-Type']="application/octet-stream" end
    if web.headerOut['Content-Type']=="application/eja" then
     local run=nil
-    local file=ejaSprintf("%s%s",eja.web.path,web.path:sub(2))
+    local file=sf("%s%s",eja.web.path,web.path:sub(2))
     if ejaFileCheck(file) then
      web.headerOut['Content-Type']="text/html"
      loadfile(file)(web) 
@@ -202,7 +228,7 @@ function ejaWebThread(client,ip,port)
     if web.path == "/library/test/success.html" then
      web.data='<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>'
     else
-     web.file=ejaSprintf('%s/var/web/%s',eja.path,web.path)
+     web.file=sf('%s/var/web/%s',eja.path,web.path)
      if not ejaFileCheck(web.file) then 
       web.file=''
       web.status='404 Not Found'
@@ -219,10 +245,11 @@ function ejaWebThread(client,ip,port)
  end
 
  --4XX
- if web.status:sub(1) == '4' then
-  web.file=ejaSprintf('%s/var/web/%s.html',eja.path,web.status:sub(1,3))
-  if not ejaFileCheck(web.file) then
-   web.file=''
+ if web.status:sub(1,1) == '4' then
+  local status=web.status:sub(1,3)
+  if ejaFileCheck(sf('%s/var/web/%s.html',eja.path,status)) then
+   web.status='301 Moved Permanently'
+   web.headerOut['Location']=sf('/%s.html',status)
   end
  end
  
@@ -236,7 +263,7 @@ function ejaWebThread(client,ip,port)
  end
  
  if web.range > 0 then
-  web.headerOut['Content-Range']=ejaSprintf("bytes %d-%d/%d",web.range,web.headerOut['Content-Length']-1,web.headerOut['Content-Length'])
+  web.headerOut['Content-Range']=sf("bytes %d-%d/%d",web.range,web.headerOut['Content-Length']-1,web.headerOut['Content-Length'])
   web.headerOut['Content-Length']=web.headerOut['Content-Length']-web.range
   web.status='206 Partial Content'
  end
@@ -246,10 +273,10 @@ function ejaWebThread(client,ip,port)
   web.headerOut['Content-Type']=nil
  end
  
- if web.status:sub(1) ~= '2' then web.headerOut['Connection']='Close' end
+ if web.status:sub(1,1) ~= '2' then web.headerOut['Connection']='Close' end
   
  web.response=web.protocolOut..' '..web.status..'\r\nDate: '..os.date()..'\r\nServer: eja '..eja.version..'\r\n'
- for k,v in pairs(web.headerOut) do
+ for k,v in next,web.headerOut do
   web.response=web.response..k..': '..v..'\r\n'
  end
  ejaSocketWrite(client,web.response..'\r\n')
@@ -275,9 +302,9 @@ function ejaWebThread(client,ip,port)
   ejaSocketWrite(client,web.data)  
  end
 
- ejaLog('[web] %s\t%s\t%s\t%s\t%s',web.remoteIp,web.status:match("[^ ]+"),os.time()-web.timeStart,web.headerOut['Content-Length'],web.uri)
- ejaDebug('\n<--\n%s\n-->\n%s\n',web.request,web.response)
-
+ ejaDebug('[web] %s\t%s\t%s\t%s\t%s\t%s',web.remoteIp,web.status:match("[^ ]+"),os.time()-web.timeStart,web.headerOut['Content-Length'],web.auth,web.uri)
+ ejaTrace('\n<--\n%s\n-->\n%s\n',web.request,web.response)
+ 
  if web.headerOut['Connection']=='Keep-Alive' then 
   return 1
  else 
@@ -286,3 +313,66 @@ function ejaWebThread(client,ip,port)
 end
 
 
+function ejaWebOpen(host,port)
+ if lt(port,1) then port=80 end
+ local res,err=ejaSocketGetAddrInfo(host, port, {family=AF_INET, socktype=SOCK_STREAM})    
+ if res then
+  local fd=ejaSocketOpen(AF_INET,SOCK_STREAM,0)
+  if fd and ejaSocketConnect(fd,res[1]) then
+   ejaSocketOptionSet(fd,SOL_SOCKET,SO_RCVTIMEO,5,0)
+   ejaSocketOptionSet(fd,SOL_SOCKET,SO_SNDTIMEO,5,0)
+   return fd
+  end
+ end
+ return nil;
+end
+
+
+function ejaWebWrite(fd,value)
+ return ejaSocketWrite(fd,value)
+end
+
+
+function ejaWebRead(fd,size)
+ return ejaSocketRead(fd,size)
+end
+
+
+function ejaWebClose(fd)
+ return ejaSocketClose(fd)
+end
+
+
+function ejaWebGetOpen(value,...)
+ url=string.format(value,...)
+ local protocol,host,port,path=url:match('(.-)://([^/:]+):?([^/]*)/?(.*)')
+ if lt(port,1) then port=80 end
+ local fd=ejaWebOpen(host,port)
+ if fd then
+  ejaWebWrite(fd,sf('GET /%s HTTP/1.1\r\nHost: %s\r\nUser-Agent: eja %s\r\nAccept: */*\r\nConnection: Close\r\n\r\n',path,host,eja.version))
+  return fd
+ else
+  return nil
+ end 
+end
+
+
+function ejaWebGet(value,...)
+ local url=string.format(value,...)
+ local t={}
+ local fd=ejaWebGetOpen(url)
+ if fd then
+  while true do
+   local buf=ejaWebRead(fd,1024)
+   if not buf or #buf == 0 then break end
+   t[#t+1]=buf
+  end
+  ejaWebClose(fd)
+  local header,data=table.concat(t):match('(.-)\r?\n\r?\n(.*)')
+  return data,header
+ else
+  return nil
+ end
+end
+
+ 
