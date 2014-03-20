@@ -1,8 +1,7 @@
 -- adapted from http://lua-users.org/wiki/SecureHashAlgorithm
 
+
 function ejaSha256(value)
- local bit32=bit
- bit32.rrotate=bit.ror
  
  value=tostring(value)
  -- Initialize table of round constants

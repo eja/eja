@@ -55,13 +55,13 @@ function ejaWebStart(...)
  if eja.pid.web and eja.pid.web == 0 then
   ejaWeb(...)
  else
-  ejaPidWrite('web',eja.pid.web)
+  ejaPidWrite(sf('web_%d',eja.opt.webPort or 35248),eja.pid.web)
  end
 end
 
 
 function ejaWebStop()
- ejaPidKill('web')
+ ejaPidKill(sf('web_%d',eja.opt.webPort or 35248))
 end
 
 

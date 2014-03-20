@@ -4,26 +4,25 @@ LIBS=-lm -ldl
 
 all: eja
 
-luajit-2.0: 
-	@ git clone http://luajit.org/git/luajit-2.0.git 
-
-luajit-2.0/src/luajit: luajit-2.0
-	@ cd luajit-2.0 && make
-
-eja.h: luajit-2.0 luajit-2.0/src/luajit
-	@ echo "eja.version='"$$(($(shell date +%y) - $(shell date +%y -d @1190014200)))$(shell date +.%m%d.%H%M)"'" > lib/version.lua
-	@ cat eja.lua lib/*.lua eja.lua > eja.raw
-	@ cd luajit-2.0/src/ && ./luajit -bg ../../eja.raw ../../eja.h
+lua/src/lua: lua
+	cd lua && make posix
+	
+lua:	
+	git clone https://github.com/ubaldus/lua.git
+	
+eja.h:	lua lua/src/lua
+	@ lua/src/luac -o - eja.lua lib/*.lua eja.lua | od -v -t x1 | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print "char luaBuf[]={" substr(o,2) "};";}' > eja.h
 	
 eja: eja.h 
-	@ $(CC) $(CFLAGS) -o eja eja.c luajit-2.0/src/libluajit.a -Iluajit-2.0/src/ $(LIBS)
-	@ rm eja.h
+	@ $(CC) $(CFLAGS) -o eja eja.c lua/src/liblua.a -Ilua/src/ $(LIBS)
+	@ strip eja
+	@- rm eja.h
 	
 clean:
-	@ -rm eja eja.h eja.raw
+	@- rm eja 
+	@- rm -Rf lua
 	
 uninstall: clean
-	@ -rm -Rf luajit-2.0
 	@ -rm /opt/eja.it/bin/eja
 	@ -rm /usr/bin/eja
 

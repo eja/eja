@@ -1,5 +1,6 @@
 -- Adapted to work with eja.
 
+
 -----------------------------------------------------------------------------
 -- JSON4Lua: JSON encoding / decoding support for the Lua language.
 -- json Module.

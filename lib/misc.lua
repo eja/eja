@@ -14,100 +14,14 @@ function le(a,b) return tostring(a)<=tostring(b) end
 function sf(...) return string.format(...) end
    
 
-function ejaExecute(v,...)
- os.execute(string.format(v,...))
-end
-
-
-function ejaLog(level,message)
- local fd=io.open(eja.opt.logFile,'a')
- fd:write(os.date("%Y-%m-%d %T")..' '..level..' '..message..'\n')
- fd:close()
-end
-
-
-function ejaError(value,...)
- if ge(eja.opt.debug,1) then
-  ejaLog("E",string.format(value,...))
+function ejaGetMAC()
+ local mac=""
+ local d=ejaDirListSort('/sys/class/net')
+ if d and d[3] then
+  mac=ejaFileRead('/sys/class/net/'..d[3]..'/address')
+  if mac then mac=mac:gsub('\n','') end
  end
-end
-
-
-function ejaWarn(value,...)
- if ge(eja.opt.debug,2) then 
-  ejaLog("W",string.format(value,...))
- end
-end
-
-
-function ejaInfo(value,...)
- if ge(eja.opt.debug,3) then 
-  ejaLog("I",string.format(value,...))
- end
-end
-
-
-function ejaDebug(value,...)
- if ge(eja.opt.debug,4) then 
-  ejaLog("D",string.format(value,...))
- end
-end
-
-
-function ejaTrace(value,...)
- if ge(eja.opt.debug,5) then 
-  ejaLog("T",string.format(value,...))
- end
-end
-
-
-function ejaSprintf(value,...)  
- local r="";
- local y=0; 
- local k,v="","";
- local a={};
- for k in string.gmatch(value,"%%[diouxXeEdfFgGaAcs]") do
-  y=y+1;
-  v=arg[y];
-  if string.find("cdEefgGiouXx",string.sub(k,2),1,true) then
-   if type(v) ~= "number" then v=tonumber(v); end
-   if not v then v=0; end
-  else
-   if not v then v=""; end
-   v=tostring(v);
-  end
-  arg[y]=v;
- end 
-
- return string.format(value,...);
-end
-
-
-function ejaPrintf(value,...)
- print(ejaSprintf(value,...))
-end
-
-
-function ejaUp(value) 
- return value:gsub('^%l',string.upper)
-end
-
-function ejaPidWrite(name,pid)
- if not pid then
-  pid=ejaPid()
- end
- ejaFileWrite(eja.pathTmp..'eja.pid.'..name,pid)
-end
-
-
-function ejaPidKill(name) 
- local pid=ejaFileRead(eja.pathTmp..'eja.pid.'..name,pid)
- if pid and tonumber(pid) > 0 then 
-  if ejaKill(pid,9) == 0 then
-   ejaFileRemove(eja.pathTmp..'eja.pid.'..name)
-   ejaTrace('[kill] %d %s',pid,name)
-  end
- end
+ return mac
 end
 
 
@@ -134,8 +48,6 @@ end
 function ejaUrlEscape(url)
  return url:gsub("%%(%x%x)",function(h) return string.char(tonumber(h,16)) end )
 end
-
-
 
 
 

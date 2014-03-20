@@ -60,12 +60,18 @@ end
 
 
 function ejaFileRemove(f)
- ejaExecute('rm "'..f..'"')
+ ejaExecute('rm -f "'..f..'"')
 end
 
 
 function ejaFileMove(old, new)
  ejaExecute('mv "'..old..'" "'..new..'"')
+end
+
+
+function ejaFileLoad(f)
+ local ejaScriptRun=assert(loadfile(f))
+ if ejaScriptRun then ejaScriptRun() end
 end
 
 
@@ -94,3 +100,4 @@ function ejaDirListSafe(d)	--no hidden files
   return false
  end 
 end
+
