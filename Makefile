@@ -26,7 +26,7 @@ uninstall: clean
 	@ -rm /opt/eja.it/bin/eja
 	@ -rm /usr/bin/eja
 
-backup:
+backup: clean
 	tar zcR /opt/eja.it/src > /opt/eja.it/bkp/eja-$(shell date +%y%m%d%H%M).tar.gz
 	
 /usr/bin/eja:

@@ -86,7 +86,7 @@ function ejaVmFunction(h,d,pos)	--header, data, position
   if cType == 1 then
    o=o..ejaVmByte2Hex(d:byte(p));					p=p+1;		--boolean
   end
-  if cType == 0 then end						--nil
+  if cType == 0 then end								--nil
  end
 
  if debug then o=o..'\nproto\n' end	
@@ -108,39 +108,39 @@ function ejaVmFunction(h,d,pos)	--header, data, position
 
  if debug then o=o..'\nsource\n' end	
  l=ejaVmByte2Int(h.endian,d:sub(p,p+h.size-1));
- o=o..ejaVmSize2Hex(l);							p=p+h.size;	--string length
+ o=o..ejaVmSize2Hex(0);							p=p+h.size;	--string length
  if l > 0 then
-  o=o..ejaVmString2Hex(d:sub(p,p+l-1));					p=p+l;		--string
+  p=p+l;										--string
  end
  
  if debug then o=o..'\nline info\n' end
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
- o=o..ejaVmInt2Hex(z);							p=p+h.int;	--length of line
+ o=o..ejaVmInt2Hex(0);							p=p+h.int;	--length of line
  for n=1,z do
-  o=o..ejaVmInt2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1)));	p=p+h.int;	--begin
+  p=p+h.int;										--begin
  end
 
   
  if debug then o=o..'\nlocals\n' end
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
- o=o..ejaVmInt2Hex(z);							p=p+h.int;	--length of local vars
+ o=o..ejaVmInt2Hex(0);							p=p+h.int;	--length of local vars
  for n=1,z do
   local l=ejaVmByte2Int(h.endian,d:sub(p,p+h.size-1));
-  o=o..ejaVmSize2Hex(l);						p=p+h.size;	--string length
+   p=p+h.size;										--string length
   if l > 0 then
-   o=o..ejaVmString2Hex(d:sub(p,p+l-1));				p=p+l;		--string
+   p=p+l;										--string
   end
-  o=o..ejaVmInt2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1)));	p=p+h.int;	--begin
-  o=o..ejaVmInt2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1)));	p=p+h.int;	--end
+  p=p+h.int;										--begin
+  p=p+h.int;										--end
  end
 
  if debug then o=o..'\nupvalues\n' end
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
- o=o..ejaVmInt2Hex(z);							p=p+h.int;	--length of upvalues
+ o=o..ejaVmInt2Hex(0);							p=p+h.int;	--length of upvalues
  for n=1,z do
   local l=ejaVmByte2Int(h.endian,d:sub(p,p+h.size-1));
-  o=o..ejaVmSize2Hex(l);						p=p+h.size;	--string length
-  o=o..ejaVmString2Hex(d:sub(p,p+l-1));					p=p+l;		--string
+  p=p+h.size;										--string length
+  p=p+l;										--string
  end
 
  return o,p-pos
