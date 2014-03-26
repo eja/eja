@@ -25,7 +25,7 @@ else
   for k,v in next,t do
    if v:match('.eja$') then
     eja.help={}
-    ejaFileLoad(eja.path..'/lib/'..v)
+    ejaVmFileLoad(eja.path..'/lib/'..v)
     eja.helpFull[v:sub(0,-5)]=eja.help
    end
   end
@@ -44,7 +44,7 @@ else
    end
   end
   if arg[1]:match('^[^%-%-]') then
-   ejaFileLoad(arg[1])
+   ejaVmFileLoad(arg[1])
   end
   ejaRun(eja.opt)
  else
