@@ -170,7 +170,7 @@ function ejaWebThread(client,ip,port)
    local authData=ejaFileRead(eja.path..'/etc/eja.web')
    local check=web.uri:sub(66)
    for k,v in authData:gmatch('([%x]+) ?([0-9]*)\n?') do
-    if not v then v=1 end
+    if not v or v == '' then v=1 end
     if ejaSha256(k..web.remoteIp..check)==auth then 
      web.auth=1*v; 
      web.authKey=k;
@@ -219,7 +219,11 @@ function ejaWebThread(client,ip,port)
     local file=sf("%s%s",eja.web.path,web.path:sub(2))
     if ejaFileCheck(file) then
      web.headerOut['Content-Type']="text/html"
-     loadfile(file)(web) 
+     local data=ejaFileRead(file)
+     if data then
+      data=ejaVmImport(data) or data
+      loadstring(data)(web)
+     end
     else
      web.status='500 Internal Server Error'
     end
