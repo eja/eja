@@ -169,30 +169,31 @@ function ejaWebThread(client,ip,port)
    web.auth=-1
    local authData=ejaFileRead(eja.path..'/etc/eja.web')
    local check=web.uri:sub(66)
-   for v in authData:gmatch('(.-)\n') do
-    if ejaSha256(v..web.remoteIp..check)==auth then 
-     web.auth=1; 
-     web.authKey=v;
+   for k,v in authData:gmatch('([%x]+) ?([0-9]*)\n?') do
+    if not v then v=1 end
+    if ejaSha256(k..web.remoteIp..check)==auth then 
+     web.auth=1*v; 
+     web.authKey=k;
      break
-    elseif ejaSha256(v..web.remoteIp..(tostring(os.time()):sub(0,6)-1)..check)==auth then
-     web.auth=2
-     web.authKey=v;
+    elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,6)-1)..check)==auth then
+     web.auth=2*v
+     web.authKey=k;
      break
-    elseif ejaSha256(v..web.remoteIp..(tostring(os.time()):sub(0,6)+1)..check)==auth then
-     web.auth=2
-     web.authKey=v;
+    elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,6)+1)..check)==auth then
+     web.auth=2*v
+     web.authKey=k;
      break
-    elseif ejaSha256(v..web.remoteIp..(tostring(os.time()):sub(0,6)-0)..check)==auth then
-     web.auth=3
-     web.authKey=v;
+    elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,6)-0)..check)==auth then
+     web.auth=3*v
+     web.authKey=k;
      break
-    elseif ejaSha256(v..web.remoteIp..(tostring(os.time()):sub(0,7)-0)..check)==auth then
-     web.auth=4
-     web.authKey=v;
+    elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,7)-0)..check)==auth then
+     web.auth=4*v
+     web.authKey=k;
      break
-    elseif ejaSha256(v..web.remoteIp..(tostring(os.time()):sub(0,8)-0)..check)==auth then
-     web.auth=5
-     web.authKey=v;
+    elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,8)-0)..check)==auth then
+     web.auth=5*v
+     web.authKey=k;
      break
     end
    end
