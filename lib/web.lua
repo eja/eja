@@ -169,8 +169,10 @@ function ejaWebThread(client,ip,port)
    web.auth=-1
    local authData=ejaFileRead(eja.path..'/etc/eja.web')
    local check=web.uri:sub(66)
+   local powerMax=5
    for k,v in authData:gmatch('([%x]+) ?([0-9]*)\n?') do
     if not v or v == '' then v=1 end
+    if gt(v,powerMax) then powerMax=v end
     if ejaSha256(k..web.remoteIp..check)==auth then 
      web.auth=1*v; 
      web.authKey=k;
@@ -198,7 +200,7 @@ function ejaWebThread(client,ip,port)
     end
    end
    if web.path:sub(-1) == "/" then
-    if web.auth >= 5 then
+    if web.auth >= powerMax then
      ejaRun(web.opts)
      web.headerOut['Connection']='Close'
     else

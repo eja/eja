@@ -101,3 +101,16 @@ function ejaDirListSafe(d)	--no hidden files
  end 
 end
 
+
+function ejaDirCreatePath(p)
+ local path=''
+ local r=false
+ if not p:match('^/') then path='.' end
+ for k in p:gmatch('[^/]+') do
+  path=path..'/'..k
+  if not ejaFileStat(path) then
+   r=ejaDirCreate(path)
+  end
+ end
+ return r
+end
