@@ -405,6 +405,19 @@ static int ejaSocketOptionSet(lua_State *L) {
 }
 
 
+static int ejaSocketDefine(lua_State *L) {
+ lua_pushnumber(L, AF_INET);		lua_setglobal(L, "AF_INET");
+ lua_pushnumber(L, AF_INET6);		lua_setglobal(L, "AF_INET6");
+ lua_pushnumber(L, SOCK_STREAM);	lua_setglobal(L, "SOCK_STREAM");
+ lua_pushnumber(L, SOCK_DGRAM);		lua_setglobal(L, "SOCK_DGRAM");
+ lua_pushnumber(L, SOL_SOCKET);		lua_setglobal(L, "SOL_SOCKET");
+ lua_pushnumber(L, SO_REUSEADDR);	lua_setglobal(L, "SO_REUSEADDR");
+ lua_pushnumber(L, SO_RCVTIMEO);	lua_setglobal(L, "SO_RCVTIMEO");
+ lua_pushnumber(L, SO_SNDTIMEO);	lua_setglobal(L, "SO_SNDTIMEO");
+ return 0;
+}
+
+
 int main (int argc, char **argv) { 
  int i; 
  lua_State *L=luaL_newstate();
@@ -425,6 +438,7 @@ int main (int argc, char **argv) {
  lua_pushcfunction(L, ejaSleep); 		lua_setglobal(L, "ejaSleep");
  lua_pushcfunction(L, ejaFileStat); 		lua_setglobal(L, "ejaFileStat"); 
  lua_pushcfunction(L, ejaKill); 		lua_setglobal(L, "ejaKill"); 
+ ejaSocketDefine(L);
  lua_pushcfunction(L, ejaSocketOpen);		lua_setglobal(L, "ejaSocketOpen"); 
  lua_pushcfunction(L, ejaSocketClose);		lua_setglobal(L, "ejaSocketClose");
  lua_pushcfunction(L, ejaSocketConnect);	lua_setglobal(L, "ejaSocketConnect");
