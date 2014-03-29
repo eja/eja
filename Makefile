@@ -16,7 +16,6 @@ eja.h:	lua lua/src/lua
 eja: eja.h 
 	@ $(CC) $(CFLAGS) -o eja eja.c lua/src/liblua.a -Ilua/src/ $(LIBS)
 	@- rm eja.h	
-	@- strip eja
 	
 clean:
 	@- rm eja 
