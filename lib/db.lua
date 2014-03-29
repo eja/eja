@@ -36,8 +36,12 @@ end
 
 function ejaDbGet(name,id,search)
  local data=ejaFileRead(ejaDbPath(name,id))
- if data and search then
-  return data:match(search)
+ if data then
+  if search then
+   return data:match(search)
+  else
+   return data
+  end
  else 
   return false
  end
