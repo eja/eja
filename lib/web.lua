@@ -125,7 +125,10 @@ function ejaWebThread(client,ip,port)
  if web.method == 'post' and tonumber(web.headerIn['content-length']) and tonumber(web.headerIn['content-length']) > 0 then
   if web.headerIn['content-type']=='application/x-www-form-urlencoded' then 
    if tonumber(web.headerIn['content-length']) < web.bufferSize then
-    web.query=body..ejaSocketRead(client,web.headerIn['content-length']-#body)
+    web.query=body
+    if  gt(web.headerIn['content-length'],#body) then
+     web.query=web.query..ejaSocketRead(client,web.headerIn['content-length']-#body)
+    end
    else
     web.status='413 Request Entity Too Large'
    end
