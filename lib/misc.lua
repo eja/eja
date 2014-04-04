@@ -1,18 +1,33 @@
 -- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
-function gt(a,b) return tostring(a)>tostring(b) end
+function gt(a,b) a=a or 0; b=b or 0; return tostring(a)>tostring(b) 
+end	
  
-function lt(a,b) return tostring(a)<tostring(b) end
+function lt(a,b) a=a or 0; b=b or 0; return tostring(a)<tostring(b) end	
   
-function eq(a,b) return tostring(a)==tostring(b) end
+function eq(a,b) a=a or 0; b=b or 0; return tostring(a)==tostring(b) end	
 
-function ge(a,b) return tostring(a)>=tostring(b) end
+function ge(a,b) a=a or 0; b=b or 0; return tostring(a)>=tostring(b) end	
  
-function le(a,b) return tostring(a)<=tostring(b) end
+function le(a,b) a=a or 0; b=b or 0; return tostring(a)<=tostring(b) end	
 
-function sf(...) return string.format(...) end
-   
+function sf(...) return string.format(...) end		
+
+function la(key,value,language) 			
+ if key and value and language then
+  if not eja.i18n[language] then eja.i18n[language]={} end
+  eja.i18n[language][key]=value
+ else
+  if not language then language=eja.lang end
+  if eja.i18n[language] and eja.i18n[language][key] then
+   return eja.i18n[language][key]
+  else
+   return key
+  end
+ end
+end
+
 
 function ejaGetMAC()
  local mac=""

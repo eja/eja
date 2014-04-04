@@ -6,10 +6,12 @@ if not eja then
  eja.opt={}
  eja.lib={} 
  eja.pid={}
- eja.help={} 
+ eja.help={}
+ eja.i18n={} 
  eja.mime={} 
  eja.mimeApp={}
 
+ eja.lang='en'
  eja.path='/opt/eja.it/'
  eja.pathTmp=eja.path..'/tmp/'
  eja.pathLock='/tmp/'

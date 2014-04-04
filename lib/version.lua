@@ -1,1 +1,1 @@
-eja.version='7.4.1'
+eja.version='7.4.4'
