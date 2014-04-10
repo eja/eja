@@ -1,8 +1,7 @@
 -- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
-function gt(a,b) a=a or 0; b=b or 0; return tostring(a)>tostring(b) 
-end	
+function gt(a,b) a=a or 0; b=b or 0; return tostring(a)>tostring(b) end	
  
 function lt(a,b) a=a or 0; b=b or 0; return tostring(a)<tostring(b) end	
   
