@@ -17,8 +17,13 @@ function ejaDbPath(name,id)
 end
 
 
-function ejaDbPut(name,data,id)
- return ejaFileWrite(ejaDbPath(name,id),data)
+function ejaDbPut(name,id,...)
+ local o=''
+ local a=table.pack(...)
+ for i=1,#a do
+  o=o..tostring(a[i]):gsub('\t','eJaTaB')..'\t'
+ end
+ return ejaFileWrite(ejaDbPath(name,id),o)
 end
 
 
@@ -34,13 +39,18 @@ function ejaDbNew(name,data)
 end
 
 
-function ejaDbGet(name,id,search)
+function ejaDbGet(name,id,luaMatch)
  local data=ejaFileRead(ejaDbPath(name,id))
  if data then
-  if search then
-   return data:match(search)
+  if luaMatch then
+   return data:match(luaMatch)
   else
-   return data
+   local i=0
+   local a={}
+   for v in data:gmatch('([^\t]+)') do
+    if v then a[#a+1]=v:gsub('eJaTaB','\t') end
+   end
+   return table.unpack(a)
   end
  else 
   return false
