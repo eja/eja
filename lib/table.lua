@@ -16,7 +16,7 @@ function ejaTablePut(array, key, value, index)
  if key then
   if not array[key] then 
    if tonumber(index) then
-    b[tonumber(index)=key
+    b[tonumber(index)]=key
    else 
     b[#b+1]=key 
    end
@@ -54,4 +54,11 @@ function ejaTableUnpack(array)
    _,a[i]=ejaTableGet(array,i)
  end
  return table.unpack(a)
+end
+
+
+function ejaTablePack(...)
+ local a=table.pack(...)
+ a['n']=nil
+ return a
 end
