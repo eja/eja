@@ -47,7 +47,7 @@ function ejaDbGet(name,id,luaMatch)
   else
    local i=0
    local a={}
-   for v in data:gmatch('([^\t]+)') do
+   for v in data:gmatch('([^\t]*)\t?') do
     if v then a[#a+1]=v:gsub('eJaTaB','\t') end
    end
    return table.unpack(a)
