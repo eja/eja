@@ -49,10 +49,6 @@ end
 
 
 function ejaTableUnpack(array)
- local a={}
- for i=1,ejaTableLen(array) do
-   _,a[i]=ejaTableGet(array,i)
- end
  return table.unpack(a)
 end
 
