@@ -226,8 +226,7 @@ function ejaWebThread(client,ip,port)
      web.headerOut['Content-Type']="text/html"
      local data=ejaFileRead(file)
      if data then
-      data=ejaVmImport(data) or data
-      loadstring(data)(web)
+      loadstring(ejaVmImport(data) or data)(web)
      end
     else
      web.status='500 Internal Server Error'
@@ -257,7 +256,10 @@ function ejaWebThread(client,ip,port)
  --4XX
  if web.status:sub(1,1) == '4' then
   local status=web.status:sub(1,3)
-  if ejaFileCheck(sf('%s/var/web/%s.html',eja.path,status)) then
+  local data=ejaFileRead(sf('%s/var/web/%s.eja',eja.path,status))
+  if data then 
+   loadstring(ejaVmImport(data) or data)(web)
+  elseif ejaFileCheck(sf('%s/var/web/%s.html',eja.path,status)) then 
    web.status='301 Moved Permanently'
    web.headerOut['Location']=sf('/%s.html',status)
   end
