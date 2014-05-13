@@ -25,7 +25,7 @@ uninstall: clean
 	@- rm /usr/bin/eja
 
 backup: clean
-	tar zcR /opt/eja.it/src > /opt/eja.it/bkp/eja-$(shell date +%y%m%d%H%M).tar.gz
+	tar zcR /opt/eja.it/src > /opt/eja.it/bkp/eja-$(shell cat .version).tar.gz
 	
 /opt/eja.it/bin:
 	@ mkdir -p /opt/eja.it/bin
@@ -42,4 +42,6 @@ git:
 	@ git add .
 	@ git commit
 	@ git push
-		
+
+update: clean git backup
+	scp /opt/eja.it/bkp/eja-$(shell cat .version).tar.gz ubaldu@frs.sourceforge.net:/home/frs/project/eja/		
