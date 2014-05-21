@@ -3,7 +3,7 @@
 
 function ejaDbPath(name,id)
  local path=eja.path..'/var/'
- if name:match('^/') then
+ if name and name:match('^/') then
   path=path..name:gsub('/([^/]*)$','/eja.%1')
  else
   path=path..'db/eja.'..name
@@ -59,9 +59,8 @@ end
 
 
 function ejaDbLast(name)
- local dir='./'
  local last=0
- local d=ejaDirList(dir)
+ local d=ejaDirList(ejaDbPath(name):match('(.+)/')) or {}
  for k,v in next,d do
   local id=v:match('eja.'..name..'.([0-9]+)')
   if id and gt(id,last) then last=id end
