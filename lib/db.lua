@@ -60,9 +60,11 @@ end
 
 function ejaDbLast(name)
  local last=0
- local d=ejaDirList(ejaDbPath(name):match('(.+)/')) or {}
+ local path=ejaDbPath(name):match('(.+)/') or ''
+ local file=name:match('([^/]-)$') or '' or ''
+ local d=ejaDirList(path) or {}
  for k,v in next,d do
-  local id=v:match('eja.'..name..'.([0-9]+)')
+  local id=v:match('eja.'..file..'.([0-9]+)')
   if id and gt(id,last) then last=id end
  end
  return last
