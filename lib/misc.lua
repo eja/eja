@@ -1,6 +1,8 @@
 -- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
 
-function n(i)	return tonumber(i) or 0 end
+function n(i) return tonumber(i) or 0 end
+
+function s(v) return tostring(v) or '' end
 
 function gt(a,b) a=a or 0; b=b or 0; return tostring(a)>tostring(b) end	
  

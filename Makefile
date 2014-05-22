@@ -40,7 +40,7 @@ git:
 	@ vi .version
 	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua
 	@ git add .
-	@ git commit
+	@- git commit
 	@ git push
 
 update: clean git backup
