@@ -1,1 +1,1 @@
-eja.version='ERSION'
+eja.version='7.5.23'
