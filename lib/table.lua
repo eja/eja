@@ -48,6 +48,34 @@ function ejaTableMerge(old, new)
 end
 
 
+function ejaTableSort(t)
+ a={}
+ for k,v in next,t do
+  table.insert(a,k)
+ end
+ table.sort(a)
+ setmetatable(t,a)
+ return t
+end
+
+
+function ejaTableValues(t)
+ local a={}
+ for k,v in next,getmetatable(t) do
+  a[#a+1]=t[v]
+ end
+ return a
+end
+
+
+function ejaTableKeys(t)
+ local a={}
+ for k,v in next,getmetatable(t) do
+  a[#a+1]=v
+ end
+ return a
+end
+
 function ejaTableUnpack(array)
  return table.unpack(a)
 end

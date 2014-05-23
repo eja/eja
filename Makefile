@@ -37,8 +37,8 @@ install: eja /opt/eja.it/bin /usr/bin/eja
 	@ cp eja /opt/eja.it/bin/eja
 
 git:
-	@ vi .version
-	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua
+	@ read -p "version: " VERSION
+	@ echo "eja.version='"$VERSION"'" > lib/version.lua
 	@ git add .
 	@- git commit
 	@ git push

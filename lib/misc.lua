@@ -51,17 +51,6 @@ function ejaXmlEncode(str)
 end
 
 
-function ejaTableSort(t)	
- a={}
- for k,v in next,t do
-  table.insert(a,k)
- end
- table.sort(a)
- setmetatable(t,a)
- return t
-end
-
-
 function ejaUrlEscape(url)
  return url:gsub("%%(%x%x)",function(h) return string.char(tonumber(h,16)) end )
 end
