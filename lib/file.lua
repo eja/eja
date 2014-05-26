@@ -86,6 +86,20 @@ function ejaDirListSort(d)	--sort alphabetically
 end
 
 
+function ejaDirTable(d)		--return list as array
+ local t=ejaDirList(d)
+ local tt={}
+ if t then 
+  for k,v in next,t do
+   if not v:match('^%.$') and not v:match('^%.%.$') then 
+    tt[#tt+1]=v
+   end
+  end
+ end 
+ return tt
+end
+
+
 function ejaDirListSafe(d)	--no hidden files
  local t=ejaDirList(d)
  local tt={}
@@ -100,6 +114,8 @@ function ejaDirListSafe(d)	--no hidden files
   return false
  end 
 end
+
+
 
 
 function ejaDirCreatePath(p)

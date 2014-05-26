@@ -76,7 +76,7 @@ function ejaTableKeys(t)
  return a
 end
 
-function ejaTableUnpack(array)
+function ejaTableUnpack(a)
  return table.unpack(a)
 end
 
