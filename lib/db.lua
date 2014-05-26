@@ -19,7 +19,7 @@ end
 
 function ejaDbPut(name,id,...)
  local o=''
- local a=table.pack(...)
+ local a=ejaTablePack(...)
  for i=1,#a do
   o=o..tostring(a[i]):gsub('\t','eJaTaB')..'\t'
  end
@@ -39,18 +39,18 @@ function ejaDbNew(name,data)
 end
 
 
-function ejaDbGet(name,id,luaMatch)
+function ejaDbGet(name,id,regex)
  local data=ejaFileRead(ejaDbPath(name,id))
  if data then
-  if luaMatch then
-   return data:match(luaMatch)
+  if regex then
+   return data:match(regex)
   else
    local i=0
    local a={}
    for v in data:gmatch('([^\t]*)\t?') do
     if v then a[#a+1]=v:gsub('eJaTaB','\t') end
    end
-   return table.unpack(a)
+   return ejaTableUnpack(a)
   end
  else 
   return false
@@ -68,6 +68,17 @@ function ejaDbLast(name)
   if id and gt(id,last) then last=id end
  end
  return last
+end
+
+
+function ejaDbList(name)
+ local a={}
+ local path,name=ejaDbPath(name):match('(.-)/?eja%.(%w+)$')
+ for k,v in next,ejaDirTable(path) do
+  local id=v:match('^eja.'..name..'%.(%d*)$')
+  if id then a[#a+1]=n(id) end
+ end
+ return a
 end
 
 
