@@ -79,7 +79,7 @@ function ejaWebThread(client,ip,port)
  web.data=''
  web.file=''
  web.query=''
- web.opts={}
+ web.opt={}
  web.status='200 OK' 
  web.range=-1
  web.protocolOut='HTTP/1.1'
@@ -161,7 +161,7 @@ function ejaWebThread(client,ip,port)
   web.query=web.query:gsub("&gt;", ">")
   web.query=web.query:gsub("+", " ")
   for k,v in web.query:gmatch('([^&=]+)=([^&=]*)&?') do
-   web.opts[k]=ejaUrlEscape(v)
+   web.opt[k]=ejaUrlEscape(v)
   end
  end
  
@@ -204,7 +204,7 @@ function ejaWebThread(client,ip,port)
    end
    if web.path:sub(-1) == "/" then
     if web.auth >= powerMax then
-     ejaRun(web.opts)
+     ejaRun(web.opt)
      web.headerOut['Connection']='Close'
     else
      web.status='419 Authentication Timeout'
