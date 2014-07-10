@@ -32,10 +32,13 @@ function ejaDbDel(name,id)
 end
 
 
-function ejaDbNew(name,data)
+function ejaDbNew(name,...)
  local last=ejaDbLast(name)+1
- ejaFileWrite(ejaDbPath(name,last),data)
- return last
+ if ejaDbPut(name,last,...) then
+  return last
+ else
+  return nil
+ end
 end
 
 
