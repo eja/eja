@@ -53,6 +53,7 @@ function ejaDbGet(name,id,regex)
    for v in data:gmatch('([^\t]*)\t?') do
     if v then a[#a+1]=v:gsub('eJaTaB','\t') end
    end
+   a[#a]=nil
    return ejaTableUnpack(a)
   end
  else 
