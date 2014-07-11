@@ -31,17 +31,6 @@ function la(key,value,language)
 end
 
 
-function ejaGetMAC()
- local mac=""
- local d=ejaDirListSort('/sys/class/net')
- if d and d[3] then
-  mac=ejaFileRead('/sys/class/net/'..d[3]..'/address')
-  if mac then mac=mac:gsub('\n','') end
- end
- return mac
-end
-
-
 function ejaXmlEncode(str) 
  if str then 
   return string.gsub(str, "([^%w%s])", function(c) return string.format("&#x%02X;", string.byte(c)) end)

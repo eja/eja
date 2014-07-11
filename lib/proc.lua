@@ -78,3 +78,26 @@ function ejaProcPidChildren(pidCheck, count)
 end
 
 
+function ejaGetELF()
+ local x=io.open('/proc/self/exe','r')
+ local out=''
+ if x then
+  local data=x:read(24)
+  if data then out=data:gsub("(.)",function(h) return sf('%02X',string.byte(h)) end ) end
+  x:close()
+ end
+ return out
+end
+
+
+function ejaGetMAC()
+ local mac=""
+ local d=ejaDirListSort('/sys/class/net')
+ if d and d[3] then
+  mac=ejaFileRead('/sys/class/net/'..d[3]..'/address')
+  if mac then mac=mac:gsub('\n','') end
+ end
+ return mac
+end
+
+
