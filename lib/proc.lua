@@ -90,12 +90,21 @@ function ejaGetELF()
 end
 
 
-function ejaGetMAC()
+function ejaGetMAC(ip)
  local mac=""
- local d=ejaDirListSort('/sys/class/net')
- if d and d[3] then
-  mac=ejaFileRead('/sys/class/net/'..d[3]..'/address')
-  if mac then mac=mac:gsub('\n','') end
+ if ip then 
+  local data=ejaFileRead('/proc/net/arp')
+  if data then
+   for aIp,aMac in data:gmatch('\n(%d+.%d+.%d+.%d+)%s+[^%s]+%s+[^%s]+%s+([^%s]*)') do
+    if aIp==ip then mac=aMac; break; end
+   end
+  end 
+ else
+  local d=ejaDirListSort('/sys/class/net')
+  if d and d[3] then
+   mac=ejaFileRead('/sys/class/net/'..d[3]..'/address')
+   if mac then mac=mac:gsub('\n','') end
+  end
  end
  return mac
 end
