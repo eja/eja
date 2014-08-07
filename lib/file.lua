@@ -42,6 +42,17 @@ function ejaFileWrite(f,data)
 end
 
 
+function ejaFileAppend(f,data)
+ local x=io.open(f,'a')
+ if x then
+  x:write(data or '')
+  return x:close()
+ else
+  return false
+ end
+end
+
+
 function ejaFileSize(f)
  local fd=io.open(f,'r')
   if fd and fd:read(1) then
