@@ -46,7 +46,11 @@ else
    end
   end
   if arg[1]:match('^[^%-%-]') then
-   ejaVmFileLoad(arg[1])
+   if ejaFileStat(arg[1]) then
+    ejaVmFileLoad(arg[1])
+   else
+    ejaVmFileLoad(eja.path..'/bin/'..arg[1])
+   end
   end
   ejaRun(eja.opt)
  else
