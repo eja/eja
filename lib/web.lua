@@ -238,7 +238,9 @@ function ejaWebThread(client,ip,port)
      web.data='<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>'
     else
      web.file=sf('%s/var/web/%s',eja.path,web.path)
-     if not ejaFileCheck(web.file) then 
+     if ejaFileCheck(web.file) then 
+      web.headerOut['Cache-Control']='max-age=3600'
+     else
       web.file=''
       web.status='404 Not Found'
      end
