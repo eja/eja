@@ -7,7 +7,7 @@ eja.lib.webStop='ejaWebStop'
 eja.help.web='web server'
 eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
-
+eja.help.webCaptivePortal='web captive portal relative path'
 
 function ejaWeb()
  eja.web={}
@@ -235,7 +235,11 @@ function ejaWebThread(client,ip,port)
     web=_G[eja.mimeApp[web.headerOut['Content-Type']]](web)
    else
     if web.path == "/library/test/success.html" then
-     web.data='<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>'
+     if eja.opt.webCaptivePortal then 
+      web.file=sf('%s/var/web/%s',eja.path,eja.opt.webCaptivePortal)
+     else
+      web.data='<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>'
+     end
     else
      web.file=sf('%s/var/web/%s',eja.path,web.path)
      if ejaFileCheck(web.file) then 
