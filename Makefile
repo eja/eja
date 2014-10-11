@@ -4,8 +4,8 @@ LIBS=-lm -ldl
 all: eja
 
 lua/src/lua: lua
-	cd lua && make posix
-	
+	cd lua/src && make posix CC=$(CC)
+
 lua:	
 	git clone https://github.com/ubaldus/lua.git
 	
