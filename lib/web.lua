@@ -7,7 +7,7 @@ eja.lib.webStop='ejaWebStop'
 eja.help.web='web server'
 eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
-eja.help.webCaptivePortal='web captive portal relative path'
+eja.help.webCns='enable captive portal'
 
 function ejaWeb()
  eja.web={}
@@ -234,11 +234,19 @@ function ejaWebThread(client,ip,port)
    elseif eja.mimeApp[web.headerOut['Content-Type']] then
     web=_G[eja.mimeApp[web.headerOut['Content-Type']]](web)
    else
-    if web.path == "/library/test/success.html" then
-     if eja.opt.webCaptivePortal then 
-      web.file=sf('%s/var/web/%s',eja.path,eja.opt.webCaptivePortal)
+    if web.path == "/library/test/success.html" or (web.headerIn['user-agent'] and web.headerIn['user-agent']:match('CaptiveNetworkSupport')) then
+     local cnsData='<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>'
+     if eja.opt.webCns then
+      local cnsPath=sf('%s/eja.cns.log',eja.pathTmp)
+      local cnsLog=ejaFileRead(cnsPath)
+      if cnsLog and cnsLog:match(web.path) then
+       web.data=cnsData
+      else
+       ejaFileAppend(cnsPath,web.path.."\n")
+       web.data='CNS'
+      end
      else
-      web.data='<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>'
+      web.data=cnsData
      end
     else
      web.file=sf('%s/var/web/%s',eja.path,web.path)
