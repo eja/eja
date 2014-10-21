@@ -14,7 +14,12 @@ function ge(a,b) a=a or 0; b=b or 0; return tostring(a)>=tostring(b) end
  
 function le(a,b) a=a or 0; b=b or 0; return tostring(a)<=tostring(b) end	
 
-function sf(...) return string.format(...) end		
+function sf(...) return string.format(...) end
+
+function string:p() print(self) end
+
+function p(v) print(v) end 
+
 
 function la(key,value,language) 			
  if key and value and language then
