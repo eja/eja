@@ -239,10 +239,10 @@ function ejaWebThread(client,ip,port)
      if eja.opt.webCns then
       local cnsPath=sf('%s/eja.cns.log',eja.pathTmp)
       local cnsLog=ejaFileRead(cnsPath)
-      if cnsLog and cnsLog:match(web.path) then
+      if cnsLog and (cnsLog:match(web.path) or cnsLog:match(web.remoteIp)) then
        web.data=cnsData
       else
-       ejaFileAppend(cnsPath,web.path.."\n")
+       ejaFileAppend(cnsPath,web.remoteIp..' '..web.path.."\n")
        web.data='CNS'
       end
      else
