@@ -6,7 +6,7 @@ end
  
  
 function ejaJsonDecode(val, pos)
- return ejaJson(mode,val, pos)
+ return ejaJson('decode',val, pos)
 end
  
  
