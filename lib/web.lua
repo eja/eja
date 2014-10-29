@@ -8,6 +8,7 @@ eja.help.web='web server'
 eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
 eja.help.webCns='enable captive portal'
+eja.help.webPath='web server path {'..eja.path..'/var/web/}'
 
 function ejaWeb()
  eja.web={}
@@ -15,10 +16,9 @@ function ejaWeb()
  eja.web.timeout=100
  eja.web.host=eja.opt.webHost or '0.0.0.0'
  eja.web.port=eja.opt.webPort or 35248
- eja.web.path=eja.opt.webPath or '/var/web/'
- eja.web.path=eja.path..eja.web.path
+ eja.web.path=eja.opt.webPath or eja.path..'/var/web/'
 
- ejaInfo("[web] daemon on port %d",eja.web.port)
+ ejaInfo("[web] daemon on port %d and path %s",eja.web.port, eja.web.path)
  local client=nil  
  local s=ejaSocketOpen(AF_INET,SOCK_STREAM,0)
  ejaSocketOptionSet(s,SOL_SOCKET,SO_REUSEADDR,1) 
@@ -249,7 +249,7 @@ function ejaWebThread(client,ip,port)
       web.data=cnsData
      end
     else
-     web.file=sf('%s/var/web/%s',eja.path,web.path)
+     web.file=sf('%s/%s',eja.web.path,web.path)
      if ejaFileCheck(web.file) then 
       web.headerOut['Cache-Control']='max-age=3600'
      else
@@ -270,10 +270,10 @@ function ejaWebThread(client,ip,port)
  --4XX
  if web.status:sub(1,1) == '4' then
   local status=web.status:sub(1,3)
-  local data=ejaFileRead(sf('%s/var/web/%s.eja',eja.path,status))
+  local data=ejaFileRead(sf('%s/%s.eja',eja.web.path,status))
   if data then 
    loadstring(ejaVmImport(data) or data)(web)
-  elseif ejaFileCheck(sf('%s/var/web/%s.html',eja.path,status)) then 
+  elseif ejaFileCheck(sf('%s/%s.html',eja.web.path,status)) then 
    web.status='301 Moved Permanently'
    web.headerOut['Location']=sf('/%s.html',status)
   end
