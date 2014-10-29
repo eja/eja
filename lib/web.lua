@@ -8,7 +8,7 @@ eja.help.web='web server'
 eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
 eja.help.webCns='enable captive portal'
-eja.help.webPath='web server path {'..eja.path..'/var/web/}'
+eja.help.webPath='web server path {'..eja.path..'var/web/}'
 
 function ejaWeb()
  eja.web={}

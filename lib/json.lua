@@ -1,12 +1,33 @@
+-- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
  
  
 function ejaJsonEncode(val, indent, nullVal)
  return ejaJson('encode', val, {indent = indent}, nullVal)
 end
- 
- 
+
+
 function ejaJsonDecode(val, pos)
  return ejaJson('decode',val, pos)
+end
+
+
+function ejaJsonFileWrite(file, array)
+ local data=ejaJsonEncode(array)
+ if data then
+  return ejaFileWrite(file,data)
+ else
+  return nil
+ end
+end
+
+
+function ejaJsonFileRead(file)
+ local data=ejaFileRead(file)
+ if data then 
+  return ejaJsonDecode(data) 
+ else
+  return nil
+ end 
 end
  
  
