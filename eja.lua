@@ -13,21 +13,25 @@ if not eja then
 
  eja.lang='en'
  eja.path='/opt/eja.it/'
- eja.pathTmp=eja.path..'/tmp/'
+ eja.pathBin=eja.path..'/bin/'
+ eja.pathEtc=eja.path..'/etc/'
+ eja.pathLib=eja.path..'/lib/'
+ eja.pathVar=eja.path..'/var/'
+ eja.pathTmp='/tmp/'
  eja.pathLock='/tmp/'
  eja.opt.debug=0
  eja.opt.logFile='/dev/stderr' 
  
 else 
 
- t=ejaDirList(eja.path..'/lib/')
+ t=ejaDirList(eja.pathLib)
  if t then 
   local help=eja.help
   eja.helpFull={}
   for k,v in next,t do
    if v:match('.eja$') then
     eja.help={}
-    ejaVmFileLoad(eja.path..'/lib/'..v)
+    ejaVmFileLoad(eja.pathLib..v)
     eja.helpFull[v:sub(0,-5)]=eja.help
    end
   end
@@ -49,7 +53,7 @@ else
    if ejaFileStat(arg[1]) then
     ejaVmFileLoad(arg[1])
    else
-    ejaVmFileLoad(eja.path..'/bin/'..arg[1])
+    ejaVmFileLoad(eja.pathBin..arg[1])
    end
   end
   ejaRun(eja.opt)

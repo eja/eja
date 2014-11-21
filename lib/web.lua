@@ -7,7 +7,7 @@ eja.lib.webStop='ejaWebStop'
 eja.help.web='web server'
 eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
-eja.help.webCns='enable captive portal'
+eja.help.webCns='cns timeout'
 eja.help.webPath='web server path {'..eja.path..'var/web/}'
 
 function ejaWeb()
@@ -170,7 +170,7 @@ function ejaWebThread(client,ip,port)
   local auth=web.path:match('/(%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x)/')  
   if auth then
    web.auth=-1
-   local authData=ejaFileRead(eja.path..'/etc/eja.web')
+   local authData=ejaFileRead(eja.pathEtc..'eja.web')
    local check=web.uri:sub(66)
    local powerMax=5
    for k,v in authData:gmatch('([%x]+) ?([0-9]*)\n?') do

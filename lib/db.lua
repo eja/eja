@@ -2,7 +2,7 @@
 
 
 function ejaDbPath(name,id)
- local path=eja.path..'/var/'
+ local path=eja.pathVar
  if name and name:match('^/') then
   path=path..name:gsub('/([^/]*)$','/eja.%1')
  else

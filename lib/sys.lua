@@ -42,10 +42,10 @@ end
 
 function ejaUpdate(libName)
  if eja.opt.update ~= '' then libName=eja.opt.update end
- if not ejaFileStat(eja.path..'/lib') then ejaDirCreate(eja.path..'/lib') end
+ if not ejaFileStat(eja.pathLib) then ejaDirCreate(eja.pathLib) end
  if libName then
   x=ejaWebGet(sf('http://get.eja.it/?lib='..libName))
-  if x and x~= '' then ejaFileWrite(eja.path..'/lib/'..libName..'.eja',x) end
+  if x and x~= '' then ejaFileWrite(eja.pathLib..libName..'.eja',x) end
  else 
   x=ejaWebGet(sf('http://get.eja.it/?action=update&version=%s&mac=%s&elf=%s',eja.version,ejaGetMAC(),ejaGetELF()))
   if x then
