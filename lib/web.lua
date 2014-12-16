@@ -170,6 +170,7 @@ function ejaWebThread(client,ip,port)
   local auth=web.path:match('/(%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x)/')  
   if auth then
    web.auth=-1
+   web.path=web.path:sub(66)
    local authData=ejaFileRead(eja.pathEtc..'eja.web')
    local check=web.uri:sub(66)
    local powerMax=5
