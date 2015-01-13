@@ -102,6 +102,7 @@ function ejaGetMAC(ip)
  else
   local d=ejaDirListSort('/sys/class/net')
   if d and d[3] then
+   if d[3] == 'lo' then d[3]=d[4] end
    mac=ejaFileRead('/sys/class/net/'..d[3]..'/address')
    if mac then mac=mac:gsub('\n','') end
   end
