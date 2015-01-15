@@ -4,11 +4,14 @@
 eja.lib.web='ejaWeb'
 eja.lib.webStart='ejaWebStart'
 eja.lib.webStop='ejaWebStop'
+eja.lib.webUser='ejaWebUser'
 eja.help.web='web server'
 eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
 eja.help.webCns='cns timeout'
 eja.help.webPath='web server path {'..eja.path..'var/web/}'
+eja.help.webUser='add a new web user'
+
 
 function ejaWeb()
  eja.web={}
@@ -406,4 +409,14 @@ function ejaWebGet(value,...)
  end
 end
 
+
+function ejaWebUserAdd()
+ io.write("Username: ")
+ local username=io.read("*l")
+ io.write("Password: ")
+ local password=io.read("*l")
+ io.write("Power: ")
+ local power=n(io.read("*l"))
+ ejaFileAppend(eja.pathEtc..'eja.web', sf("%s %d\n",ejaSha256(username..password),power) )
+end
  
