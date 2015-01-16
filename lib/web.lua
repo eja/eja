@@ -410,7 +410,7 @@ function ejaWebGet(value,...)
 end
 
 
-function ejaWebUserAdd()
+function ejaWebUser()
  io.write("Username: ")
  local username=io.read("*l")
  io.write("Password: ")
