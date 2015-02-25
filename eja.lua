@@ -19,8 +19,6 @@ if not eja then
  eja.pathVar=eja.path..'/var/'
  eja.pathTmp='/tmp/'
  eja.pathLock='/tmp/'
- eja.opt.debug=0
- eja.opt.logFile='/dev/stderr' 
  
 else 
 
