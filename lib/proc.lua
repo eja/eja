@@ -78,6 +78,16 @@ function ejaProcPidChildren(pidCheck, count)
 end
 
 
+function ejaProcPidStat(pid)
+ local a={}
+ local stat=ejaFileRead('/proc/'..n(pid)..'/stat') or ''
+ for v in stat:gmatch('([^ ]+) ?') do
+  a[#a+1]=v
+ end
+ return a
+end
+
+
 function ejaGetELF()
  local x=io.open('/proc/self/exe','r')
  local out=''

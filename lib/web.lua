@@ -5,7 +5,8 @@ eja.lib.web='ejaWeb'
 eja.lib.webStart='ejaWebStart'
 eja.lib.webStop='ejaWebStop'
 eja.lib.webUser='ejaWebUser'
-eja.help.web='web server'
+eja.help.webStart='web server start'
+eja.help.webStop='web server stopt'
 eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
 eja.help.webCns='cns timeout'
@@ -170,7 +171,7 @@ function ejaWebThread(client,ip,port)
  
  --web path
  if web.path and web.path ~= '' then
-  local auth=web.path:match('/(%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x)/')  
+  local auth=web.path:match('^/(%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x)/')  
   if auth then
    web.auth=-1
    web.path=web.path:sub(66)

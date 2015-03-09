@@ -4,7 +4,7 @@
 eja.lib['help']='ejaHelp'
 
 eja.lib.update='ejaUpdate'
-eja.help.update='update system library {all}'
+eja.help.update='update system library'
 
 
 function ejaHelp()      
