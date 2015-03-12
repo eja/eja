@@ -144,9 +144,11 @@ end
 function ejaDirTree(path)
  local out=''
  for k,v in next,ejaDirTable(path) do
-  local x=ejaFileStat(path..'/'..v) or {}
-  out=out..sf('%10s %5s %s %s\n',x.mtime,x.mode,x.size,path..'/'..v)
-  if ge(x.mode,16384) and le(x.mode,16895) then out=out..ejaDirTree(path..'/'..v) end
+  local x=ejaFileStat(path..'/'..v) 
+  if x then
+   out=out..sf('%10s %06o %s %s\n',x.mtime,x.mode,x.size,path..'/'..v)
+   if sf('%o',x.mode):sub(-5,1)=='4' then out=out..ejaDirTree(path..'/'..v) end
+  end
  end
  return out
 end
