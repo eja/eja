@@ -423,7 +423,6 @@ end
 
 
 function ejaWebUser()
-    print("asd");
     if (ejaFileAppend(eja.pathEtc..'eja.web',"")) then
         io.write("Username: ")
         local username=io.read("*l")
