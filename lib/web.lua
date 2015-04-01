@@ -423,12 +423,21 @@ end
 
 
 function ejaWebUser()
- io.write("Username: ")
- local username=io.read("*l")
- io.write("Password: ")
- local password=io.read("*l")
- io.write("Power: ")
- local power=n(io.read("*l"))
- ejaFileAppend(eja.pathEtc..'eja.web', sf("%s %d\n",ejaSha256(username..password),power) )
+    print("asd");
+    if (ejaFileAppend(eja.pathEtc..'eja.web',"")) then
+        io.write("Username: ")
+        local username=io.read("*l")
+        io.write("Password: ")
+        os.execute('stty -echo');
+        io.write("\x1B[30m  \x1B[40m");
+        local password=io.read("*l")
+        os.execute('stty echo');
+        print("\x1B[0;0m");
+        io.write("Power: ")
+        local power=n(io.read("*l"))
+        ejaFileAppend(eja.pathEtc..'eja.web', sf("%s %d\n",ejaSha256(username..password),power) )
+    else
+        print("Insufficent permission");
+    end
 end
  
