@@ -456,7 +456,7 @@ function ejaWebUser()
                  
 
             if(#password == 0) then
-                io.write("Please insert a valid password\n");
+                io.write("Invalid password. Please insert a valid password\n");
             else
                 io.write("Retype password: ")
                 os.execute('stty -echo');
@@ -467,7 +467,7 @@ function ejaWebUser()
                 if(passwordCheck == password) then
                     pass=true
                 else
-                    io.write("Passwords different RETYPE IT!\n");
+                    io.write("Password mismatch. Please try again\n");
                 end
             end
 
@@ -481,7 +481,7 @@ function ejaWebUser()
             if (tonumber(power) ~= nil) then
                 pass=true;
             else
-                io.write("Power must be integer\n")
+                io.write("Power value must be integer\n")
             end
         until pass==true;
         
