@@ -1,17 +1,14 @@
--- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2015 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.lib.web='ejaWeb'
 eja.lib.webStart='ejaWebStart'
 eja.lib.webStop='ejaWebStop'
-eja.lib.webUser='ejaWebUser'
 eja.help.webStart='web server start'
 eja.help.webStop='web server stopt'
 eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
-eja.help.webCns='cns timeout'
 eja.help.webPath='web server path {'..eja.path..'var/web/}'
-eja.help.webUser='add a new web user'
 
 
 function ejaWeb()
@@ -171,51 +168,7 @@ function ejaWebThread(client,ip,port)
  
  --web path
  if web.path and web.path ~= '' then
-  local auth=web.path:match('^/(%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x)/')  
-  if auth then
-   web.auth=-1
-   web.path=web.path:sub(66)
-   local authData=ejaFileRead(eja.pathEtc..'eja.web')
-   local check=web.uri:sub(66)
-   local powerMax=5
-   for k,v in authData:gmatch('([%x]+) ?([0-9]*)\n?') do
-    if not v or v == '' then v=1 end
-    if gt(v,powerMax) then powerMax=v end
-    if ejaSha256(k..web.remoteIp..check)==auth then 
-     web.auth=1*v; 
-     web.authKey=k;
-     break
-    elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,6)-1)..check)==auth then
-     web.auth=2*v
-     web.authKey=k;
-     break
-    elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,6)+1)..check)==auth then
-     web.auth=2*v
-     web.authKey=k;
-     break
-    elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,6)-0)..check)==auth then
-     web.auth=3*v
-     web.authKey=k;
-     break
-    elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,7)-0)..check)==auth then
-     web.auth=4*v
-     web.authKey=k;
-     break
-    elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,8)-0)..check)==auth then
-     web.auth=5*v
-     web.authKey=k;
-     break
-    end
-   end
-   if web.path:sub(-1) == "/" then
-    if web.auth >= powerMax then
-     ejaRun(web.opt)
-     web.headerOut['Connection']='Close'
-    else
-     web.status='419 Authentication Timeout'
-    end
-   end
-  end
+  web=ejaWebAuth(web)
   if web.auth < 0 then
    web.status='401 Unauthorized'
   else
@@ -239,25 +192,8 @@ function ejaWebThread(client,ip,port)
    elseif eja.mimeApp[web.headerOut['Content-Type']] then
     web=_G[eja.mimeApp[web.headerOut['Content-Type']]](web)
    else
-    if web.path == "/library/test/success.html" or (web.headerIn['user-agent'] and web.headerIn['user-agent']:match('CaptiveNetworkSupport')) then
-     local cnsData='<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>'
-     if eja.opt.webCns then
-      local cnsCheck=0
-      local cnsPath=sf('%s/eja.cns.log',eja.pathTmp)
-      local cnsLog=ejaFileRead(cnsPath) or ''
-      for time,ip,url in cnsLog:gmatch('([^ ]-) ([^ ]-) ([^\n]-)\n') do
-       if (ip==web.remoteIp or url==web.path) and os.time()-time<n(eja.opt.webCns) then cnsCheck=1 end
-      end
-      if cnsCheck>0 then
-       web.data=cnsData
-      else
-       ejaFileAppend(cnsPath,os.time()..' '..web.remoteIp..' '..web.path.."\n")
-       web.data='CNS'
-      end
-     else
-      web.data=cnsData
-     end
-    else
+    if eja.opt.webCns then web=ejaWebCns(web) end
+    if not web.cns then
      web.file=sf('%s/%s',eja.web.path,web.path)
      local stat=ejaFileStat(web.file)
      if stat then
@@ -422,72 +358,3 @@ function ejaWebGet(value,...)
 end
 
 
-function ejaWebUser()
-    if (ejaFileAppend(eja.pathEtc..'eja.web',"")) then
-        local username;
-        local password;
-        local power;
-        
-        repeat
-            local pass = false;
-            io.write("Username: ")
-            username=io.read("*l")
-            
-            if (#username == 0) then
-                io.write("Please insert a valid username\n");
-            elseif (username:match("%s")) then
-                io.write("No whitespace allowed\n");
-            elseif (username:match("[^%w]")) then
-                io.write("Only alphanumerical character\n");
-            else
-                pass = true;
-            end 
-        until pass==true;
-
-        repeat
-            local pass = false;
-            local passwordCheck;
-
-            io.write("Password: ")
-            os.execute('stty -echo');
-            password=io.read("*l")
-            io.write("\n");
-            os.execute('stty echo');  
-                 
-
-            if(#password == 0) then
-                io.write("Invalid password. Please insert a valid password\n");
-            else
-                io.write("Retype password: ")
-                os.execute('stty -echo');
-                passwordCheck=io.read("*l")
-                io.write("\n");
-                os.execute('stty echo');
-                
-                if(passwordCheck == password) then
-                    pass=true
-                else
-                    io.write("Password mismatch. Please try again\n");
-                end
-            end
-
-
-        until pass==true;
-
-        repeat 
-            local pass=false;
-            io.write("Power: ")
-            power=io.read("*l")
-            if (tonumber(power) ~= nil) then
-                pass=true;
-            else
-                io.write("Power value must be integer\n")
-            end
-        until pass==true;
-        
-        ejaFileAppend(eja.pathEtc..'eja.web', sf("%s %d\n",ejaSha256(username..password),power) )
-    else
-        print("Insufficent permission");
-    end
-end
- 
