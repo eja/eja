@@ -101,7 +101,7 @@ end
 
 
 function ejaGetMAC(ip)
- local mac=""
+ local mac=nil
  if ip then 
   local data=ejaFileRead('/proc/net/arp')
   if data then
@@ -110,14 +110,17 @@ function ejaGetMAC(ip)
    end
   end 
  else
-  local d=ejaDirListSort('/sys/class/net')
-  if d and d[3] then
-   if d[3] == 'lo' then d[3]=d[4] end
-   mac=ejaFileRead('/sys/class/net/'..d[3]..'/address')
-   if mac then mac=mac:gsub('\n','') end
+  for k,v in next,ejaDirTableSort('/sys/class/net') do
+   local arphdr=ejaFileRead('/sys/class/net/'..v..'/type')
+   if not mac and n(arphdr)==1 then
+    mac=ejaFileRead('/sys/class/net/'..v..'/address')
+    if mac then
+     mac=mac:gsub('\n','')
+    end
+   end
   end
  end
- return mac
+ return mac or ''
 end
 
 

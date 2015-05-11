@@ -111,6 +111,13 @@ function ejaDirTable(d)		--return list as array
 end
 
 
+function ejaDirTableSort(d)	
+ local t=ejaDirTable(d)
+ table.sort(t)
+ return t
+end
+
+
 function ejaDirListSafe(d)	--no hidden files
  local t=ejaDirList(d)
  local tt={}
