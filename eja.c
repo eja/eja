@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it> */
+/* Copyright (C) 2007-2015 by Ubaldo Porcheddu <ubaldo@eja.it> */
 
 #include <stdio.h>
 #include <string.h>
@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <net/if.h>
                      
 #include "lua.h"
 #include "lauxlib.h"
@@ -367,6 +368,7 @@ static int ejaSocketOptionSet(lua_State *L) {
  int optname=luaL_checknumber(L, 3);
  struct linger linger;
  struct timeval tv;
+ struct ifreq ifr;
  struct ipv6_mreq mreq6;
  int vint=0;
  void *val=NULL;
@@ -384,6 +386,12 @@ static int ejaSocketOptionSet(lua_State *L) {
   tv.tv_usec=luaL_checknumber(L, 5);
   val=&tv;
   len=sizeof(tv);
+ }
+ 
+ if (level == SOL_SOCKET && optname == SO_BINDTODEVICE) {
+  strncpy(ifr.ifr_name, luaL_checkstring(L, 4), IFNAMSIZ);
+  val = &ifr;
+  len = sizeof(ifr);
  }
 
  if (level == IPPROTO_IPV6 && (optname == IPV6_JOIN_GROUP || optname == IPV6_LEAVE_GROUP)) {
