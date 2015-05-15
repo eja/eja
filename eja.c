@@ -422,6 +422,9 @@ static int ejaSocketDefine(lua_State *L) {
  lua_pushnumber(L, SO_REUSEADDR);	lua_setglobal(L, "SO_REUSEADDR");
  lua_pushnumber(L, SO_RCVTIMEO);	lua_setglobal(L, "SO_RCVTIMEO");
  lua_pushnumber(L, SO_SNDTIMEO);	lua_setglobal(L, "SO_SNDTIMEO");
+ lua_pushnumber(L, SO_BINDTODEVICE);	lua_setglobal(L, "SO_BINDTODEVICE");
+ lua_pushnumber(L, SO_BROADCAST);	lua_setglobal(L, "SO_BROADCAST");
+
  return 0;
 }
 
