@@ -1,29 +1,34 @@
-CFLAGS=-w
-LIBS=-lm -ldl
+CFLAGS=-O2 -ldl -Wl,-E -w
+SYSCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" 
+
+ejaLibSrc:= $(wildcard lib/*.c)
+ejaLibObj:= $(ejaLibSrc:lib/%.c=lib/%.so)
+
 
 all: eja
 
+
 lua/src/lua: lua
-	cd lua/src && make posix CC=$(CC)
+	cd lua/src && make generic CC=$(CC) SYSCFLAGS=$(SYSCFLAGS) SYSLIBS="$(CFLAGS)"
 
 lua:	
 	git clone https://github.com/ubaldus/lua.git
 	
 eja.h:	lua lua/src/lua
-	@ od -v -t x1 eja.lua lib/*.lua eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
+	@od -v -t x1 eja.lua lib/*.lua eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
 	
-eja: eja.h 
-	@ $(CC) $(CFLAGS) -o eja eja.c lua/src/liblua.a -Ilua/src/ $(LIBS)
+$(ejaLibObj): lib/%.so : lib/%.c
+	$(CC) -shared $< -o $@ -fPIC -Ilua/src/ 
+	
+eja: eja.h $(ejaLibObj)
+	$(CC) -o eja eja.c lua/src/liblua.a -Ilua/src/ -lm $(CFLAGS) 
 	@- rm eja.h	
 	
 clean:
-	@- rm eja 
+	@- rm -f eja 
+	@- rm -f lib/*.so
 	@- rm -Rf lua
 	
-uninstall: clean
-	@- rm /opt/eja.it/bin/eja
-	@- rm /usr/bin/eja
-
 backup: clean
 	tar zcR /opt/eja.it/src/ > /opt/eja.it/bkp/eja-$(shell cat .version).tar.gz
 	
@@ -34,10 +39,11 @@ backup: clean
 	@ mkdir -p /opt/eja.it/var/web
 
 /usr/bin/eja:
-	@- ln -s /opt/eja.it/bin/eja /usr/bin/eja
+	@- ln -fs /opt/eja.it/bin/eja /usr/bin/eja
 
 install: eja /opt/eja.it /usr/bin/eja
 	@ cp eja /opt/eja.it/bin/eja
+	@ cp lib/*.so /opt/eja.it/lib/
 
 git:
 	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua

@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2015 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 if not eja then
 
@@ -19,6 +19,8 @@ if not eja then
  eja.pathVar=eja.path..'/var/'
  eja.pathTmp='/tmp/'
  eja.pathLock='/tmp/'
+ 
+ package.cpath=eja.pathLib..'?.so'
  
 else 
 
