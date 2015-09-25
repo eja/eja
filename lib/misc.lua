@@ -1,8 +1,9 @@
--- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2015 by Ubaldo Porcheddu <ubaldo@eja.it>
+
 
 function n(i) return tonumber(i) or 0 end
 
-function s(v) return tostring(v) or '' end
+function s(v) v=v or ''; return tostring(v) end
 
 function gt(a,b) a=a or 0; b=b or 0; return tostring(a)>tostring(b) end	
  
@@ -19,6 +20,13 @@ function sf(...) return string.format(...) end
 function string:p() print(self) end
 
 function p(v) print(v) end 
+
+function v(value)
+ if type(value) == "number" then return value > 0 end
+ if type(value) == "string" then return value ~= "" end
+ if type(value) == "table" then return #value > 0 end
+ return false
+end
 
 
 function la(key,value,language) 			
