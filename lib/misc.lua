@@ -3,19 +3,23 @@
 
 function n(i) return tonumber(i) or 0 end
 
-function s(v) v=v or ''; return tostring(v) end
-
-function gt(a,b) a=a or 0; b=b or 0; return tostring(a)>tostring(b) end	
- 
-function lt(a,b) a=a or 0; b=b or 0; return tostring(a)<tostring(b) end	
-  
-function eq(a,b) a=a or 0; b=b or 0; return tostring(a)==tostring(b) end	
-
-function ge(a,b) a=a or 0; b=b or 0; return tostring(a)>=tostring(b) end	
- 
-function le(a,b) a=a or 0; b=b or 0; return tostring(a)<=tostring(b) end	
+function s(v) 
+ if type(v) == "number" then return tostring(v) elseif type(v) == "string" then return v else return "" end
+end
 
 function sf(...) return string.format(...) end
+
+
+function gt(a,b) a=a or 0; b=b or 0; return tostring(a)>tostring(b) end		--!-
+ 
+function lt(a,b) a=a or 0; b=b or 0; return tostring(a)<tostring(b) end	 	--!-
+  
+function eq(a,b) a=a or 0; b=b or 0; return tostring(a)==tostring(b) end	--!-	
+
+function ge(a,b) a=a or 0; b=b or 0; return tostring(a)>=tostring(b) end	--!-
+ 
+function le(a,b) a=a or 0; b=b or 0; return tostring(a)<=tostring(b) end	--!-
+
 
 
 function la(key,value,language) 			
