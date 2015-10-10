@@ -162,7 +162,7 @@ function ejaWebThread(client,ip,port)
   web.query=web.query:gsub("&gt;", ">")
   web.query=web.query:gsub("+", " ")
   for k,v in web.query:gmatch('([^&=]+)=([^&=]*)&?') do
-   web.opt[k]=ejaUrlEscape(v)
+   web.opt[k]=ejaUrlDecode(v)
   end
  end
  

@@ -21,7 +21,6 @@ function ge(a,b) a=a or 0; b=b or 0; return tostring(a)>=tostring(b) end	--!-
 function le(a,b) a=a or 0; b=b or 0; return tostring(a)<=tostring(b) end	--!-
 
 
-
 function la(key,value,language) 			
  if key and value and language then
   if not eja.i18n[language] then eja.i18n[language]={} end
@@ -46,10 +45,36 @@ function ejaXmlEncode(str)
 end
 
 
-function ejaUrlEscape(url)
+function ejaUrlDecode(url)
  return url:gsub("%%(%x%x)",function(h) return string.char(tonumber(h,16)) end )
 end
 
+
+function ejaCheck(a,b)    
+ if a then
+  if b then
+   if tonumber(b) then
+    return tonumber(a) == tonumber(b)
+   else 
+    return tostring(a) == tostring(b)
+   end
+  else --b doesn't exist   
+   if type(a) == "table" then
+    local i=0;
+    for k,v in next,a do i=i+1 end
+    if i > 0 then return true else return false; end
+   else
+    if tonumber(a) then
+     return tonumber(a) > 0
+    else
+     return a ~= ""
+    end
+   end 
+  end  
+ else  
+  return false
+ end
+end 
 
 
 -- Lua 5.1+ base64 v3.0 (c) 2009 by Alex Kloss <alexthkloss@web.de>
