@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2015 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.lib.export='ejaVmFileExport'
@@ -48,82 +48,82 @@ end
 
 
 function ejaVmFunction(h,d,pos)	--header, data, position
- local o=''
+ local o={}
  local i=0
  local z=0
  local p=pos
  local debug=false
 
- o=o..ejaVmInt2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1)));		p=p+h.int;	--first line
- o=o..ejaVmInt2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1)));		p=p+h.int;	--last line
- o=o..ejaVmByte2Hex(d:byte(p));						p=p+1;		--num params
- o=o..ejaVmByte2Hex(d:byte(p));						p=p+1;		--is vararg
- o=o..ejaVmByte2Hex(d:byte(p));						p=p+1;		--max stack size
+ o[#o+1]=ejaVmInt2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1)));		p=p+h.int;	--first line
+ o[#o+1]=ejaVmInt2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1)));		p=p+h.int;	--last line
+ o[#o+1]=ejaVmByte2Hex(d:byte(p));						p=p+1;		--num params
+ o[#o+1]=ejaVmByte2Hex(d:byte(p));						p=p+1;		--is vararg
+ o[#o+1]=ejaVmByte2Hex(d:byte(p));						p=p+1;		--max stack size
 
- if debug then o=o..'\ninstr\n' end	
+ if debug then o[#o+1]='\ninstr\n' end	
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
- o=o..ejaVmInt2Hex(z);							p=p+h.int;	--length of Instruction block
+ o[#o+1]=ejaVmInt2Hex(z);							p=p+h.int;	--length of Instruction block
  for n=1,z do
-  o=o..ejaVmInstr2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.Instr-1)));	p=p+h.Instr;	--Instruction
+  o[#o+1]=ejaVmInstr2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.Instr-1)));	p=p+h.Instr;	--Instruction
  end
 
- if debug then o=o..'\nconst\n' end	
+ if debug then o[#o+1]='\nconst\n' end	
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
- o=o..ejaVmInt2Hex(z);							p=p+h.int;	--length of constant
+ o[#o+1]=ejaVmInt2Hex(z);							p=p+h.int;	--length of constant
  for n=1,z do
   local cType=d:byte(p);
-  o=o..ejaVmByte2Hex(cType);						p=p+1;		--const type
+  o[#o+1]=ejaVmByte2Hex(cType);						p=p+1;		--const type
   if cType == 4 then
    local l=ejaVmByte2Int(h.endian,d:sub(p,p+h.size-1));
-   o=o..ejaVmSize2Hex(l);						p=p+h.size;	--string length
+   o[#o+1]=ejaVmSize2Hex(l);						p=p+h.size;	--string length
    if l > 0 then
-    o=o..ejaVmString2Hex(d:sub(p,p+l-1));				p=p+l;		--string
+    o[#o+1]=ejaVmString2Hex(d:sub(p,p+l-1));				p=p+l;		--string
    end
   end
   if cType == 3 then
-   o=o..ejaVmNum2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.num-1)));	p=p+h.num;	--number
+   o[#o+1]=ejaVmNum2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.num-1)));	p=p+h.num;	--number
   end
   if cType == 1 then
-   o=o..ejaVmByte2Hex(d:byte(p));					p=p+1;		--boolean
+   o[#o+1]=ejaVmByte2Hex(d:byte(p));					p=p+1;		--boolean
   end
   if cType == 0 then end								--nil
  end
 
- if debug then o=o..'\nproto\n' end	
+ if debug then o[#o+1]='\nproto\n' end	
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
- o=o..ejaVmInt2Hex(z);							p=p+h.int;	--length of function 
+ o[#o+1]=ejaVmInt2Hex(z);							p=p+h.int;	--length of function 
  for n=1,z do
   local t,n=ejaVmFunction(h,d,p)
   p=p+n
-  o=o..t
+  o[#o+1]=t
  end
  
- if debug then o=o..'\nupvalue\n' end
+ if debug then o[#o+1]='\nupvalue\n' end
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
- o=o..ejaVmInt2Hex(z);							p=p+h.int;	--length of upvalues
+ o[#o+1]=ejaVmInt2Hex(z);							p=p+h.int;	--length of upvalues
  for n=1,z do
-  o=o..ejaVmByte2Hex(d:byte(p));					p=p+1;		--stack
-  o=o..ejaVmByte2Hex(d:byte(p));					p=p+1;		--idx
+  o[#o+1]=ejaVmByte2Hex(d:byte(p));					p=p+1;		--stack
+  o[#o+1]=ejaVmByte2Hex(d:byte(p));					p=p+1;		--idx
  end
 
- if debug then o=o..'\nsource\n' end	
+ if debug then o[#o+1]='\nsource\n' end	
  l=ejaVmByte2Int(h.endian,d:sub(p,p+h.size-1));
- o=o..ejaVmSize2Hex(0);							p=p+h.size;	--string length
+ o[#o+1]=ejaVmSize2Hex(0);							p=p+h.size;	--string length
  if l > 0 then
   p=p+l;										--string
  end
  
- if debug then o=o..'\nline info\n' end
+ if debug then o[#o+1]='\nline info\n' end
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
- o=o..ejaVmInt2Hex(0);							p=p+h.int;	--length of line
+ o[#o+1]=ejaVmInt2Hex(0);							p=p+h.int;	--length of line
  for n=1,z do
   p=p+h.int;										--begin
  end
 
   
- if debug then o=o..'\nlocals\n' end
+ if debug then o[#o+1]='\nlocals\n' end
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
- o=o..ejaVmInt2Hex(0);							p=p+h.int;	--length of local vars
+ o[#o+1]=ejaVmInt2Hex(0);							p=p+h.int;	--length of local vars
  for n=1,z do
   local l=ejaVmByte2Int(h.endian,d:sub(p,p+h.size-1));
    p=p+h.size;										--string length
@@ -134,16 +134,16 @@ function ejaVmFunction(h,d,pos)	--header, data, position
   p=p+h.int;										--end
  end
 
- if debug then o=o..'\nupvalues\n' end
+ if debug then o[#o+1]='\nupvalues\n' end
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
- o=o..ejaVmInt2Hex(0);							p=p+h.int;	--length of upvalues
+ o[#o+1]=ejaVmInt2Hex(0);							p=p+h.int;	--length of upvalues
  for n=1,z do
   local l=ejaVmByte2Int(h.endian,d:sub(p,p+h.size-1));
   p=p+h.size;										--string length
   p=p+l;										--string
  end
 
- return o,p-pos
+ return table.concat(o),p-pos
 end
 
 
@@ -171,21 +171,23 @@ end
 
 function ejaVmImport(data)
  if data:sub(1,5) == 'ejaVM' then
-  local o=string.dump(loadstring("do end")):sub(1,18)
-  local h=ejaVmHeader(o)
+  local o={}
+  local h=''
+  o[#o+1]=string.dump(loadstring("do end")):sub(1,18)
+  h=ejaVmHeader(o[1])
   for k,v in data:gmatch('([nbiIsS])([^nbiIsS]+)') do 
-   if k == 'b' then o=o..ejaVmHex2Byte(h.endian,v,1) end
-   if k == 'n' then o=o..ejaVmHex2Byte(h.endian,v,h.num) end
-   if k == 'i' then o=o..ejaVmHex2Byte(h.endian,v,h.int) end
-   if k == 'I' then o=o..ejaVmHex2Byte(h.endian,v,h.Instr) end
-   if k == 's' then o=o..ejaVmHex2Byte(h.endian,v,h.size) end
+   if k == 'b' then o[#o+1]=ejaVmHex2Byte(h.endian,v,1) end
+   if k == 'n' then o[#o+1]=ejaVmHex2Byte(h.endian,v,h.num) end
+   if k == 'i' then o[#o+1]=ejaVmHex2Byte(h.endian,v,h.int) end
+   if k == 'I' then o[#o+1]=ejaVmHex2Byte(h.endian,v,h.Instr) end
+   if k == 's' then o[#o+1]=ejaVmHex2Byte(h.endian,v,h.size) end
    if k == 'S' then 
     for c in v:gmatch('..') do
-     o=o..string.char(tonumber(c,16))
+     o[#o+1]=string.char(tonumber(c,16))
     end   
    end
   end 
-  return o
+  return table.concat(o)
  else
   return nil
  end
