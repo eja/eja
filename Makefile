@@ -36,7 +36,6 @@ backup: clean
 
 install: eja /opt/eja.it /usr/bin/eja
 	@- cp eja /opt/eja.it/bin/eja
-	@- cp lib/*.so /opt/eja.it/lib/
 
 git:
 	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua
