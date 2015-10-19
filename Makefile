@@ -1,9 +1,6 @@
 CFLAGS=-O2 -ldl -Wl,-E -w
 SYSCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" 
 
-ejaLibSrc:= $(wildcard lib/*.c)
-ejaLibObj:= $(ejaLibSrc:lib/%.c=lib/%.so)
-
 
 all: eja
 
@@ -17,16 +14,12 @@ lua:
 eja.h:	lua lua/src/lua
 	@od -v -t x1 eja.lua lib/*.lua eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
 	
-$(ejaLibObj): lib/%.so : lib/%.c
-	$(CC) -shared $< -o $@ -fPIC -Ilua/src/ 
-	
-eja: eja.h $(ejaLibObj)
+eja: eja.h 
 	$(CC) -o eja eja.c lua/src/liblua.a -Ilua/src/ -lm $(CFLAGS) 
 	@- rm eja.h	
 	
 clean:
 	@- rm -f eja 
-	@- rm -f lib/*.so
 	@- rm -Rf lua
 	
 backup: clean

@@ -1,9 +1,16 @@
 eja	Copyright (C) 2007-2015 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 This is a forking and extensible micro web server written in C and Lua that
-can serve static files and dynamic Lua scripts. 
+can serve static files and dynamic generated Lua pages.
 
-Commands can be passed from script, interactive shell or via signed url.
+It can run standard Lua scripts either via command line, file or by
+interactive shell.
 
-Scripts can be compiled to portable bytecode.
+It can also be used as a text scanner like AWK using Lua pattern matching
+syntax.
+
+Scripts can be compiled to machine portable bytecode.
+
+
+
 
