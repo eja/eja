@@ -111,7 +111,9 @@ function ejaWebThread(client,ip,port)
   end
  end
  if web.headerIn['connection'] and web.headerIn['connection']:lower() == 'keep-alive' then 
-  web.headerOut['Connection']='Keep-Alive'
+  if web.headerIn['user-agent'] and not web.headerIn['user-agent']:find('%(iP') then	--avoid iOS Keep-Alive bug
+   web.headerOut['Connection']='Keep-Alive'
+  end
  end
  
  if web.headerIn['range'] then 
