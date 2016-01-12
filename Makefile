@@ -1,3 +1,4 @@
+
 CFLAGS=-O2 -ldl -Wl,-E -w
 SYSCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" 
 
@@ -6,7 +7,7 @@ all: eja
 
 
 lua/src/lua: lua
-	cd lua/src && make generic CC=$(CC) SYSCFLAGS=$(SYSCFLAGS) SYSLIBS="$(CFLAGS)"
+	cd lua/src && make posix CC="$(CC)" SYSCFLAGS=$(SYSCFLAGS) SYSLIBS="$(CFLAGS)"
 
 lua:	
 	git clone https://github.com/ubaldus/lua.git
