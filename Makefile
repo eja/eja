@@ -1,13 +1,14 @@
-
-CFLAGS=-O2 -ldl -Wl,-E -w
-SYSCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" 
+MYLIBS := -O2 -ldl -Wl,-E -w
+MYCFLAGS := "-DLUA_USE_POSIX -DLUA_USE_DLOPEN" 
 
 
 all: eja
 
+static:
+	make MYCFLAGS="-DLUA_USE_POSIX" MYLIBS="-static -w"
 
 lua/src/lua: lua
-	cd lua/src && make posix CC="$(CC)" SYSCFLAGS=$(SYSCFLAGS) SYSLIBS="$(CFLAGS)"
+	cd lua/src && make generic CC=$(CC) MYCFLAGS=$(MYCFLAGS) MYLIBS="$(MYLIBS)"
 
 lua:	
 	git clone https://github.com/ubaldus/lua.git
@@ -16,7 +17,7 @@ eja.h:	lua lua/src/lua
 	@od -v -t x1 eja.lua lib/*.lua eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
 	
 eja: eja.h 
-	$(CC) -o eja eja.c lua/src/liblua.a -Ilua/src/ -lm $(CFLAGS) 
+	$(CC) -o eja eja.c lua/src/liblua.a -Ilua/src/ -lm $(MYLIBS) 
 	@- rm eja.h	
 	
 clean:
