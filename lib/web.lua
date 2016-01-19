@@ -9,7 +9,7 @@ eja.help.webStop='web server stopt'
 eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
 eja.help.webPath='web server path {'..eja.path..'var/web/}'
-
+eja.help.webSize='web buffer size {8192}'
 
 function ejaWeb()
  eja.web={}
@@ -88,6 +88,8 @@ function ejaWebThread(client,ip,port)
  web.headerOut={}
  web.headerOut['Content-Type']='text/html'
  web.headerOut['Connection']='Close'
+
+ if ejaNumber(eja.opt.webSize) > 0 then web.bufferSize=ejaNumber(eja.opt.webSize) end
  
  local body=''
  local data=ejaSocketRead(client,web.bufferSize)
@@ -174,7 +176,13 @@ function ejaWebThread(client,ip,port)
   if web.auth < 0 then
    web.status='401 Unauthorized'
   else
-   if web.path:sub(-1) == "/" then web.path = web.path.."index.html" end
+   if web.path:sub(-1) == "/" then 
+    if ejaFileCheck(eja.web.path..web.path..'index.eja') then
+     web.path = web.path.."index.eja" 
+    else
+     web.path = web.path.."index.html" 
+    end
+   end
    local ext=web.path:match("([^.]+)$")
    web.headerOut['Content-Type']=eja.mime[ext]
    if ext == "eja" then web.headerOut['Content-Type']="application/eja" end

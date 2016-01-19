@@ -1,27 +1,40 @@
--- Copyright (C) 2007-2015 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2016 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
-function n(i) return tonumber(i) or 0 end
+--!- deprecated
+function n(i) return ejaNumber(i) end						
+function s(v) return ejaString(v) end 						
+function sf(...) return ejaSprintf(...) end					
+function gt(a,b) a=a or 0; b=b or 0; return tostring(a)>tostring(b) end		
+function lt(a,b) a=a or 0; b=b or 0; return tostring(a)<tostring(b) end	 	
+function eq(a,b) a=a or 0; b=b or 0; return tostring(a)==tostring(b) end		
+function ge(a,b) a=a or 0; b=b or 0; return tostring(a)>=tostring(b) end	
+function le(a,b) a=a or 0; b=b or 0; return tostring(a)<=tostring(b) end	
+--!
 
-function s(v) 
- if type(v) == "number" then return tostring(v) elseif type(v) == "string" then return v else return "" end
+
+function ejaNumber(i) 
+ return tonumber(i) or 0
 end
 
-function sf(...) return string.format(...) end
+
+function ejaString(v)
+ if type(v) == "number" then 
+  return tostring(v) 
+ elseif type(v) == "string" then 
+  return v 
+ else 
+  return "" 
+ end
+end
 
 
-function gt(a,b) a=a or 0; b=b or 0; return tostring(a)>tostring(b) end		--!-
- 
-function lt(a,b) a=a or 0; b=b or 0; return tostring(a)<tostring(b) end	 	--!-
-  
-function eq(a,b) a=a or 0; b=b or 0; return tostring(a)==tostring(b) end	--!-	
-
-function ge(a,b) a=a or 0; b=b or 0; return tostring(a)>=tostring(b) end	--!-
- 
-function le(a,b) a=a or 0; b=b or 0; return tostring(a)<=tostring(b) end	--!-
+function ejaSprintf(...)
+ return string.format(...)
+end
 
 
-function la(key,value,language) 			
+function ejaTranslate(key,value,language) 			
  if key and value and language then
   if not eja.i18n[language] then eja.i18n[language]={} end
   eja.i18n[language][key]=value
@@ -62,7 +75,11 @@ function ejaCheck(a,b)
    if type(a) == "table" then
     local i=0;
     for k,v in next,a do i=i+1 end
-    if i > 0 then return true else return false; end
+    if i > 0 then 
+     return true 
+    else 
+     return false
+    end
    else
     if tonumber(a) then
      return tonumber(a) > 0
