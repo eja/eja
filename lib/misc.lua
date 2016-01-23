@@ -94,6 +94,15 @@ function ejaCheck(a,b)
 end 
 
 
+function ejaOct2Dec(s)
+ local z=0;
+ for i=#s,1,-1 do
+  z=z+tonumber(s:sub(i,i))*8^(#s-i)
+ end
+ return z;
+end
+
+
 -- Lua 5.1+ base64 v3.0 (c) 2009 by Alex Kloss <alexthkloss@web.de>
 -- licensed under the terms of the LGPL2
 
