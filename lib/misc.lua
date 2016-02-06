@@ -12,6 +12,10 @@ function ge(a,b) a=a or 0; b=b or 0; return tostring(a)>=tostring(b) end
 function le(a,b) a=a or 0; b=b or 0; return tostring(a)<=tostring(b) end	
 --!
 
+function _n(i) return ejaNumber(i) end						
+function _s(v) return ejaString(v) end 						
+function _f(...) return ejaSprintf(...) end					
+
 
 function ejaNumber(i) 
  return tonumber(i) or 0

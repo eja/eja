@@ -1,6 +1,9 @@
 MYLIBS := -O2 -ldl -Wl,-E -w
-MYCFLAGS := "-DLUA_USE_POSIX -DLUA_USE_DLOPEN" 
+MYCFLAGS := "-DLUA_USE_POSIX -DLUA_USE_DLOPEN"
 
+ifdef PREFIX
+ CFLAGS+="-D_EJA_PATH=$(PREFIX)"
+endif
 
 all: eja
 
@@ -17,7 +20,7 @@ eja.h:	lua lua/src/lua
 	@od -v -t x1 eja.lua lib/*.lua eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
 	
 eja: eja.h 
-	$(CC) -o eja eja.c lua/src/liblua.a -Ilua/src/ -lm $(MYLIBS) 
+	$(CC) $(CFLAGS) -o eja eja.c lua/src/liblua.a -Ilua/src/ -lm $(MYLIBS) 
 	@- rm eja.h	
 	
 clean:

@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2015 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2016 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 if not eja then
 
@@ -12,7 +12,7 @@ if not eja then
  eja.mimeApp={}
 
  eja.lang='en'
- eja.path='/opt/eja.it/'
+ eja.path=_eja_path or '/opt/eja.it/'
  eja.pathBin=eja.path..'/bin/'
  eja.pathEtc=eja.path..'/etc/'
  eja.pathLib=eja.path..'/lib/'

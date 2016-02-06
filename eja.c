@@ -440,6 +440,13 @@ int main (int argc, char **argv) {
   lua_rawset(L, -3);
  }
  lua_setglobal(L, "arg");
+ 
+ #ifdef _EJA_PATH
+ #define xstr(s) str(s)
+ #define str(s) #s
+  lua_pushstring(L, xstr(_EJA_PATH) );
+  lua_setglobal(L, "_eja_path");
+ #endif   
 
  lua_pushcfunction(L, ejaPid);			lua_setglobal(L, "ejaPid");
  lua_pushcfunction(L, ejaFork);			lua_setglobal(L, "ejaFork");

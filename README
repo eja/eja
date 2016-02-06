@@ -1,15 +1,15 @@
-eja	Copyright (C) 2007-2015 by Ubaldo Porcheddu <ubaldo@eja.it>
+eja	Copyright (C) 2007-2016 by Ubaldo Porcheddu <ubaldo@eja.it>
 
-This is a forking and extensible micro web server written in C and Lua that
-can serve static files and dynamic generated Lua pages.
+eja is a forking and extensible micro web server written in C and Lua that
+can serve static and dynamic generated pages.
 
-It can run standard Lua scripts either via command line, file or by
+eja is also a standard Lua interpreter that can run scripts or work as an
 interactive shell.
 
-It can also be used as a text scanner like AWK using Lua pattern matching
+eja can also be used as a text scanner like AWK using Lua pattern matching
 syntax.
 
-Scripts can be compiled to machine portable bytecode.
+Lua scripts can be compiled to eja machine portable bytecode.
 
 
 
