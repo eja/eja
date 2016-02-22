@@ -70,6 +70,7 @@ function ejaWebThread(client,ip,port)
  local web={}
  web.bufferSize=8192
  web.timeStart=os.time()
+ web.socket=client
  web.remoteIp=ip or 'null'
  web.remotePort=tonumber(port) or 0
  web.method=''
