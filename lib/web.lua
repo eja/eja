@@ -62,7 +62,7 @@ end
 
 
 function ejaWebStop()
- ejaPidKill(sf('web_%d',eja.opt.webPort or 35248))
+ ejaPidKill(sf('web_%d',tonumber(eja.opt.webStop) or eja.opt.webPort or 35248))
 end
 
 
