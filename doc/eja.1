@@ -1,0 +1,88 @@
+.\" Manpage for eja.
+.\" Contact ubaldo@eja.it to correct errors or typos.
+.TH eja 1 
+.SH NAME
+eja - micro web server
+.SH SYNOPSIS
+\fBeja\fP [SCRIPT] [OPTION]...
+.SH DESCRIPTION
+\fBeja\fP can be used as a micro web server for static and dynamic generated
+content, as a text scanner using Lua pattern matching syntax or as a
+standalone Lua interpreter.
+
+.SH OPTIONS
+
+.TP
+\fB--shell\fP
+launch an interactive shell.
+
+.TP
+\fB--update\fP \fIlibrary\fP
+if library is specified install or update it otherwise update \fBeja\fP to latest version.
+
+.TP
+\fB--export\fP \fIfile\fP
+export file to \fBeja\fP portable bytecode.
+
+.TP
+\fB--log-file\fP \fIfile\fP
+log data to \fIfile\fP, default: \fBstderr\fP
+
+.TP
+\fB--log-level\fP 0..5
+level can be from 0 (no log) to 5 (trace).
+
+.TP
+\fB--scan\fP \fIscript\fP
+if \fIscript\fP is present load it as the scanning script using \fBR\fP as full row content and \fBF\fP as matching array elements.
+Otherwise print only matching \fIpattern\fP content.
+
+.TP
+\fB--scan-file\fP \fIfile\fP
+scanning input file, default: \fBstdin\fP
+
+.TP
+\fB--scan-pattern\fP \fIpattern\fP
+set a valid Lua pattern as fields separator, default: \fB%S+\fP
+
+.TP
+\fB--scan-record\fP \fIpattern\fP
+set a valid Lua pattern as record separator, default: \fB\\n\fP
+
+.TP
+\fB--web-start\fP
+start a new web server in background.
+
+.TP
+\fB--web-stop\fP \fIport\fP
+stop the web server running on specified \fIport\fP, default 35248.
+
+.TP
+\fB--web-host\fP \fIIP\fP
+bind web server to specified \fIIP\fP, default all available.
+
+.TP
+\fB--web-port\fP \fIvalue\fP
+run the web server port on specified \fIvalue\fP, default 35248.
+
+.TP
+\fB--web-path\fP \fIpath\fP
+web content path, default /var/web
+
+.TP
+\fB--web-size\fP \fIvalue\fP
+set web server buffer size, default 8192.
+
+.TP
+\fB--web-user\fP
+add a new web server user.
+
+.TP
+\fB--help\fP
+display help information.
+
+
+.SH SEE ALSO
+lua(1), awk(1)
+.SH AUTHOR
+Ubaldo Porcheddu (ubaldo@eja.it)
