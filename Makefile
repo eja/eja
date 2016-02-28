@@ -16,12 +16,9 @@ all: eja
 static:
 	make MYCFLAGS="-DLUA_USE_POSIX" MYLIBS="-static -w"
 
-lua/src/lua: lua
+lua/src/lua:
 	cd lua/src && make generic CC=$(CC) MYCFLAGS=$(MYCFLAGS) MYLIBS="$(MYLIBS)"
 
-lua:	
-	git clone https://github.com/ubaldus/lua.git
-	
 eja.h:	lua lua/src/lua
 	@od -v -t x1 eja.lua lib/*.lua eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
 	
@@ -30,8 +27,8 @@ eja: eja.h
 	@- rm eja.h	
 	
 clean:
-	@- rm -f eja 
-	@- rm -Rf lua
+	@- rm eja 
+	@- cd lua && make clean
 	
 backup: clean
 	tar zcR /opt/eja.it/src/ > /opt/eja.it/bkp/eja-$(shell cat .version).tar.gz
