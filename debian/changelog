@@ -1,3 +1,14 @@
+eja (9.2.28-1ubuntu2) trusty; urgency=medium
+
+  * embedding lua5.2 directly into source to avoid launchpad error.
+  * removed ubuntu .bzr
+  * minor debian warning
+  * eja.path FHS adoption.
+  * debian changelog auto update
+  * debian changelog automatization
+
+ -- Ubaldo Porcheddu <ubaldo@eja.it>  Sun, 28 Feb 2016 19:49:01 +0000
+
 eja (9.2.28-1ubuntu1) trusty; urgency=medium
 
   * Initial release.
