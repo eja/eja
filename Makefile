@@ -50,8 +50,11 @@ git:
 	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua
 	@ git add .
 	@- git commit
-	@- git-dch -R -N $(shell cat .version) -a --distribution=trusty
-	@ git push
 
 update: clean git backup
+	@ git push
 	scp /opt/eja.it/bkp/eja-$(shell cat .version).tar.gz ubaldu@frs.sourceforge.net:/home/frs/project/eja/		
+	
+release: clean git 
+	@- git-dch -R -N $(shell cat .version) --distribution=trusty --auto
+	make update
