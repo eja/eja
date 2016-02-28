@@ -1,3 +1,9 @@
+prefix = /usr/local
+bindir = $(prefix)/bin
+sharedir = $(prefix)/share
+mandir = $(sharedir)/man
+man1dir = $(mandir)/man1
+
 MYLIBS := -O2 -ldl -Wl,-E -w
 MYCFLAGS := "-DLUA_USE_POSIX -DLUA_USE_DLOPEN"
 
@@ -39,8 +45,9 @@ backup: clean
 /usr/bin/eja:
 	@- ln -fs /opt/eja.it/bin/eja /usr/bin/eja
 
-install: eja /opt/eja.it /usr/bin/eja
-	@- cp eja /opt/eja.it/bin/eja
+install: eja 
+	install eja $(DESTDIR)$(bindir)
+	install -m 0644 doc/eja.1 $(DESTDIR)$(man1dir)
 
 git:
 	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua

@@ -1,0 +1,9 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0
+Upstream-Name: eja
+Upstream-Contact: Ubaldo Porcheddu <ubaldo@eja.it>
+Source: http://github.com/ubaldus/eja.git
+
+Files: *
+Copyright: © 2007-2016, Ubaldo Porcheddu <ubaldo@eja.it>
+License: GPL-3+
+On Debian systems, you can find the full text of the GNU General Public License v3 in `/usr/share/common-licenses/GPL-3'.

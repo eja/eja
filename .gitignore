@@ -1,3 +1,8 @@
 eja
 eja.h
 lua*
+debian/eja
+debian/eja.debhelper.log
+debian/eja.substvars
+debian/eja.*.debhelper
+debian/files
