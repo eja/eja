@@ -50,6 +50,7 @@ git:
 	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua
 	@ git add .
 	@- git commit
+	@- git-dch -R -N $(shell cat .version) -a --distribution=trusty
 	@ git push
 
 update: clean git backup
