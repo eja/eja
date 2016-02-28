@@ -12,6 +12,7 @@ if not eja then
  eja.mimeApp={}
 
  eja.lang='en'
+ --!- deprecated
  eja.path=_eja_path or '/opt/eja.it/'
  eja.pathBin=eja.path..'/bin/'
  eja.pathEtc=eja.path..'/etc/'
@@ -19,6 +20,16 @@ if not eja then
  eja.pathVar=eja.path..'/var/'
  eja.pathTmp='/tmp/'
  eja.pathLock='/tmp/'
+ --!-
+ if not ejaFileStat(eja.path) then
+  eja.path='/'
+  eja.pathBin=eja.path..'/usr/bin/'
+  eja.pathEtc=eja.path..'/etc/eja/'
+  eja.pathLib=eja.path..'/usr/lib/eja/'
+  eja.pathVar=eja.path..'/var/'
+  eja.pathTmp='/tmp/'
+  eja.pathLock='/var/lock/'
+ end
  
  package.cpath=eja.pathLib..'?.so'
  
