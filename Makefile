@@ -56,6 +56,6 @@ update: clean git backup
 	scp /opt/eja.it/bkp/eja-$(shell cat .version).tar.gz ubaldu@frs.sourceforge.net:/home/frs/project/eja/		
 	
 release: clean git 
-	@- git-dch -R -N $(shell cat .version)-1 --distribution=stable --force-distribution --auto 
+	@- git-dch -R -N $(shell cat .version)-1 --auto 
 	make update
 	

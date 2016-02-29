@@ -1,10 +1,4 @@
-eja (9.2.29-1) stable; urgency=medium
-
-  * first debian commit.
-
- -- Ubaldo Porcheddu <ubaldo@eja.it>  Mon, 29 Feb 2016 22:53:34 +0000
-
-eja (9.2.27-1) stable; urgency=medium
+eja (9.2.27-1) trusty; urgency=medium
 
   * Initial release.
 
