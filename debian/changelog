@@ -1,3 +1,9 @@
+eja (9.2.29-1) trusty; urgency=medium
+
+  * debian minor change
+
+ -- Ubaldo Porcheddu <ubaldo@eja.it>  Mon, 29 Feb 2016 22:34:29 +0000
+
 eja (9.2.29) trusty; urgency=medium
 
   * homepage and version upgrade for debian
