@@ -58,3 +58,4 @@ update: clean git backup
 release: clean git 
 	@- git-dch -R -N $(shell cat .version) --distribution=trusty --auto
 	make update
+	

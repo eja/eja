@@ -2,8 +2,9 @@ Source: eja
 Section: web
 Priority: optional
 Maintainer: Ubaldo Porcheddu <ubaldo@eja.it>
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Build-Depends: debhelper (>= 9)
+Homepage: http://eja.it
 Version: 9.2.28-1
 
 Package: eja
