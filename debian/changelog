@@ -1,3 +1,10 @@
+eja (9.2.29) trusty; urgency=medium
+
+  * homepage and version upgrade for debian
+  * minor debian changes for mentors
+
+ -- Ubaldo Porcheddu <ubaldo@eja.it>  Mon, 29 Feb 2016 22:19:12 +0000
+
 eja (9.2.28-1ubuntu2) trusty; urgency=medium
 
   * embedding lua5.2 directly into source to avoid launchpad error.
