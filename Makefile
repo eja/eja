@@ -16,13 +16,11 @@ all: eja
 static:
 	make MYCFLAGS="-DLUA_USE_POSIX" MYLIBS="-static -w"
 
-lua/src/liblua.a:
-	cd lua/src && make generic CC=$(CC) MYCFLAGS=$(MYCFLAGS) MYLIBS="$(MYLIBS)"
-
 eja.h:
 	@od -v -t x1 eja.lua lib/*.lua eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
 	
-eja: lua/src/liblua.a eja.h 
+eja: eja.h 
+	cd lua/src && make generic CC=$(CC) MYCFLAGS=$(MYCFLAGS) MYLIBS="$(MYLIBS)"
 	$(CC) $(CFLAGS) -o eja eja.c lua/src/liblua.a -Ilua/src/ -lm $(MYLIBS) 
 	@- rm eja.h	
 	
