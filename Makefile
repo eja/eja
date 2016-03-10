@@ -39,7 +39,7 @@ git:
 	@ git add .
 	@- git commit
 
-update: clean git backup
+update: clean git
 	@ git push
 	scp /opt/eja.it/bkp/eja-$(shell cat .version).tar.gz ubaldu@frs.sourceforge.net:/home/frs/project/eja/		
 	
