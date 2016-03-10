@@ -5,10 +5,12 @@ Maintainer: Ubaldo Porcheddu <ubaldo@eja.it>
 Standards-Version: 3.9.6
 Build-Depends: debhelper (>= 9)
 Homepage: http://eja.it
-Version: 9.2.28-1
+Version: 9.2.29-1
+Vcs-Git: git://github.com/ubaldus/eja.git
+Vcs-Browser: https://github.com/ubaldus/eja
 
 Package: eja
 Architecture: any
-Depends: ${shlibs:Depends},${misc:Depends}
+Depends: ${shlibs:Depends},${misc:Depends},liblua5.2-dev
 Description: micro web server for static and dynamic Lua generated content.
  eja can be used as a micro web server for static and dynamic generated content, as a text scanner using Lua pattern matching syntax or as a standalone Lua interpreter.

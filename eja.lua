@@ -21,7 +21,7 @@ if not eja then
  eja.pathTmp='/tmp/'
  eja.pathLock='/tmp/'
  --!-
- if not ejaFileStat(eja.path) then
+ if eja.path == '/' or not ejaFileStat(eja.path) then
   eja.path='/'
   eja.pathBin=eja.path..'/usr/bin/'
   eja.pathEtc=eja.path..'/etc/eja/'
