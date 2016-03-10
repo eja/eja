@@ -15,7 +15,7 @@ all: eja
 
 static:
 	make MYCFLAGS="-DLUA_USE_POSIX" MYLIBS="-static -w"
-
+	
 eja.h:
 	@od -v -t x1 eja.lua lib/*.lua eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
 	
@@ -46,7 +46,8 @@ release: clean git
 	@- git-dch -R -N $(shell cat .version)-1 --auto 
 	make update
 
-debian: eja.h
+deb: eja.h
 	$(CC) $(CFLAGS) -o eja eja.c $(shell pkg-config --libs --cflags lua5.2) -lm $(MYLIBS)
 	@- rm eja.h
 	make install
+

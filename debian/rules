@@ -3,4 +3,4 @@
 	dh $@
 
 override_dh_auto_install:
-	$(MAKE) DESTDIR=$$(pwd)/debian/eja prefix=/usr debian
+	$(MAKE) DESTDIR=$$(pwd)/debian/eja prefix=/usr deb
