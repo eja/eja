@@ -25,7 +25,8 @@ eja: eja.h
 	@- rm eja.h	
 	
 clean:
-	@- rm eja 
+	@- rm eja
+	@- rm eja.h 
 	@- cd lua && make clean
 	
 install: eja 
