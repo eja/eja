@@ -41,12 +41,12 @@ git:
 
 update: clean git
 	@ git push
-	tar zcR /opt/eja.it/src/ > /opt/eja.it/bkp/eja-$(shell cat .version).tar.gz
-	scp /opt/eja.it/bkp/eja-$(shell cat .version).tar.gz ubaldu@frs.sourceforge.net:/home/frs/project/eja/		
 	
 release: clean git 
 	@- git-dch -R -N $(shell cat .version)-1 --auto 
 	make update
+	tar zcR /opt/eja.it/src/ > /opt/eja.it/bkp/eja-$(shell cat .version).tar.gz
+	scp /opt/eja.it/bkp/eja-$(shell cat .version).tar.gz ubaldu@frs.sourceforge.net:/home/frs/project/eja/		
 
 deb: eja.h
 	$(CC) $(CFLAGS) -o eja eja.c $(shell pkg-config --libs --cflags lua5.2) -lm $(MYLIBS)
