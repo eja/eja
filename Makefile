@@ -30,8 +30,9 @@ clean:
 	@- cd lua && make clean
 	
 install: eja 
-	install eja $(DESTDIR)$(bindir)
-	install -m 0644 doc/eja.1 $(DESTDIR)$(man1dir)
+	@ install -d $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir)
+	@ install eja $(DESTDIR)$(bindir)
+	@ install doc/eja.1 $(DESTDIR)$(man1dir)
 
 git:
 	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua
