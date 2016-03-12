@@ -1,5 +1,12 @@
 eja (9.3.12-1) trusty; urgency=medium
 
+  * man1 installation bug solved
+  * moved sourceforge update to release
+
+ -- Ubaldo Porcheddu <ubaldo@eja.it>  Sat, 12 Mar 2016 20:15:56 +0000
+
+eja (9.3.12-1) trusty; urgency=medium
+
   * base64 on its own library file
   * minor lib reorganization
 
