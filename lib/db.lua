@@ -69,7 +69,7 @@ function ejaDbLast(name)
  local d=ejaDirList(path) or {}
  for k,v in next,d do
   local id=v:match('eja.'..file..'.([0-9]+)')
-  if id and gt(id,last) then last=id end
+  if id and ejaNumber(id) > last then last=id end
  end
  return last
 end
@@ -80,7 +80,7 @@ function ejaDbList(name)
  local path,name=ejaDbPath(name):match('(.-)/?eja%.(%w+)$')
  for k,v in next,ejaDirTable(path) do
   local id=v:match('^eja.'..name..'%.(%d*)$')
-  if id then a[#a+1]=n(id) end
+  if id then a[#a+1]=ejaNumber(id) end
  end
  return a
 end

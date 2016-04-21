@@ -8,7 +8,7 @@ eja.help.webStart='web server start'
 eja.help.webStop='web server stopt'
 eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
-eja.help.webPath='web server path {'..eja.path..'var/web/}'
+eja.help.webPath='web server path {'..eja.pathVar..'/web/}'
 eja.help.webSize='web buffer size {8192}'
 
 function ejaWeb()
@@ -17,7 +17,7 @@ function ejaWeb()
  eja.web.timeout=100
  eja.web.host=eja.opt.webHost or '0.0.0.0'
  eja.web.port=eja.opt.webPort or 35248
- eja.web.path=eja.opt.webPath or eja.path..'/var/web/'
+ eja.web.path=eja.opt.webPath or eja.pathVar..'/web/'
 
  ejaInfo("[web] daemon on port %d and path %s",eja.web.port, eja.web.path)
  local client=nil  
@@ -56,13 +56,13 @@ function ejaWebStart(...)
  if eja.pid.web and eja.pid.web == 0 then
   ejaWeb(...)
  else
-  ejaPidWrite(sf('web_%d',eja.opt.webPort or 35248),eja.pid.web)
+  ejaPidWrite(ejaSprintf('web_%d',eja.opt.webPort or 35248),eja.pid.web)
  end
 end
 
 
 function ejaWebStop()
- ejaPidKill(sf('web_%d',tonumber(eja.opt.webStop) or eja.opt.webPort or 35248))
+ ejaPidKill(ejaSprintf('web_%d',tonumber(eja.opt.webStop) or eja.opt.webPort or 35248))
 end
 
 
@@ -195,7 +195,7 @@ function ejaWebThread(client,ip,port)
    if not web.headerOut['Content-Type'] then web.headerOut['Content-Type']="application/octet-stream" end
    if web.headerOut['Content-Type']=="application/eja" then
     local run=nil
-    local file=sf("%s%s",eja.web.path,web.path:sub(2))
+    local file=ejaSprintf("%s%s",eja.web.path,web.path:sub(2))
     if ejaFileCheck(file) then
      web.headerOut['Content-Type']="text/html"
      local data=ejaFileRead(file)
@@ -210,11 +210,11 @@ function ejaWebThread(client,ip,port)
    else
     if eja.opt.webCns then web=ejaWebCns(web) end
     if not web.cns then
-     web.file=sf('%s/%s',eja.web.path,web.path)
+     web.file=ejaSprintf('%s/%s',eja.web.path,web.path)
      local stat=ejaFileStat(web.file)
      if stat then
-      if sf('%o',stat.mode):sub(-5,1)=='4' then 
-       web.file=sf('%s/%s/index.html',eja.web.path,web.path)
+      if ejaSprintf('%o',stat.mode):sub(-5,1)=='4' then 
+       web.file=ejaSprintf('%s/%s/index.html',eja.web.path,web.path)
        if not ejaFileStat(web.file) then 
         web.file=nil
        else
@@ -242,12 +242,12 @@ function ejaWebThread(client,ip,port)
  --4XX
  if web.status:sub(1,1) == '4' then
   local status=web.status:sub(1,3)
-  local data=ejaFileRead(sf('%s/%s.eja',eja.web.path,status))
+  local data=ejaFileRead(ejaSprintf('%s/%s.eja',eja.web.path,status))
   if data then 
    loadstring(ejaVmImport(data) or data)(web)
-  elseif ejaFileCheck(sf('%s/%s.html',eja.web.path,status)) then 
+  elseif ejaFileCheck(ejaSprintf('%s/%s.html',eja.web.path,status)) then 
    web.status='301 Moved Permanently'
-   web.headerOut['Location']=sf('/%s.html',status)
+   web.headerOut['Location']=ejaSprintf('/%s.html',status)
   end
  end
  
@@ -261,7 +261,7 @@ function ejaWebThread(client,ip,port)
  end
  
  if web.range > 0 then
-  web.headerOut['Content-Range']=sf("bytes %d-%d/%d",web.range,web.headerOut['Content-Length']-1,web.headerOut['Content-Length'])
+  web.headerOut['Content-Range']=ejaSprintf("bytes %d-%d/%d",web.range,web.headerOut['Content-Length']-1,web.headerOut['Content-Length'])
   web.headerOut['Content-Length']=web.headerOut['Content-Length']-web.range
   web.status='206 Partial Content'
  end
@@ -312,7 +312,7 @@ end
 
 
 function ejaWebOpen(host,port)
- if lt(port,1) then port=80 end
+ if ejaNumber(port) < 1 then port=80 end
  local res,err=ejaSocketGetAddrInfo(host, port, {family=AF_INET, socktype=SOCK_STREAM})    
  if res then
   local fd=ejaSocketOpen(AF_INET,SOCK_STREAM,0)
@@ -344,10 +344,10 @@ end
 function ejaWebGetOpen(value,...)
  url=string.format(value,...)
  local protocol,host,port,path=url:match('(.-)://([^/:]+):?([^/]*)/?(.*)')
- if lt(port,1) then port=80 end
+ if ejaNumber(port) < 1 then port=80 end
  local fd=ejaWebOpen(host,port)
  if fd then
-  ejaWebWrite(fd,sf('GET /%s HTTP/1.1\r\nHost: %s\r\nUser-Agent: eja %s\r\nAccept: */*\r\nConnection: Close\r\n\r\n',path,host,eja.version))
+  ejaWebWrite(fd,ejaSprintf('GET /%s HTTP/1.1\r\nHost: %s\r\nUser-Agent: eja %s\r\nAccept: */*\r\nConnection: Close\r\n\r\n',path,host,eja.version))
   return fd
  else
   return nil

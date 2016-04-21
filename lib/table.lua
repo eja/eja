@@ -36,7 +36,7 @@ end
 
 
 function ejaTableMerge(old, new)
- if old and new and gt(#new,1) then
+ if old and new and #new > 1 then
   for i=1,ejaTableLen(old) do
    k,v=ejaTableGet(old,i)
    ejaTablePut(old,k,new[i])

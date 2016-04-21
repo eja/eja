@@ -5,21 +5,21 @@ eja.lib.export='ejaVmFileExport'
 eja.help.export='vm export (file)'
 
 
-function ejaVmInt2Hex(int) 	return sf('i%X',int) end
+function ejaVmInt2Hex(int) 	return ejaSprintf('i%X',int) end
 
-function ejaVmByte2Hex(int) 	return sf('b%X',int) end
+function ejaVmByte2Hex(int) 	return ejaSprintf('b%X',int) end
 
-function ejaVmInstr2Hex(int) 	return sf('I%X',int) end
+function ejaVmInstr2Hex(int) 	return ejaSprintf('I%X',int) end
 
-function ejaVmSize2Hex(int) 	return sf('s%X',int) end
+function ejaVmSize2Hex(int) 	return ejaSprintf('s%X',int) end
 
-function ejaVmNum2Hex(int) 	return sf('n%X',int) end
+function ejaVmNum2Hex(int) 	return ejaSprintf('n%X',int) end
 
 
 function ejaVmString2Hex(data)
  local out='S'
  local i
- for i=1,#data do out=out..sf('%02X',data:byte(i)) end
+ for i=1,#data do out=out..ejaSprintf('%02X',data:byte(i)) end
  return out
 end 
 

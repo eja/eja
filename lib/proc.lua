@@ -62,7 +62,7 @@ function ejaProcPidChildren(pidCheck, count)
    local data=ejaFileRead('/proc/'..pid..'/stat')
    if data then
     local pidParent=data:gsub(' +',' '):match('[^ ]+ [^ ]+ [^ ] ([^ ]+)')
-    if pidParent and eq(pidParent,pidCheck) then
+    if ejaNumber(pidParent) == ejaNumber(pidCheck) then
      a[#a+1]=pid
      local t1=ejaProcPidChildren(pid,count)
      if #t1 > 0 then
@@ -80,7 +80,7 @@ end
 
 function ejaProcPidStat(pid)
  local a={}
- local stat=ejaFileRead('/proc/'..n(pid)..'/stat') or ''
+ local stat=ejaFileRead('/proc/'..ejaNumber(pid)..'/stat') or ''
  for v in stat:gmatch('([^ ]+) ?') do
   a[#a+1]=v
  end
@@ -93,7 +93,7 @@ function ejaGetELF()
  local out=''
  if x then
   local data=x:read(24)
-  if data then out=data:gsub("(.)",function(h) return sf('%02X',string.byte(h)) end ) end
+  if data then out=data:gsub("(.)",function(h) return ejaSprintf('%02X',string.byte(h)) end ) end
   x:close()
  end
  return out
@@ -112,7 +112,7 @@ function ejaGetMAC(ip)
  else
   for k,v in next,ejaDirTableSort('/sys/class/net') do
    local arphdr=ejaFileRead('/sys/class/net/'..v..'/type')
-   if not mac and n(arphdr)==1 then
+   if not mac and ejaNumber(arphdr)==1 then
     mac=ejaFileRead('/sys/class/net/'..v..'/address')
     if mac then
      mac=mac:gsub('\n','')

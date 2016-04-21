@@ -1,22 +1,6 @@
 -- Copyright (C) 2007-2016 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
---!- deprecated
-function n(i) return ejaNumber(i) end						
-function s(v) return ejaString(v) end 						
-function sf(...) return ejaSprintf(...) end					
-function gt(a,b) a=a or 0; b=b or 0; return tostring(a)>tostring(b) end		
-function lt(a,b) a=a or 0; b=b or 0; return tostring(a)<tostring(b) end	 	
-function eq(a,b) a=a or 0; b=b or 0; return tostring(a)==tostring(b) end		
-function ge(a,b) a=a or 0; b=b or 0; return tostring(a)>=tostring(b) end	
-function le(a,b) a=a or 0; b=b or 0; return tostring(a)<=tostring(b) end	
---!
-
-function _n(i) return ejaNumber(i) end						
-function _s(v) return ejaString(v) end 						
-function _f(...) return ejaSprintf(...) end					
-
-
 function ejaNumber(i) 
  return tonumber(i) or 0
 end
@@ -38,18 +22,8 @@ function ejaSprintf(...)
 end
 
 
-function ejaTranslate(key,value,language) 			
- if key and value and language then
-  if not eja.i18n[language] then eja.i18n[language]={} end
-  eja.i18n[language][key]=value
- else
-  if not language then language=eja.lang end
-  if eja.i18n[language] and eja.i18n[language][key] then
-   return eja.i18n[language][key]
-  else
-   return key
-  end
- end
+function ejaPrintf(...)
+ print(string.format(...))
 end
 
 

@@ -7,31 +7,28 @@ if not eja then
  eja.lib={} 
  eja.pid={}
  eja.help={}
- eja.i18n={} 
  eja.mime={} 
  eja.mimeApp={}
 
- eja.lang='en'
- --!- deprecated
  eja.path=_eja_path or '/opt/eja.it/'
- eja.pathBin=eja.path..'/bin/'
- eja.pathEtc=eja.path..'/etc/'
- eja.pathLib=eja.path..'/lib/'
- eja.pathVar=eja.path..'/var/'
- eja.pathTmp='/tmp/'
- eja.pathLock='/tmp/'
- --!-
  if eja.path == '/' or not ejaFileStat(eja.path) then
   eja.path='/'
   eja.pathBin=eja.path..'/usr/bin/'
   eja.pathEtc=eja.path..'/etc/eja/'
   eja.pathLib=eja.path..'/usr/lib/eja/'
-  eja.pathVar=eja.path..'/var/'
+  eja.pathVar=eja.path..'/var/eja/'
   eja.pathTmp='/tmp/'
   eja.pathLock='/var/lock/'
+ else
+  eja.pathBin=eja.path..'/bin/'
+  eja.pathEtc=eja.path..'/etc/'
+  eja.pathLib=eja.path..'/lib/'
+  eja.pathVar=eja.path..'/var/'
+  eja.pathTmp='/tmp/'
+  eja.pathLock='/tmp/'
  end
  
- package.cpath=eja.pathLib..'?.so'
+ package.cpath=eja.pathLib..'?.so;'..package.cpath
  
 else 
 

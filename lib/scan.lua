@@ -20,7 +20,7 @@ function ejaScan(script, pattern, file, record)
   if #ts < 1 then ts='print(R)' end 
   script='if F and #F>0 then '..ts..' end' 
  end
- if s(script) == '' then script='print(R)' end
+ if ejaString(script) == '' then script='print(R)' end
  local fx,fe=loadstring('local R,F=...;'..script)
 
  if fx then

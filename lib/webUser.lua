@@ -68,7 +68,7 @@ function ejaWebUser()
             end
         until pass==true;
         
-        ejaFileAppend(eja.pathEtc..'eja.web', sf("%s %d\n",ejaSha256(username..password),power) )
+        ejaFileAppend(eja.pathEtc..'eja.web', ejaSprintf("%s %d\n",ejaSha256(username..password),power) )
     else
         print("Insufficent permission");
     end

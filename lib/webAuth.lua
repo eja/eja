@@ -10,7 +10,7 @@ function ejaWebAuth(web)
   local powerMax=5
    for k,v in authData:gmatch('([%x]+) ?([0-9]*)\n?') do
    if not v or v == '' then v=1 end
-   if gt(v,powerMax) then powerMax=v end
+   if ejaNumber(v) > powerMax then powerMax=v end
    if ejaSha256(k..web.remoteIp..check)==auth then 
     web.auth=1*v; 
     web.authKey=k;
