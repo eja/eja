@@ -1,3 +1,9 @@
+eja (9.4.21-1) trusty; urgency=medium
+
+  * removed deprecated functions and moved web directory to /var/eja/web
+
+ -- Ubaldo Porcheddu <ubaldo@eja.it>  Thu, 21 Apr 2016 12:11:00 +0000
+
 eja (9.3.12-1) trusty; urgency=medium
 
   * man1 installation bug solved
