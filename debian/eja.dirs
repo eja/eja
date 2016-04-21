@@ -2,3 +2,4 @@ etc/eja
 usr/bin
 usr/lib/eja
 usr/share/man/man1
+var/eja
