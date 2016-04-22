@@ -8,9 +8,8 @@ function ejaWebAuth(web)
   local authData=ejaFileRead(eja.pathEtc..'eja.web')
   local check=web.uri:sub(66)
   local powerMax=5
-   for k,v in authData:gmatch('([%x]+) ?([0-9]*)\n?') do
-   if not v or v == '' then v=1 end
-   if ejaNumber(v) > powerMax then powerMax=v end
+  for k,v in authData:gmatch('([%x]+) ?([0-9]*)\n?') do
+   if ejaNumber(v) > powerMax then powerMax=ejaNumber(v) end
    if ejaSha256(k..web.remoteIp..check)==auth then 
     web.auth=1*v; 
     web.authKey=k;
