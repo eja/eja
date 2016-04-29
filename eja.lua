@@ -36,6 +36,7 @@ else
  if t then 
   local help=eja.help
   eja.helpFull={}
+  table.sort(t)
   for k,v in next,t do
    if v:match('.eja$') then
     eja.help={}
