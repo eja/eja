@@ -1,11 +1,16 @@
--- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2016 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 function ejaProcCpuCount()
- local procCpuInfo=ejaFileRead('/proc/cpuinfo')
  local cpuCount=0
- if procCpuInfo then
-  _,cpuCount=procCpuInfo:gsub('processor','')
+ local cpuInfo=ejaFileRead('/sys/devices/system/cpu/present')
+ if cpuInfo then
+  cpuCount=ejaNumber(cpuInfo:match('[^%d](%d+)'))+1
+ else
+  cpuInfo=ejaFileRead('/proc/cpuinfo')
+  if cpuInfo then
+   _,cpuCount=cpuInfo:gsub('processor','')
+  end
  end
  return cpuCount
 end
