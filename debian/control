@@ -14,4 +14,4 @@ Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: micro web server for static and dynamic Lua generated content.
  eja can be used as a micro web server for static and dynamic generated
  content, as a text scanner using Lua pattern matching syntax or as a
- standalone Lua interpreter.
+ standalone Lua interpreter
