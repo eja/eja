@@ -33,8 +33,8 @@ endif
 	
 	
 clean:
-	@- rm eja
-	@- rm eja.h 
+	@- rm -f eja
+	@- rm -f eja.h 
 ifeq ($(PKGCONFIG_LIBS),)		
 	@- cd lua && make clean
 endif	
