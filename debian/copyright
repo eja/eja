@@ -19,7 +19,7 @@ Files: lib/json.lua
 Copyright: Copyright (C) 2010-2013 David Heiko Kolf
 License: MIT
 
-Files: lib/webUsers.lua
+Files: lib/webUser.lua
 Copyright: Copyright (C) 2015 Alberto Cubeddu <acubeddu87@gmail.com>
 License: GPL-3
 
