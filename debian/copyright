@@ -3,23 +3,18 @@ Upstream-Name: eja
 Upstream-Contact: Ubaldo Porcheddu <ubaldo@eja.it>
 Source: http://github.com/ubaldus/eja.git
 
-Files: *
 Copyright: Copyright 2007-2016 Ubaldo Porcheddu <ubaldo@eja.it>
 License: GPL-3
 
-Files: lua/*
 Copyright: Copyright 1994-2011 Lua.org, PUC-Rio.
 License: Expat
 
-Files: lib/base64.lua
 Copyright: Lua 5.1+ base64 v3.0 (c) 2009 by Alex Kloss <alexthkloss@web.de>
 License: LGPL-2+
 
-Files: lib/json.lua
 Copyright: Copyright (C) 2010-2013 David Heiko Kolf
 License: MIT
 
-Files: lib/webUser.lua
 Copyright: Copyright (C) 2015 Alberto Cubeddu <acubeddu87@gmail.com>
 License: GPL-3
 

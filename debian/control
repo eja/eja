@@ -11,7 +11,7 @@ Vcs-Browser: https://github.com/ubaldus/eja
 Package: eja
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: micro web server for static and dynamic Lua generated content.
+Description: micro web server for static and dynamic Lua generated content
  eja is a stand alone Lua interpreter with embedded support for sockets,
  forking and directory underlying structure access, it can act as a micro web
  server for static and dynamic generated content or as a text scanner using
