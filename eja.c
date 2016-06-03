@@ -18,25 +18,25 @@
 #include "eja.h"
 
 
-static int ejaFork(lua_State *L) {
+static int eja_fork(lua_State *L) {
  lua_pushinteger(L, fork() );
  return 1;
 }
         
 
-static int ejaPid(lua_State *L) {
+static int eja_pid(lua_State *L) {
  lua_pushinteger(L, getpid() );  
  return 1;
 }
         
 
-static int ejaForkClean(lua_State *L) {
+static int eja_fork_clean(lua_State *L) {
  lua_pushinteger(L, waitpid(-1, NULL, WNOHANG) );  
  return 1;
 }
 
 
-static int ejaKill(lua_State *L) {
+static int eja_kill(lua_State *L) {
  pid_t pid=luaL_checknumber(L, 1);
  int sig=luaL_checknumber(L, 2); 
  lua_pushinteger(L, kill(pid, sig));
@@ -44,13 +44,13 @@ static int ejaKill(lua_State *L) {
 }
 
 
-static int ejaSleep(lua_State *L) {
+static int eja_sleep(lua_State *L) {
  lua_pushinteger(L,sleep(luaL_checknumber(L,1)));
  return 1; 
 }
 
 
-static int ejaDirCreate(lua_State *L) {
+static int eja_dir_create(lua_State *L) {
  char *path=luaL_checkstring(L, 1);
  if (mkdir(path, S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IWGRP|S_IXGRP|S_IROTH|S_IXOTH) == 0) {
   lua_pushboolean(L, 1);
@@ -61,7 +61,7 @@ static int ejaDirCreate(lua_State *L) {
 }
 
 
-static int ejaDirList(lua_State *L) {
+static int eja_dir_list(lua_State *L) {
  int i=1;
  DIR *dir;
  struct dirent *entry;
@@ -84,7 +84,7 @@ static int ejaDirList(lua_State *L) {
 }
 
 
-static int ejaFileStat(lua_State *L) {
+static int eja_file_stat(lua_State *L) {
  struct stat s;
  char *path=luaL_checkstring(L, 1);
  if (stat(path,&s) == 0) {
@@ -134,7 +134,7 @@ static int eja_ioctl(lua_State *L) {
 // following functions are adapted from posix library at https://github.com/luaposix/luaposix/blob/master/ext/posix/posix.c
 
 
-static int ejaSocketAddressIn(lua_State *L, int family, struct sockaddr *sa) {
+static int eja_socket_address_in(lua_State *L, int family, struct sockaddr *sa) {
  char addr[INET6_ADDRSTRLEN];
  int port;
  struct sockaddr_in *sa4;
@@ -160,7 +160,7 @@ static int ejaSocketAddressIn(lua_State *L, int family, struct sockaddr *sa) {
 }
 
 
-static int ejaSocketAddressOut(lua_State *L, int index, struct sockaddr_storage *sa, socklen_t *addrlen) {
+static int eja_socket_address_out(lua_State *L, int index, struct sockaddr_storage *sa, socklen_t *addrlen) {
  struct sockaddr_in *sa4;
  struct sockaddr_in6 *sa6;
  int family, port;
@@ -197,7 +197,7 @@ static int ejaSocketAddressOut(lua_State *L, int index, struct sockaddr_storage 
 }
 
 
-static int ejaSocketOpen(lua_State *L) {
+static int eja_socket_open(lua_State *L) {
  int domain=luaL_checknumber(L, 1);
  int type=luaL_checknumber(L, 2);
  int protocol=luaL_checknumber(L, 3);
@@ -206,14 +206,14 @@ static int ejaSocketOpen(lua_State *L) {
 }
 
 
-static int ejaSocketClose(lua_State *L) {
+static int eja_socket_close(lua_State *L) {
  int fd=luaL_checknumber(L, 1);
  lua_pushinteger(L, close(luaL_checknumber(L, 1)));
  return 1;
 }
 
 
-static int ejaSocketListen(lua_State *L) {
+static int eja_socket_listen(lua_State *L) {
  int fd=luaL_checknumber(L, 1);
  int backlog=luaL_checkint(L, 2);
  if (listen(fd,backlog) == 0) {
@@ -225,13 +225,13 @@ static int ejaSocketListen(lua_State *L) {
 }
 
 
-static int ejaSocketConnect(lua_State *L) {
+static int eja_socket_connect(lua_State *L) {
  struct sockaddr_storage sa;
  socklen_t salen;
  int r;
  int fd=luaL_checknumber(L, 1);
  
- ejaSocketAddressOut(L, 2, &sa, &salen);
+ eja_socket_address_out(L, 2, &sa, &salen);
  r=connect(fd, (struct sockaddr *)&sa, salen);
  if (r == 0) {
   lua_pushboolean(L, 1);
@@ -243,13 +243,13 @@ static int ejaSocketConnect(lua_State *L) {
 }
 
 
-static int ejaSocketBind(lua_State *L) {
+static int eja_socket_bind(lua_State *L) {
  struct sockaddr_storage sa;
  socklen_t salen;
  int r;
  int fd=luaL_checknumber(L, 1);
  
- ejaSocketAddressOut(L, 2, &sa, &salen);
+ eja_socket_address_out(L, 2, &sa, &salen);
  if (bind(fd, (struct sockaddr *)&sa, salen) == 0) {
   lua_pushboolean(L, 1);
  } else {
@@ -260,7 +260,7 @@ static int ejaSocketBind(lua_State *L) {
 }
 
 
-static int ejaSocketAccept(lua_State *L) {
+static int eja_socket_accept(lua_State *L) {
  struct sockaddr_storage sa;
  unsigned int salen=sizeof(sa);
  int fdc;
@@ -269,7 +269,7 @@ static int ejaSocketAccept(lua_State *L) {
  fdc=accept(fd, (struct sockaddr *)&sa, &salen);
  if (fdc >= 0) {
   lua_pushnumber(L, fdc);
-  ejaSocketAddressIn(L, sa.ss_family, (struct sockaddr *)&sa);
+  eja_socket_address_in(L, sa.ss_family, (struct sockaddr *)&sa);
   return 2;
  } else {
   lua_pushnil(L);
@@ -278,7 +278,7 @@ static int ejaSocketAccept(lua_State *L) {
 }
 
 
-static int ejaSocketRead(lua_State *L) {
+static int eja_socket_read(lua_State *L) {
  int ret;
  int fd=luaL_checkint(L, 1);
  int count=luaL_checkint(L, 2);
@@ -301,7 +301,7 @@ static int ejaSocketRead(lua_State *L) {
 }
 
 
-static int ejaSocketWrite(lua_State *L) {
+static int eja_socket_write(lua_State *L) {
  size_t len;
  int r;
  int fd=luaL_checknumber(L, 1);
@@ -316,7 +316,7 @@ static int ejaSocketWrite(lua_State *L) {
 }
 
 
-static int ejaSocketGetAddrInfo(lua_State *L) {
+static int eja_socket_get_addr_info(lua_State *L) {
  int r;
  int n=1;
  struct addrinfo *res, *rp, *hints=NULL;
@@ -336,7 +336,7 @@ static int ejaSocketGetAddrInfo(lua_State *L) {
   lua_newtable(L);
   for (rp=res; rp != NULL; rp=rp->ai_next) {
    lua_pushnumber(L, n++);
-   ejaSocketAddressIn(L, rp->ai_family, rp->ai_addr);
+   eja_socket_address_in(L, rp->ai_family, rp->ai_addr);
    lua_pushnumber(L, rp->ai_socktype); lua_setfield(L, -2, "socktype");
    lua_pushstring(L, rp->ai_canonname); lua_setfield(L, -2, "canonname");
    lua_pushnumber(L, rp->ai_protocol); lua_setfield(L, -2, "protocol");
@@ -348,7 +348,7 @@ static int ejaSocketGetAddrInfo(lua_State *L) {
 }
 
 
-static int ejaSocketReceive(lua_State *L) {
+static int eja_socket_receive(lua_State *L) {
  void *ud, *buf;
  socklen_t salen;
  struct sockaddr_storage sa;
@@ -366,25 +366,25 @@ static int ejaSocketReceive(lua_State *L) {
  } else {
   lua_pushlstring(L, buf, r);
   lalloc(ud, buf, count, 0);
-  ejaSocketAddressIn(L, sa.ss_family, (struct sockaddr *)&sa);
+  eja_socket_address_in(L, sa.ss_family, (struct sockaddr *)&sa);
   return 2; 
  }
 }
 
 
-static int ejaSocketSend(lua_State *L) {
+static int eja_socket_send(lua_State *L) {
  size_t len;
  struct sockaddr_storage sa;
  socklen_t salen;
  int fd=luaL_checknumber(L, 1);
  const char *buf=luaL_checklstring(L, 2, &len);
- ejaSocketAddressOut(L, 3, &sa, &salen);
+ eja_socket_address_out(L, 3, &sa, &salen);
  lua_pushinteger(L, sendto(fd, buf, len, 0, (struct sockaddr *)&sa, salen));
  return 1;
 }
 
 
-static int ejaSocketOptionSet(lua_State *L) {
+static int eja_socket_option_set(lua_State *L) {
  int fd=luaL_checknumber(L, 1);
  int level=luaL_checknumber(L, 2);
  int optname=luaL_checknumber(L, 3);
@@ -435,7 +435,7 @@ static int ejaSocketOptionSet(lua_State *L) {
 }
 
 
-static int ejaSocketDefine(lua_State *L) {
+static int eja_socket_define(lua_State *L) {
  lua_pushnumber(L, AF_INET);		lua_setglobal(L, "AF_INET");
  lua_pushnumber(L, AF_INET6);		lua_setglobal(L, "AF_INET6");
  lua_pushnumber(L, SOCK_STREAM);	lua_setglobal(L, "SOCK_STREAM");
@@ -470,28 +470,28 @@ int main (int argc, char **argv) {
   lua_setglobal(L, "_eja_path");
  #endif   
 
- lua_pushcfunction(L, ejaPid);			lua_setglobal(L, "ejaPid");
- lua_pushcfunction(L, ejaFork);			lua_setglobal(L, "ejaFork");
- lua_pushcfunction(L, ejaForkClean);		lua_setglobal(L, "ejaForkClean");
- lua_pushcfunction(L, ejaDirCreate);		lua_setglobal(L, "ejaDirCreate");
- lua_pushcfunction(L, ejaDirList);		lua_setglobal(L, "ejaDirList");
- lua_pushcfunction(L, ejaSleep); 		lua_setglobal(L, "ejaSleep");
- lua_pushcfunction(L, ejaFileStat); 		lua_setglobal(L, "ejaFileStat"); 
- lua_pushcfunction(L, ejaKill); 		lua_setglobal(L, "ejaKill"); 
- lua_pushcfunction(L, eja_ioctl);		lua_setglobal(L, "ejaIoctl");
- ejaSocketDefine(L);
- lua_pushcfunction(L, ejaSocketOpen);		lua_setglobal(L, "ejaSocketOpen"); 
- lua_pushcfunction(L, ejaSocketClose);		lua_setglobal(L, "ejaSocketClose");
- lua_pushcfunction(L, ejaSocketConnect);	lua_setglobal(L, "ejaSocketConnect");
- lua_pushcfunction(L, ejaSocketBind);		lua_setglobal(L, "ejaSocketBind");
- lua_pushcfunction(L, ejaSocketListen);		lua_setglobal(L, "ejaSocketListen");
- lua_pushcfunction(L, ejaSocketAccept);		lua_setglobal(L, "ejaSocketAccept");
- lua_pushcfunction(L, ejaSocketRead);		lua_setglobal(L, "ejaSocketRead");
- lua_pushcfunction(L, ejaSocketWrite);		lua_setglobal(L, "ejaSocketWrite");
- lua_pushcfunction(L, ejaSocketOptionSet);	lua_setglobal(L, "ejaSocketOptionSet"); 
- lua_pushcfunction(L, ejaSocketGetAddrInfo); 	lua_setglobal(L, "ejaSocketGetAddrInfo"); 
- lua_pushcfunction(L, ejaSocketReceive);	lua_setglobal(L, "ejaSocketReceive"); 
- lua_pushcfunction(L, ejaSocketSend); 		lua_setglobal(L, "ejaSocketSend"); 
+ lua_pushcfunction(L, eja_pid);				lua_setglobal(L, "ejaPid");
+ lua_pushcfunction(L, eja_fork);			lua_setglobal(L, "ejaFork");
+ lua_pushcfunction(L, eja_fork_clean);			lua_setglobal(L, "ejaForkClean");
+ lua_pushcfunction(L, eja_dir_create);			lua_setglobal(L, "ejaDirCreate");
+ lua_pushcfunction(L, eja_dir_list);			lua_setglobal(L, "ejaDirList");
+ lua_pushcfunction(L, eja_sleep); 			lua_setglobal(L, "ejaSleep");
+ lua_pushcfunction(L, eja_file_stat); 			lua_setglobal(L, "ejaFileStat"); 
+ lua_pushcfunction(L, eja_kill); 			lua_setglobal(L, "ejaKill"); 
+ lua_pushcfunction(L, eja_ioctl);			lua_setglobal(L, "ejaIoctl");
+ eja_socket_define(L);
+ lua_pushcfunction(L, eja_socket_open);			lua_setglobal(L, "ejaSocketOpen"); 
+ lua_pushcfunction(L, eja_socket_close);		lua_setglobal(L, "ejaSocketClose");
+ lua_pushcfunction(L, eja_socket_connect);		lua_setglobal(L, "ejaSocketConnect");
+ lua_pushcfunction(L, eja_socket_bind);			lua_setglobal(L, "ejaSocketBind");
+ lua_pushcfunction(L, eja_socket_listen);		lua_setglobal(L, "ejaSocketListen");
+ lua_pushcfunction(L, eja_socket_accept);		lua_setglobal(L, "ejaSocketAccept");
+ lua_pushcfunction(L, eja_socket_read);			lua_setglobal(L, "ejaSocketRead");
+ lua_pushcfunction(L, eja_socket_write);		lua_setglobal(L, "ejaSocketWrite");
+ lua_pushcfunction(L, eja_socket_option_set);		lua_setglobal(L, "ejaSocketOptionSet"); 
+ lua_pushcfunction(L, eja_socket_get_addr_info); 	lua_setglobal(L, "ejaSocketGetAddrInfo"); 
+ lua_pushcfunction(L, eja_socket_receive);		lua_setglobal(L, "ejaSocketReceive"); 
+ lua_pushcfunction(L, eja_socket_send); 		lua_setglobal(L, "ejaSocketSend"); 
 
  luaL_loadbuffer(L,luaBuf,sizeof(luaBuf),"ejaLua"); 
  lua_call(L,0,0);
