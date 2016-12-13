@@ -143,8 +143,7 @@ function ejaWebThread(client,ip,port)
    else
     web.status='413 Request Entity Too Large'
    end
-  end
-  if web.headerIn['content-type'] and web.headerIn['content-type']:match('multipart%/form%-data') then 
+  else
    web.postFile=eja.pathTmp..'eja.postFile-'..web.remoteIp:gsub('.','')..web.remotePort
    local fileLength=tonumber(web.headerIn['content-length'])
    local fd=io.open(web.postFile,'w')
