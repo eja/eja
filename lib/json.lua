@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2017 by Ubaldo Porcheddu <ubaldo@eja.it>
  
  
 function ejaJsonEncode(val, indent, nullVal)
@@ -28,6 +28,30 @@ function ejaJsonFileRead(file)
  else
   return nil
  end 
+end
+
+
+function ejaJsonPost(url, array)
+ local protocol,host,port,path=url:match('(.-)://([^/:]+):?([^/]*)/?(.*)')
+ if ejaNumber(port) < 1 then port=80 end
+ local fd=ejaWebOpen(host,port)
+ if fd then
+  local t={}
+  local body=ejaJsonEncode(array)
+  local head=ejaSprintf('POST /%s HTTP/1.1\r\nHost: %s\r\nUser-Agent: eja %s\r\nContent-Type: application/json\r\nContent-Length: %d\r\nConnection: Close\r\n\r\n',path,host,eja.version, #body)
+  ejaWebWrite(fd,head)
+  ejaWebWrite(fd,body)  
+  while true do
+   local buf=ejaWebRead(fd,1024)
+   if not buf or #buf == 0 then break end
+   t[#t+1]=buf
+  end
+  ejaWebClose(fd)
+  local header,data=table.concat(t):match('(.-)\r?\n\r?\n(.*)')
+  return ejaJsonDecode(data)
+ else
+  return nil
+ end
 end
  
  
