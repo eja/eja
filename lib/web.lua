@@ -1,11 +1,11 @@
--- Copyright (C) 2007-2016 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2017 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.lib.web='ejaWeb'
 eja.lib.webStart='ejaWebStart'
 eja.lib.webStop='ejaWebStop'
 eja.help.webStart='web server start'
-eja.help.webStop='web server stopt'
+eja.help.webStop='web server stop'
 eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
 eja.help.webPath='web server path {'..eja.pathVar..'/web/}'
