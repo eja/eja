@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2016 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2017 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 function ejaNumber(i) 
@@ -37,7 +37,7 @@ end
 
 
 function ejaUrlDecode(url)
- return url:gsub("%%(%x%x)",function(h) return string.char(tonumber(h,16)) end )
+ return ejaString(url):gsub("%%(%x%x)",function(h) return string.char(tonumber(h,16)) end )
 end
 
 
