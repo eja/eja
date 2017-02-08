@@ -10,7 +10,7 @@ function ejaWebCns(web)
   cnsData=[[<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>]]
  end
  if web.path:match('generate_204') then	--android
-  cnsData=ejaFileRead(web.path..'/404.html')
+  cnsData=ejaFileRead(eja.web.path..'/404.html')
   if cnsData and not cnsData:lower():match('wispaccessgatewayparam') then
    cnsData=[[<!--<?xml version='1.0' encoding='UTF-8'?><WISPAccessGatewayParam xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='WISPAccessGatewayParam.xsd'><Redirect><MessageType>100</MessageType><ResponseCode>0</ResponseCode><AccessProcedure>1.0</AccessProcedure><LoginURL>/404.html</LoginURL></Redirect></WISPAccessGatewayParam>-->]]..cnsData
   end
