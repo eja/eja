@@ -14,7 +14,7 @@ function ejaWebCns(web)
  if web.path:match('generate_204') then	--android
   mode='android'
  end
- if cnsData ~= '' then
+ if mode then
   local wisp=[[<!--<?xml version='1.0' encoding='UTF-8'?><WISPAccessGatewayParam xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='WISPAccessGatewayParam.xsd'><Redirect><MessageType>100</MessageType><ResponseCode>0</ResponseCode><AccessProcedure>1.0</AccessProcedure><LoginURL>/407.html</LoginURL></Redirect></WISPAccessGatewayParam>-->]]
   local login=ejaFileRead(eja.web.path..'/407.html')
 
