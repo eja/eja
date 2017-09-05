@@ -31,10 +31,10 @@ function ejaWebTaz(web)
  web.headerOut['Content-Type']='application/json'
  if eja.opt.webTaz then
   local size=tonumber(eja.opt.webTaz) or 65535
-  local js=ejaWebTazList(size)
   local file=web.path:match("^/(.-).taz$")
+  local aData={ ["time"]=os.time(), ["size"]=size, ["ip"]=web.remoteIp, ["data"]=ejaWebTazList(size) }  
   if file=="" or file=='index' then
-   web.data=ejaJsonEncode(js)
+   web.data=ejaJsonEncode(aData)
   else
    if ejaString(web.query) ~= "" or ejaString(web.postFile) ~= "" then
     local fileName=ejaSha256(file)
@@ -52,14 +52,15 @@ function ejaWebTaz(web)
     end    
     local stat=ejaFileStat(filePath)
     if stat then
-     web.data=ejaJsonEncode(ejaWebTazList(size))
+     web.data=ejaJsonEncode({["name"]=fileName, ["time"]=stat.mtime, ["size"]=stat.size })
     else
      web.status='500 Internal Server Error'
     end
    else
-    for k,v in next,js do
-     if v.name == file then
-      web.file=eja.pathTmp..'/eja.taz.'..file
+    local file256=ejaSha256(file)
+    for k,v in next,aData.data do
+     if v.name == file256 then
+      web.file=eja.pathTmp..'/eja.taz.'..v.name
      end
     end
     if ejaString(web.file) == "" then
