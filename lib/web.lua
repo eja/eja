@@ -346,7 +346,7 @@ function ejaWebGetOpen(value,...)
  if ejaNumber(port) < 1 then port=80 end
  local fd=ejaWebOpen(host,port)
  if fd then
-  ejaWebWrite(fd,ejaSprintf('GET /%s HTTP/1.1\r\nHost: %s\r\nUser-Agent: eja %s\r\nAccept: */*\r\nConnection: Close\r\n\r\n',path,host,eja.version))
+  ejaWebWrite(fd,ejaSprintf('GET /%s HTTP/1.0\r\nHost: %s\r\nUser-Agent: eja %s\r\nAccept: */*\r\nConnection: Close\r\n\r\n',path,host,eja.version))
   return fd
  else
   return nil
