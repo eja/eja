@@ -11,7 +11,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <net/if.h>
-#include <sys/ioctl.h>
                      
 #include "lua.h"
 #include "lauxlib.h"
@@ -108,27 +107,6 @@ static int eja_file_stat(lua_State *L) {
  }
  return 1;
 }
-
-
-static int eja_ioctl(lua_State *L) {
- size_t len;
- int ret;
- FILE *f = *(FILE**) luaL_checkudata(L, 1, LUA_FILEHANDLE);
- unsigned long request=luaL_checklong(L,2);
- const char *argp=luaL_checklstring(L, 3, &len);
- int fd=fileno(f);
-
- if (fd > 0) {
-  ret=ioctl(fd, request, argp);
-  lua_pushlstring(L, argp, len);
-  lua_pushinteger(L, ret);
- } else {
-  lua_pushnil(L);
- }
-
- return 1;
-}
-                  
 
 
 // following functions are adapted from posix library at https://github.com/luaposix/luaposix/blob/master/ext/posix/posix.c
@@ -478,7 +456,6 @@ int main (int argc, char **argv) {
  lua_pushcfunction(L, eja_sleep); 			lua_setglobal(L, "ejaSleep");
  lua_pushcfunction(L, eja_file_stat); 			lua_setglobal(L, "ejaFileStat"); 
  lua_pushcfunction(L, eja_kill); 			lua_setglobal(L, "ejaKill"); 
- lua_pushcfunction(L, eja_ioctl);			lua_setglobal(L, "ejaIoctl");
  eja_socket_define(L);
  lua_pushcfunction(L, eja_socket_open);			lua_setglobal(L, "ejaSocketOpen"); 
  lua_pushcfunction(L, eja_socket_close);		lua_setglobal(L, "ejaSocketClose");
