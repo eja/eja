@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2018 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 -- from eja.c
@@ -71,7 +71,7 @@ end
 
 
 function ejaFileRemove(f)
- ejaExecute('rm -f "'..f..'"')
+ return os.remove(f)
 end
 
 
