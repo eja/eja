@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2015 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.lib.export='ejaVmFileExport'
@@ -212,7 +212,19 @@ end
 
 
 function ejaVmFileLoad(f)
- local data=ejaFileRead(f)
+ local data=""
+ if f:match('http%://') then
+  local bin,head=ejaWebGet(f:match('http%://.*'))
+  if bin and head then
+   if ejaSha256(bin) == ejaString(head:match('ejaSha256%: ([%x]+)')) then
+    data=bin
+   else
+    ejaError("Hash doesn't match, not loading.")
+   end
+  end
+ else
+  data=ejaFileRead(f)
+ end
  if data then
   if data:sub(1,5) == 'ejaVM' then
    data=ejaVmImport(data)
@@ -221,5 +233,3 @@ function ejaVmFileLoad(f)
  local ejaScriptRun=assert(loadstring(data))
  if ejaScriptRun then ejaScriptRun() end
 end
-
-
