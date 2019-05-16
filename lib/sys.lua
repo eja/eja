@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2018 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.lib['help']='ejaHelp'
@@ -6,13 +6,13 @@ eja.lib['help']='ejaHelp'
 eja.lib.update='ejaLibraryUpdate'
 eja.lib.install='ejaLibraryUpdate'
 eja.lib.remove="ejaLibraryRemove"
-eja.help.update='update system library {self}'
-eja.help.install="install system library"
-eja.help.remove="remove system library"
+eja.help.update='update library'
+eja.help.install="install library {systemd}"
+eja.help.remove="remove library"
 
 
 function ejaHelp()      
- ejaPrintf('Copyright: 2007-2018 by Ubaldo Porcheddu <ubaldo@eja.it>\nVersion:   %s\nUsage:     eja [script] [options]\n',eja.version)
+ ejaPrintf('Copyright: 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>\nVersion:   %s\nUsage:     eja [script] [options]\n',eja.version)
  if eja.opt.help and eja.opt.help == '' then eja.opt.help=nil end
  if not eja.opt.help or eja.opt.help == 'full' then
   for k,v in next,ejaTableKeys(ejaTableSort(eja.help)) do
@@ -46,16 +46,20 @@ end
 
 function ejaLibraryUpdate(libName)
  local libName=libName or eja.opt.update or eja.opt.install or ''
- local libFile=ejaWebGet('http://update.eja.it/?version=%s&lib=%s',eja.version,libName)
- if libFile and #libFile>0 then 
-  if not ejaFileStat(eja.pathLib) then ejaDirCreate(eja.pathLib) end
-  if ejaFileWrite(eja.pathLib..libName..'.eja',libFile) then
-   ejaPrintf("Library updated.")
+ if libName ~= '' then
+  local libFile=ejaWebGet('http://update.eja.it/?version=%s&lib=%s',eja.version,libName)
+  if libFile and #libFile>0 then 
+   if not ejaFileStat(eja.pathLib) then ejaDirCreate(eja.pathLib) end
+   if ejaFileWrite(eja.pathLib..libName..'.eja',libFile) then
+    ejaPrintf("Library updated.")
+   else
+    ejaPrintf("Library not updated.")
+   end
   else
-   ejaPrintf("Library not updated.")
+   ejaPrintf("Library not found.")
   end
  else
-  ejaPrintf("Library not found.")
+  ejaInstall()
  end
 end
 
@@ -67,6 +71,43 @@ function ejaLibraryRemove(libName)
  else
   ejaPrintf("Librarry doesn't exist or cannot be removed.")
  end
+end
+
+
+function ejaInstall()
+ if not ejaFileStat(eja.pathBin) then ejaDirCreatePath(eja.pathBin) end
+ if not ejaFileStat(eja.pathEtc) then ejaDirCreatePath(eja.pathEtc) end
+ if not ejaFileStat(eja.pathLib) then ejaDirCreatePath(eja.pathLib) end  
+ if not ejaFileStat(eja.pathVar) then ejaDirCreatePath(eja.pathVar) end  
+ if not ejaFileStat(eja.pathTmp) then ejaDirCreatePath(eja.pathTmp) end  
+ if not ejaFileStat(eja.pathLock) then ejaDirCreatePath(eja.pathLock) end
+ if not ejaFileStat(eja.pathVar..'/web') then ejaDirCreatePath(eja.pathVar..'/web') end  
+
+ ejaFileWrite(eja.pathEtc..'/eja.init',ejaSprintf([[
+eja.opt.web=1
+eja.opt.webPort=35248
+eja.opt.logFile="%s/eja.log"
+eja.opt.logLevel=3
+]],eja.pathTmp))
+
+ ejaFileWrite(eja.pathVar..'/web/index.eja',[[
+web=...
+web.data=ejaSprintf('<html><body><h1>eja! :)</h1></body></html>')
+]])
+
+ ejaFileWrite('/etc/systemd/system/eja.service',string.format([[[Unit]
+Description=eja init
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+ExecStart=%s/eja %s/eja.init
+
+[Install]
+WantedBy=multi-user.target
+]],eja.pathBin,eja.pathEtc))
 end
 
 
