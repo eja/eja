@@ -91,11 +91,11 @@ function ejaInstall()
  if not ejaFileStat(webPath) then ejaDirCreatePath(webPath) end  
  if not ejaFileStat(etcFile) then
   ejaFileWrite(etcFile,ejaSprintf('eja.opt.web=1;\neja.opt.webPort=%s;\neja.opt.webHost="%s";\neja.opt.webPath="%s";\neja.opt.logFile="%s/eja.log";\neja.opt.logLevel=3;\n',webPort,webHost,webPath,eja.pathTmp))
-  ejaPrintf('init etc file installed')
+  ejaPrintf('Init script installed.')
  end
  if not ejaFileStat(webFile) then
   ejaFileWrite(webFile,'web=...;\nweb.data="<html><body><h1>eja! :)</h1></body></html>";\nreturn web;\n')
-  ejaPrintf('index.eja web demo installed')
+  ejaPrintf('Web demo installed.')
  end
  if not ejaFileStat('/etc/systemd/system/eja.service') then
   ejaFileWrite('/etc/systemd/system/eja.service',string.format([[[Unit]
@@ -113,7 +113,7 @@ WantedBy=multi-user.target
 ]],eja.pathBin,eja.pathEtc))
 
   ejaExecute('ln -s /etc/systemd/system/eja.service /etc/systemd/system/multi-user.target.wants/eja.service')
-  ejaPrintf('systemd installed.')  
+  ejaPrintf('Systemd installed.')  
  end
 end
 
