@@ -108,6 +108,9 @@ ExecStart=%s/eja %s/eja.init
 [Install]
 WantedBy=multi-user.target
 ]],eja.pathBin,eja.pathEtc))
+
+ ejaExecute('ln -s /etc/systemd/system/eja.service /etc/systemd/system/multi-user.target.wants/eja.service')
+
 end
 
 
