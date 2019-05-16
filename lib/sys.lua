@@ -76,6 +76,10 @@ end
 
 function ejaInstall()
  local webPath=eja.opt.webPath or eja.pathVar..'/web/'
+ local webFile=webPath..'/index.eja'
+ local webPort=eja.opt.webPort or 35248
+ local webHost=eja.opt.webHost or '0.0.0.0'
+ local etcFile=eja.pathEtc..'/eja.init'
  if not ejaFileStat(eja.pathBin) then ejaDirCreatePath(eja.pathBin) end
  if not ejaFileStat(eja.pathEtc) then ejaDirCreatePath(eja.pathEtc) end
  if not ejaFileStat(eja.pathLib) then ejaDirCreatePath(eja.pathLib) end  
@@ -83,23 +87,16 @@ function ejaInstall()
  if not ejaFileStat(eja.pathTmp) then ejaDirCreatePath(eja.pathTmp) end  
  if not ejaFileStat(eja.pathLock) then ejaDirCreatePath(eja.pathLock) end
  if not ejaFileStat(webPath) then ejaDirCreatePath(webPath) end  
-
- ejaFileWrite(eja.pathEtc..'/eja.init',ejaSprintf([[
-eja.opt.web=1
-eja.opt.webPort=35248
-eja.opt.webHost="0.0.0.0"
-eja.opt.webPath="%s"
-eja.opt.logFile="%s/eja.log"
-eja.opt.logLevel=3
-]],webPath,eja.pathTmp))
-
- ejaFileWrite(webPath..'/index.eja',[[
-web=...
-web.data=ejaSprintf('<html><body><h1>eja! :)</h1></body></html>')
-return web
-]])
-
- ejaFileWrite('/etc/systemd/system/eja.service',string.format([[[Unit]
+ if not ejaFileStat(etcFile) then
+  ejaFileWrite(etcFile,ejaSprintf('eja.opt.web=1;\neja.opt.webPort=%s;\neja.opt.webHost="%s";\neja.opt.webPath="%s";\neja.opt.logFile="%s/eja.log";\neja.opt.logLevel=3;\n',webPort,webHost,webPath,eja.pathTmp))
+  ejaDebug('[eja] init etc file installed')
+ end
+ if not ejaFileStat(webFile) then
+  ejaFileWrite(webFile,'web=...;\nweb.data="<html><body><h1>eja! :)</h1></body></html>";\nreturn web;\n')
+  ejaDebug('[eja] index.eja demo installed')
+ end
+ if not ejaFileStat('/etc/systemd/system/eja.service') then
+  ejaFileWrite('/etc/systemd/system/eja.service',string.format([[[Unit]
 Description=eja init
 After=network.target
 
@@ -113,8 +110,8 @@ ExecStart=%s/eja %s/eja.init
 WantedBy=multi-user.target
 ]],eja.pathBin,eja.pathEtc))
 
- ejaExecute('ln -s /etc/systemd/system/eja.service /etc/systemd/system/multi-user.target.wants/eja.service')
-
+  ejaExecute('ln -s /etc/systemd/system/eja.service /etc/systemd/system/multi-user.target.wants/eja.service')
+ end
 end
 
 
