@@ -75,23 +75,25 @@ end
 
 
 function ejaInstall()
+ local webPath=eja.opt.webPath or eja.pathVar..'/web/'
  if not ejaFileStat(eja.pathBin) then ejaDirCreatePath(eja.pathBin) end
  if not ejaFileStat(eja.pathEtc) then ejaDirCreatePath(eja.pathEtc) end
  if not ejaFileStat(eja.pathLib) then ejaDirCreatePath(eja.pathLib) end  
  if not ejaFileStat(eja.pathVar) then ejaDirCreatePath(eja.pathVar) end  
  if not ejaFileStat(eja.pathTmp) then ejaDirCreatePath(eja.pathTmp) end  
  if not ejaFileStat(eja.pathLock) then ejaDirCreatePath(eja.pathLock) end
- if not ejaFileStat(eja.pathVar..'/web') then ejaDirCreatePath(eja.pathVar..'/web') end  
+ if not ejaFileStat(webPath) then ejaDirCreatePath(webPath) end  
 
  ejaFileWrite(eja.pathEtc..'/eja.init',ejaSprintf([[
 eja.opt.web=1
 eja.opt.webPort=35248
-eja.opt.webHost='127.0.0.1'
+eja.opt.webHost="0.0.0.0"
+eja.opt.webPath="%s"
 eja.opt.logFile="%s/eja.log"
 eja.opt.logLevel=3
-]],eja.pathTmp))
+]],webPath,eja.pathTmp))
 
- ejaFileWrite(eja.pathVar..'/web/index.eja',[[
+ ejaFileWrite(webPath..'/index.eja',[[
 web=...
 web.data=ejaSprintf('<html><body><h1>eja! :)</h1></body></html>')
 return web
