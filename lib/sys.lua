@@ -86,6 +86,7 @@ function ejaInstall()
  ejaFileWrite(eja.pathEtc..'/eja.init',ejaSprintf([[
 eja.opt.web=1
 eja.opt.webPort=35248
+eja.opt.webHost='127.0.0.1'
 eja.opt.logFile="%s/eja.log"
 eja.opt.logLevel=3
 ]],eja.pathTmp))
@@ -93,6 +94,7 @@ eja.opt.logLevel=3
  ejaFileWrite(eja.pathVar..'/web/index.eja',[[
 web=...
 web.data=ejaSprintf('<html><body><h1>eja! :)</h1></body></html>')
+return web
 ]])
 
  ejaFileWrite('/etc/systemd/system/eja.service',string.format([[[Unit]
