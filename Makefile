@@ -58,6 +58,6 @@ update: clean git
 
 release: clean git 
 	make update
-	tar zcR /opt/eja.it/src/ > /tmp/eja-$(shell cat .version).tar.gz
+	tar zcR ../eja > /tmp/eja-$(shell cat .version).tar.gz
 	scp /tmp/eja-$(shell cat .version).tar.gz ubaldu@frs.sourceforge.net:/home/frs/project/eja/		
 
