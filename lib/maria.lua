@@ -1,4 +1,4 @@
--- Copyright (C) 2018 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2018-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
 --
 -- die Räubertochter
 
@@ -55,12 +55,12 @@ function ejaMaria()
     
     sock.send=function(fd,buf)
      if type(fd)=="table" then fd=eja.maria.fd end
-     return ejaSocketWrite(fd,buf)
+     return ejaSocketWrite(fd,buf),0
     end
 
     sock.receive=function(fd,count)
      if type(fd)=="table" then fd=eja.maria.fd end
-     return ejaSocketRead(fd,count)
+     return ejaSocketRead(fd,count),0
     end
  
     sock.connect=function(self,host,port,pool)
@@ -74,7 +74,7 @@ function ejaMaria()
       end
      end
      eja.maria.fd=fd
-     return fd
+     return fd,0
     end
     
     sock.close=function(self)
