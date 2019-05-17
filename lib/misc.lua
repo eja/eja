@@ -82,6 +82,8 @@ end
 
 
 function ejaReadLine(value,...)
- io.write(string.format(value,...))
+ if value then 
+  io.write(string.format(value,...)) 
+ end
  return io.read('*l')
 end
