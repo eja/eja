@@ -52,12 +52,12 @@ function ejaLibraryUpdate(libName)
  if libFile and #libFile>0 then 
   if not ejaFileStat(eja.pathLib) then ejaDirCreate(eja.pathLib) end
   if ejaFileWrite(eja.pathLib..libName..'.eja',libFile) then
-   ejaPrintf("Library updated.")
+   ejaInfo("[eja] library updated")
   else
-   ejaPrintf("Library not updated.")
+   ejaErr("[eja] library not updated")
   end
  else
-  ejaPrintf("Library not found.")
+  ejaWarn("[eja] library not found")
  end
 end
 
@@ -65,10 +65,16 @@ end
 function ejaLibraryRemove(libName)
  local libName=libName or eja.opt.remove or nil
  if libName and ejaFileRemove(eja.pathLib..libName..'.eja') then
-  ejaPrintf("Library removed.")
+  ejaInfo("[eja] library removed")
  else
-  ejaPrintf("Library doesn't exist or cannot be removed.")
+  ejaWarn("[eja] library doesn't exist or cannot be removed")
  end
+end
+
+
+function ejaUpdate()
+ ejaLibraryUpdate()
+ ejaVmFileLoad(eja.pathLib..'.eja')
 end
 
 
@@ -87,11 +93,11 @@ function ejaSetup()
  if not ejaFileStat(webPath) then ejaDirCreatePath(webPath) end  
  if not ejaFileStat(etcFile) then
   ejaFileWrite(etcFile,ejaSprintf('eja.opt.web=1;\neja.opt.webPort=%s;\neja.opt.webHost="%s";\neja.opt.webPath="%s";\neja.opt.logFile="%s/eja.log";\neja.opt.logLevel=3;\n',webPort,webHost,webPath,eja.pathTmp))
-  ejaPrintf('Init script installed.')
+  ejaInfo('[eja] init script installed')
  end
  if not ejaFileStat(webFile) then
   ejaFileWrite(webFile,'web=...;\nweb.data="<html><body><h1>eja! :)</h1></body></html>";\nreturn web;\n')
-  ejaPrintf('Web demo installed.')
+  ejaInfo('[eja] web demo installed')
  end
  if not ejaFileStat('/etc/systemd/system/eja.service') then
   ejaFileWrite('/etc/systemd/system/eja.service',string.format([[[Unit]
@@ -109,7 +115,7 @@ WantedBy=multi-user.target
 ]],eja.pathBin,eja.pathEtc))
 
   ejaExecute('ln -s /etc/systemd/system/eja.service /etc/systemd/system/multi-user.target.wants/eja.service')
-  ejaPrintf('Systemd installed.')  
+  ejaInfo('[eja] systemd installed')
  end
 end
 
