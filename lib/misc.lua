@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2017 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 function ejaNumber(i) 
@@ -81,3 +81,7 @@ function ejaOct2Dec(s)
 end
 
 
+function ejaReadLine(value,...)
+ io.write(string.format(value,...))
+ return io.read('*l')
+end
