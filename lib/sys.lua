@@ -54,7 +54,7 @@ function ejaLibraryUpdate(libName)
   if ejaFileWrite(eja.pathLib..libName..'.eja',libFile) then
    ejaInfo("[eja] library updated")
   else
-   ejaErr("[eja] library not updated")
+   ejaError("[eja] library not updated")
   end
  else
   ejaWarn("[eja] library not found")
