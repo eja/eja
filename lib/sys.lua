@@ -6,9 +6,11 @@ eja.lib['help']='ejaHelp'
 eja.lib.update='ejaLibraryUpdate'
 eja.lib.install='ejaLibraryUpdate'
 eja.lib.remove="ejaLibraryRemove"
+eja.lib.setup='ejaSetup'
 eja.help.update='update library'
-eja.help.install="install library {systemd}"
-eja.help.remove="remove library"
+eja.help.install='install library'
+eja.help.remove='remove library'
+eja.help.setup='system setup'
 
 
 function ejaHelp()      
@@ -46,22 +48,16 @@ end
 
 function ejaLibraryUpdate(libName)
  local libName=libName or eja.opt.update or eja.opt.install or ''
- if libName ~= '' then
-  local libFile=ejaWebGet('http://update.eja.it/?version=%s&lib=%s',eja.version,libName)
-  if libFile and #libFile>0 then 
-   if not ejaFileStat(eja.pathLib) then ejaDirCreate(eja.pathLib) end
-   if ejaFileWrite(eja.pathLib..libName..'.eja',libFile) then
-    ejaPrintf("Library updated.")
-   else
-    ejaPrintf("Library not updated.")
-   end
+ local libFile=ejaWebGet('http://update.eja.it/?version=%s&lib=%s',eja.version,libName)
+ if libFile and #libFile>0 then 
+  if not ejaFileStat(eja.pathLib) then ejaDirCreate(eja.pathLib) end
+  if ejaFileWrite(eja.pathLib..libName..'.eja',libFile) then
+   ejaPrintf("Library updated.")
   else
-   ejaPrintf("Library not found.")
+   ejaPrintf("Library not updated.")
   end
  else
-  if eja.opt.install then
-   ejaInstall()
-  end 
+  ejaPrintf("Library not found.")
  end
 end
 
@@ -76,7 +72,7 @@ function ejaLibraryRemove(libName)
 end
 
 
-function ejaInstall()
+function ejaSetup()
  local webPath=eja.opt.webPath or eja.pathVar..'/web/'
  local webFile=webPath..'/index.eja'
  local webPort=eja.opt.webPort or 35248
