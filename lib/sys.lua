@@ -129,20 +129,10 @@ end
 
 function ejaInit(file)
  local file=file or eja.opt.init or ''
- if ejaFileCheck(eja.pathEtc..'/eja.init.'..file) then
-  ejaVmFileLoad(eja.pathEtc..'/eja.init.'..file)
- else
-  if ejaString(file) == "" then
-   local dir=ejaDirListSort(eja.pathEtc)
-   if dir then
-    for k,v in next,dir do
-     if v:match('^eja.init') then
-      ejaVmFileLoad(eja.pathEtc..'/'..v)
-     end
-    end
-   else
-    ejaError('[eja] init directory not available')
-   end
+ if ejaFileCheck(eja.pathEtc) then
+  if file ~= '' then file='.'..file end
+  if ejaFileCheck(eja.pathEtc..'/eja.init'..file) then
+   ejaVmFileLoad(eja.pathEtc..'/eja.init'..file)
   else
    ejaError('[eja] init file not found')
   end
