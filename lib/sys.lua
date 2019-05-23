@@ -133,6 +133,7 @@ function ejaInit(file)
   if file ~= '' then file='.'..file end
   if ejaFileCheck(eja.pathEtc..'/eja.init'..file) then
    ejaVmFileLoad(eja.pathEtc..'/eja.init'..file)
+   ejaRun(eja.opt)
   else
    ejaError('[eja] init file not found')
   end
