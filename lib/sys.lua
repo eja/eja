@@ -110,11 +110,11 @@ After=network.target
 Type=simple
 Restart=always
 RestartSec=10
-ExecStart=%s/eja %s/eja.init
+ExecStart=%s/eja --init
 
 [Install]
 WantedBy=multi-user.target
-]],eja.pathBin,eja.pathEtc))
+]],eja.pathBin))
 
   ejaExecute('ln -s /etc/systemd/system/eja.service /etc/systemd/system/multi-user.target.wants/eja.service')
   ejaInfo('[eja] systemd installed')
@@ -128,7 +128,7 @@ end
 
 
 function ejaInit(file)
- local file=file or eja.opt.init 
+ local file=file or eja.opt.init or ''
  if ejaFileCheck(eja.pathEtc..'/eja.init.'..file) then
   ejaVmFileLoad(eja.pathEtc..'/eja.init.'..file)
  else
