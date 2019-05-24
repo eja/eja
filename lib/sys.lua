@@ -8,11 +8,11 @@ eja.lib.install='ejaLibraryUpdate'
 eja.lib.remove="ejaLibraryRemove"
 eja.lib.setup='ejaSetup'
 eja.lib.init='ejaInit'
-eja.help.update='update library'
+eja.help.update='update library {self}'
 eja.help.install='install library'
 eja.help.remove='remove library'
 eja.help.setup='system setup'
-eja.help.init='load init configuration {all}'
+eja.help.init='load init configuration {eja.init}'
 
 
 function ejaHelp()      
@@ -140,3 +140,4 @@ function ejaInit(file)
   end
  end
 end
+
