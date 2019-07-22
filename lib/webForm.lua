@@ -2,37 +2,35 @@
 
 
 function ejaWebFormInput(o,name,mode,label)
+ local value=o.opt[name] or ''
  if o.form then 
   o.form[#o.form+1]={
    mode=mode or 'text',
    name=name,
    label=label or name,
-   value=o.opt[name] or ''
+   value=value
   }
-  return value
- else
-  return nil
  end
+ return value
 end
 
 
 function ejaWebFormSelect(o,name,matrix,label)
+ local value=o.opt[name] or ''
  if o.form then 
   o.form[#o.form+1]={
    mode='select',
    name=name,
    label=label or name,
-   value=o.opt[name] or '',
+   value=value,
    matrix=matrix
   }
-  return value
- else
-  return nil
  end
+ return value
 end
 
 
-function ejaWebFormHtml(o,name,label,div,hide) 
+function ejaWebFormOutput(o,name,label,div,hide) 
  label=label or 1
  div=div or 1
  hide=hide or 0
@@ -78,7 +76,7 @@ function ejaWebForm(opt)
  local o={}
  o.opt={}
  o.form={}
- o.html=function(...) return ejaWebFormHtml(...) end 
+ o.output=function(...) return ejaWebFormOutput(...) end 
  o.input=function(...) return ejaWebFormInput(...) end
  o.select=function(...) return ejaWebFormSelect(...) end 
  if opt.opt then
