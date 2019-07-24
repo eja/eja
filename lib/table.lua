@@ -1,4 +1,13 @@
--- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
+
+
+function ejaTable(t)
+ if t and type(t) == "table" then 
+  return t
+ else
+  return {}
+ end
+end
 
 
 function ejaTableGet(array, index)
