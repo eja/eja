@@ -2,9 +2,10 @@
 
 
 function ejaWebFormInput(o,name,mode,label)
- local value=o.opt[name] or ''
- if o.form then 
-  o.form[#o.form+1]={
+ local value=''
+ if ejaTable(o).element then 
+  value=o.value[name] or ''
+  o.element[#o.element+1]={
    mode=mode or 'text',
    name=name,
    label=label or name,
@@ -16,9 +17,10 @@ end
 
 
 function ejaWebFormSelect(o,name,matrix,label)
- local value=o.opt[name] or ''
- if o.form then 
-  o.form[#o.form+1]={
+ local value=''
+ if ejaTable(o).element then 
+  value=o.value[name] or ''
+  o.element[#o.element+1]={
    mode='select',
    name=name,
    label=label or name,
@@ -35,10 +37,11 @@ function ejaWebFormOutput(o,name,label,div,hide)
  div=div or 1
  hide=hide or 0
  local out={}
- if o.form then
+ out[#out+1]=o.header
+ if o.element then
   local name=name or 'ejaForm'
   out[#out+1]=ejaSprintf('<form name="%s" action="?" method="post">',name)
-  for k,v in next,o.form do
+  for k,v in next,o.element do
    if ejaNumber(hide) > 0 and ejaString(v.value) ~= "" then 
     v.mode="hidden" 
     v.label=nil
@@ -66,30 +69,24 @@ function ejaWebFormOutput(o,name,label,div,hide)
    if div then out[#out+1]=ejaSprintf('</div>') end
   end
   out[#out+1]='<input type="submit"></form>'
+  out[#out+1]=o.footer
   return table.concat(out)
  else
   return ''
  end
 end
 
-function ejaWebForm(opt)
- local o={}
- o.opt={}
- o.form={}
- o.output=function(...) return ejaWebFormOutput(...) end 
- o.input=function(...) return ejaWebFormInput(...) end
- o.select=function(...) return ejaWebFormSelect(...) end 
- if opt.opt then
-  for k,v in next,opt.opt do
-   o.opt[k]=ejaString(v)
-  end
-  opt.form=o
-  return opt
- else
-  for k,v in next,opt do
-   o.opt[k]=ejaString(v)
-  end
-  return o
- end
+
+function ejaWebForm(o)
+ o=ejaTable(o)
+ o.form=ejaTable()
+ o.form.value=ejaTable(o.opt)
+ o.form.element=ejaTable()
+ o.form.output=function(...) return ejaWebFormOutput(...) end 
+ o.form.input=function(...) return ejaWebFormInput(...) end
+ o.form.select=function(...) return ejaWebFormSelect(...) end 
+ o.form.header=''
+ o.form.footer=''
+ return o
 end
 

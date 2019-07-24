@@ -5,13 +5,13 @@ function ejaFormInput(o,name,mode,label)
  local value
  local label=label or name
  if o then
-  value=o.opt[name]
+  value=o.value[name]
   if not value then
    ejaPrintf('%s:',label)
    value=ejaString(io.read("*l"))
   end
  end
- o.opt[name]=value
+ o.value[name]=value
  return value
 end
 
@@ -20,7 +20,7 @@ function ejaFormSelect(o,name,matrix,label)
  local value
  local label=label or name
  if o and type(matrix)=="table" then
-  value=o.opt[name]
+  value=o.value[name]
   if not value then
    local stop=0
    while stop==0 do
@@ -34,28 +34,28 @@ function ejaFormSelect(o,name,matrix,label)
    end
   end
  end
- o.opt[name]=value
+ o.value[name]=value
  return value
 end
 
 
 function ejaFormOutput(o)
- local out=ejaJsonEncode(o.opt,1) 
- print(out)
- return out
+ return ejaJsonEncode(o.value,1) 
 end
 
 
-function ejaForm(opt)
- if opt then
-  return ejaWebForm(opt)
+function ejaForm(o)
+ if type(o) == "table" then
+  return ejaWebForm(o)
  else
-  local o={}
-  o.form={}
-  o.form.opt=eja.opt or {}
+  o=ejaTable(o)
+  o.form=ejaTable()
+  o.form.value=ejaTable(eja.opt)
+  o.form.element=ejaTable()
   o.form.input=function(...) return ejaFormInput(...) end
   o.form.select=function(...) return ejaFormSelect(...) end
   o.form.output=function(...) return ejaFormOutput(...) end
   return o
  end
 end
+
