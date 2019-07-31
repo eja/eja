@@ -310,14 +310,15 @@ function ejaWebThread(client,ip,port)
 end
 
 
-function ejaWebOpen(host,port)
+function ejaWebOpen(host,port,timeout)
+ timeout=timeout or 5
  if ejaNumber(port) < 1 then port=80 end
  local res,err=ejaSocketGetAddrInfo(host, port, {family=AF_INET, socktype=SOCK_STREAM})    
  if res then
   local fd=ejaSocketOpen(AF_INET,SOCK_STREAM,0)
   if fd and ejaSocketConnect(fd,res[1]) then
-   ejaSocketOptionSet(fd,SOL_SOCKET,SO_RCVTIMEO,5,0)
-   ejaSocketOptionSet(fd,SOL_SOCKET,SO_SNDTIMEO,5,0)
+   ejaSocketOptionSet(fd,SOL_SOCKET,SO_RCVTIMEO,timeout,0)
+   ejaSocketOptionSet(fd,SOL_SOCKET,SO_SNDTIMEO,timeout,0)
    return fd
   end
  end
