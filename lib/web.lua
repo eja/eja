@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2017 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.lib.web='ejaWeb'
@@ -89,6 +89,7 @@ function ejaWebThread(client,ip,port)
  web.headerOut={}
  web.headerOut['Content-Type']='text/html'
  web.headerOut['Connection']='Close'
+ web.headerSent=false
 
  if ejaNumber(eja.opt.webSize) > 0 then web.bufferSize=ejaNumber(eja.opt.webSize) end
  
@@ -271,14 +272,12 @@ function ejaWebThread(client,ip,port)
  end
  
  if web.status:sub(1,1) ~= '2' then web.headerOut['Connection']='Close' end
-  
- web.response=web.protocolOut..' '..web.status..'\r\nDate: '..os.date()..'\r\nServer: eja '..eja.version..'\r\n'
- for k,v in next,web.headerOut do
-  web.response=web.response..k..': '..v..'\r\n'
+ 
+ if not web.headerSent then
+  ejaSocketWrite(client,ejaWebHeader(web.protocolOut,web.status,web.headerOut))
  end
- ejaSocketWrite(client,web.response..'\r\n')
 
- if web.file ~= '' then
+ if ejaString(web.file) ~= '' then
   local fd=io.open(web.file,'r')
   if fd then
    if web.range > 0 then 
@@ -295,7 +294,7 @@ function ejaWebThread(client,ip,port)
    end
    fd:close()
   end
- else
+ elseif ejaString(web.data) ~= '' then
   ejaSocketWrite(client,web.data)  
  end
 
@@ -374,3 +373,15 @@ function ejaWebGet(value,...)
 end
 
 
+function ejaWebHeader(protocol,status,header)
+ local protocol=protocol or 'HTTP/1.1'
+ local status=status or '200 OK'
+ local header=header or {}
+ local out=ejaSprintf('%s %s\r\nDate: %s\r\nServer: eja %s\r\n',protocol,status,os.date(),eja.version)
+ header['Content-Type']= header['Content-Type'] or 'text/html'
+ header['Connection']=header['Connection'] or 'Close'
+ for k,v in next,header do
+  out=out..k..': '..v..'\r\n'
+ end
+ return out..'\r\n'
+end
