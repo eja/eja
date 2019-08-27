@@ -87,3 +87,11 @@ function ejaReadLine(value,...)
  end
  return io.read('*l')
 end
+
+
+function ejaTime()
+ local fd=io.popen('date +%N')
+ local tm=ejaNumber(fd:read('*l'))
+ fd:close()
+ return os.time()+(tm/1000000000)
+end
