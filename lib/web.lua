@@ -373,7 +373,7 @@ function ejaWebGet(value,...)
 end
 
 
-function ejaWebHeader(protocol,status,header)
+function ejaWebHeader(header,status,protocol)
  local protocol=protocol or 'HTTP/1.1'
  local status=status or '200 OK'
  local header=header or {}
