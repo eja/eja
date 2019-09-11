@@ -274,7 +274,7 @@ function ejaWebThread(client,ip,port)
  if web.status:sub(1,1) ~= '2' then web.headerOut['Connection']='Close' end
  
  if not web.headerSent then
-  ejaSocketWrite(client,ejaWebHeader(web.protocolOut,web.status,web.headerOut))
+  ejaSocketWrite(client,ejaWebHeader(web.headerOut,web.status,web.protocolOut))
  end
 
  if ejaString(web.file) ~= '' then
