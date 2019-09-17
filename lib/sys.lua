@@ -50,8 +50,14 @@ end
 
 function ejaLibraryUpdate(libName)
  local libName=libName or eja.opt.update or eja.opt.install or ''
- local libFile=ejaWebGet('http://update.eja.it/?version=%s&lib=%s',eja.version,libName)
- if libFile and #libFile>0 then 
+ local libFile
+ if libName:match('^https?%://') then 
+  libFile=ejaWebGet(libName)
+  libName=libName:match('^.+/(.+)%.eja$')
+ else
+  libFile=ejaWebGet('http://update.eja.it/?version=%s&lib=%s',eja.version,libName)
+ end
+ if libName and libFile and #libFile>0 then 
   if not ejaFileStat(eja.pathLib) then ejaDirCreate(eja.pathLib) end
   if ejaFileWrite(eja.pathLib..libName..'.eja',libFile) then
    ejaInfo("[eja] library updated")

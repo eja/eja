@@ -356,20 +356,38 @@ end
 
 function ejaWebGet(value,...)
  local url=string.format(value,...)
- local t={}
- local fd=ejaWebGetOpen(url)
- if fd then
-  while true do
-   local buf=ejaWebRead(fd,1024)
-   if not buf or #buf == 0 then break end
-   t[#t+1]=buf
+ local data=nil
+ local header=nil
+ if url:match('^https') then
+  local file=os.tmpname()
+  local cmd=nil
+  if ejaFileStat('/usr/bin/curl') then
+   header="console: curl"
+   cmd=ejaSprintf([[curl -s "%s" > %s]],url,file)
+  elseif ejaFileStat('/usr/bin/wget') or ejaFileStat('/bin/wget') then
+   header="console: wget"
+   cmd=ejaSprintf([[wget -qO %s "%s"]],url,file)
   end
-  ejaWebClose(fd)
-  local header,data=table.concat(t):match('(.-)\r?\n\r?\n(.*)')
-  return data,header
- else
-  return nil
+  if cmd then
+   ejaTrace('[web] web get cmd: %s',cmd)
+   ejaExecute(cmd)
+   data=ejaFileRead(file)
+   ejaFileRemove(file)
+  end
+ else 
+  local t={}
+  local fd=ejaWebGetOpen(url)
+  if fd then
+   while true do
+    local buf=ejaWebRead(fd,1024)
+    if not buf or #buf == 0 then break end
+    t[#t+1]=buf
+   end
+   ejaWebClose(fd)
+   header,data=table.concat(t):match('(.-)\r?\n\r?\n(.*)')
+  end
  end
+ return data,header
 end
 
 
