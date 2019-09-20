@@ -366,7 +366,7 @@ function ejaWebGet(value,...)
    cmd=ejaSprintf([[curl -s "%s" > %s]],url,file)
   elseif ejaFileStat('/usr/bin/wget') or ejaFileStat('/bin/wget') then
    header="console: wget"
-   cmd=ejaSprintf([[wget -qO %s "%s"]],url,file)
+   cmd=ejaSprintf([[wget -qO %s "%s"]],file,url)
   end
   if cmd then
    ejaTrace('[web] web get cmd: %s',cmd)
