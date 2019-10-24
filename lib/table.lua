@@ -37,9 +37,9 @@ function ejaTablePut(array, key, value, index)
 end
 
 
-function ejaTableLen(array)
+function ejaTableCount(array)
  local i=0
- for k,v in next,array do i=i+1 end
+ for k,v in next,ejaTable(array) do i=i+1 end
  return i
 end
 
