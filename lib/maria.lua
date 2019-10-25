@@ -3,7 +3,9 @@
 -- die Räubertochter
 
 
-eja.maria={}
+eja.maria = {
+ timeout=10
+}
 
 
 function ejaMariaOpen(host,port,user,pass,database,charset)
@@ -26,11 +28,16 @@ end
 
 
 function ejaMariaQuery(...)
+ local query=nil
  if eja.maria.db then
-  return eja.maria.db:query(string.format(...)) 
- else
-  return nil
+  query,err=eja.maria.db:query(string.format(...)) 
+  if not query and err then 
+   ejaError("[maria] query error: %s",err)
+   ejaTrace("[maria] query: %s",string.format(...))
+  end
  end
+
+ return query
 end
 
 
@@ -69,8 +76,8 @@ function ejaMaria()
      if res then
       fd=ejaSocketOpen(AF_INET,SOCK_STREAM,0)
       if fd and ejaSocketConnect(fd,res[1]) then
-       ejaSocketOptionSet(fd,SOL_SOCKET,SO_RCVTIMEO,5,0)
-       ejaSocketOptionSet(fd,SOL_SOCKET,SO_SNDTIMEO,5,0)
+       ejaSocketOptionSet(fd,SOL_SOCKET,SO_RCVTIMEO,eja.maria.timeout,0)
+       ejaSocketOptionSet(fd,SOL_SOCKET,SO_SNDTIMEO,eja.maria.timeout,0)
       end
      end
      eja.maria.fd=fd
