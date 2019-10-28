@@ -18,12 +18,22 @@ end
 
 
 function ejaSprintf(...)
- return string.format(...)
+ local a={...}
+ local tag="eJaSpRiNtF_"
+ if a[1] then 
+  a[1]=a[1]:gsub('%%([-+ #]?[%d]*[%.]?[%d]*[fdiouxXeEfgG])',tag..'%1')
+  a[1]=a[1]:gsub('%%([-+ #]?[%d]*[scq])',tag..'%1')
+  a[1]=a[1]:gsub('%%','%%%%')
+  a[1]=a[1]:gsub(tag,'%%')
+  return string.format(table.unpack(a))
+ else 
+  return "";
+ end
 end
 
 
 function ejaPrintf(...)
- print(string.format(...))
+ print(ejaSprintf(...))
 end
 
 

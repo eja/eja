@@ -30,10 +30,11 @@ end
 function ejaMariaQuery(...)
  local query=nil
  if eja.maria.db then
-  query,err=eja.maria.db:query(string.format(...)) 
+  local q=ejaSprintf(...)
+  query,err=eja.maria.db:query(q) 
   if not query and err then 
    ejaError("[maria] query error: %s",err)
-   ejaTrace("[maria] query: %s",string.format(...))
+   ejaTrace("[maria] query: %s",q)
   end
  end
 

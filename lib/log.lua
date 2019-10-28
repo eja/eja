@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.opt.logFile='/dev/stderr'
@@ -16,35 +16,35 @@ end
 
 function ejaError(value,...)
  if ejaNumber(eja.opt.logLevel) >= 1 then
-  ejaLog("E",string.format(value,...))
+  ejaLog("E",ejaSprintf(value,...))
  end
 end
 
 
 function ejaWarn(value,...)
  if ejaNumber(eja.opt.logLevel) >= 2 then 
-  ejaLog("W",string.format(value,...))
+  ejaLog("W",ejaSprintf(value,...))
  end
 end
 
 
 function ejaInfo(value,...)
  if ejaNumber(eja.opt.logLevel) >= 3 then 
-  ejaLog("I",string.format(value,...))
+  ejaLog("I",ejaSprintf(value,...))
  end
 end
 
 
 function ejaDebug(value,...)
  if ejaNumber(eja.opt.logLevel) >= 4 then 
-  ejaLog("D",string.format(value,...))
+  ejaLog("D",ejaSprintf(value,...))
  end
 end
 
 
 function ejaTrace(value,...)
  if ejaNumber(eja.opt.logLevel) >= 5 then 
-  ejaLog("T",string.format(value,...))
+  ejaLog("T",ejaSprintf(value,...))
  end
 end
 
