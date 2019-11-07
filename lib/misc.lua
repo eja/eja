@@ -18,6 +18,7 @@ end
 
 
 function ejaSprintf(...)
+ --!bug: %%%%010d
  local a={...}
  local tag="eJaSpRiNtF_"
  if a[1] then 

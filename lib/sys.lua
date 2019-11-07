@@ -147,3 +147,21 @@ function ejaInit(file)
  end
 end
 
+
+function ejaModuleCheck(name)
+ for _,x in next,(package.searchers or package.loaders) do 
+  local check=x(name)
+  if type(check) == "function" then return true end
+ end
+
+ return false
+end
+
+
+function ejaModuleLoad(name)
+ if ejaModuleCheck(name) then
+  return require(name)
+ else
+  return false
+ end
+end
