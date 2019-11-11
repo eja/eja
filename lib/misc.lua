@@ -18,7 +18,7 @@ end
 
 
 function ejaSprintf(...)
- --!bug: %%%%010d
+ --[[!bug: %%%%010d, still not reliable
  local a={...}
  local tag="eJaSpRiNtF_"
  if a[1] then 
@@ -30,6 +30,8 @@ function ejaSprintf(...)
  else 
   return "";
  end
+ ]]
+ return string.format(...)
 end
 
 
