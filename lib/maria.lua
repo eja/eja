@@ -28,10 +28,14 @@ end
 
 
 function ejaMariaQuery(...)
+ local a={...}
  local query=nil
  if eja.maria.db then
-  local q=ejaSprintf(...)
-  query,err=eja.maria.db:query(q) 
+  if #a > 1 then
+   query,err=eja.maria.db:query(ejaSprintf(...)) 
+  else
+   query,err=eja.maria.db:query(a[1]) 
+  end
   if not query and err then 
    ejaError("[maria] query error: %s",err)
    ejaTrace("[maria] query: %s",q)
