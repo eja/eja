@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2016 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 if not eja then
 
@@ -7,6 +7,7 @@ if not eja then
  eja.lib={} 
  eja.pid={}
  eja.help={}
+ eja.meta={}
  eja.mime={} 
  eja.mimeApp={}
 
