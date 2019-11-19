@@ -3,6 +3,7 @@
 
 eja.lib.export='ejaVmFileExport'
 eja.help.export='vm export (file)'
+eja.help.exportName='vm export file name'
 
 
 function ejaVmInt2Hex(int) 	return ejaSprintf('i%X',int) end
@@ -194,18 +195,19 @@ function ejaVmImport(data)
 end
 
 
-function ejaVmFileExport(file)
- local f=file or eja.opt.export or nil
- if f then
-  local data=ejaFileRead(f) 
-  if f:sub(-4) == '.lua' then f=f:sub(1,-5) end
+function ejaVmFileExport(file,name)
+ local fileName=name or eja.opt.exportName or eja.opt.export or nil
+ local file=file or eja.opt.export
+ if fileName then
+  local data=ejaFileRead(file) 
+  if fileName:sub(-4) == '.lua' then fileName=fileName:sub(1,-5) end
   if data and data:sub(1,5) ~= 'ejaVM' then
    if data:sub(1,4) == string.char(27,76,117,97) then
     data=ejaVmExport(data)
    else
     data=ejaVmExport(string.dump(loadstring(data)))
    end
-   ejaFileWrite(f..'.eja',data)
+   ejaFileWrite(fileName..'.eja',data)
   end
  end 
 end
