@@ -52,10 +52,17 @@ function ejaLibraryUpdate(libName)
  local libName=libName or eja.opt.update or eja.opt.install or ''
  local libFile
  if libName:match('^https?%://') then 
+  ejaTrace('[eja] library check on: %s',libName)
   libFile=ejaWebGet(libName)
   libName=libName:match('^.+/(.+)%.eja$')
  else
-  libFile=ejaWebGet('http://update.eja.it/?version=%s&lib=%s',eja.version,libName)
+  ejaTrace('[eja] library check on: github.com')  
+  if ejaString(libName) ~= "" then gitName=libName else gitName="eja" end
+  libFile=ejaWebGet('https://raw.githubusercontent.com/eja/%s/master/%s.eja',gitName,gitName)
+  if ejaString(libFile) == "" then  
+   ejaTrace('[eja] library check on: eja.it')     
+   libFile=ejaWebGet('http://update.eja.it/?version=%s&lib=%s',eja.version,libName)
+  end
  end
  if libName and libFile and #libFile>0 then 
   if not ejaFileStat(eja.pathLib) then ejaDirCreate(eja.pathLib) end
