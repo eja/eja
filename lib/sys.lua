@@ -56,12 +56,12 @@ function ejaLibraryUpdate(libName)
   libFile=ejaWebGet(libName)
   libName=libName:match('^.+/(.+)%.eja$')
  else
-  ejaTrace('[eja] library check on: github.com')  
-  if ejaString(libName) ~= "" then gitName=libName else gitName="eja" end
-  libFile=ejaWebGet('https://raw.githubusercontent.com/eja/%s/master/%s.eja',gitName,gitName)
-  if ejaString(libFile) == "" then  
-   ejaTrace('[eja] library check on: eja.it')     
-   libFile=ejaWebGet('http://update.eja.it/?version=%s&lib=%s',eja.version,libName)
+  ejaTrace('[eja] library check on: eja.it')     
+  libFile=ejaWebGet('http://update.eja.it/?version=%s&lib=%s',eja.version,libName)
+  if ejaString(libFile) == "" then    
+   ejaTrace('[eja] library check on: github.com')  
+   if ejaString(libName) ~= "" then gitName=libName else gitName="eja" end   
+   libFile=ejaWebGet('https://raw.githubusercontent.com/eja/%s/master/%s.eja',gitName,gitName)
   end
  end
  if libName and libFile and #libFile>0 then 
