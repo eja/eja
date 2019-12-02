@@ -23,7 +23,8 @@ static:
 	
 	
 eja: 
-	@od -v -t x1 eja.lua lib/*.lua eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
+	cat main.lua lib/*.lua main.lua > eja.lua
+	@od -v -t x1 eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
 ifeq ($(PKGCONFIG_LIBS),)	
 	cd lua/src && make generic CC=$(CC) MYCFLAGS=$(MYCFLAGS) MYLIBS="$(MYLIBS)"
 	$(CC) $(CFLAGS) $(CPPFLAGS) -g -o eja eja.c lua/src/liblua.a -Ilua/src/ -lm $(MYLIBS) $(LDFLAGS)
