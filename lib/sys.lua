@@ -179,6 +179,9 @@ function ejaLoad()
  if not _G['ejaPid'] then
   if ejaModuleCheck("posix") then
    ejaRock()
+  else
+   print("Please use eja or install luaposix.")
+   os.exit()
   end
  end
 
