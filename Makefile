@@ -49,6 +49,7 @@ install: eja
 
 git:
 	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua
+	@ cat main.lua lib/*.lua main.lua > eja.lua
 	@ cat lib/*.lua | eja --export /dev/stdin --export-name eja
 	@ git add .
 	@- git commit
