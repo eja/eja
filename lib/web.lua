@@ -8,7 +8,7 @@ eja.help.webStart='web server start'
 eja.help.webStop='web server stop'
 eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
-eja.help.webPath='web server path {/var/www/eja/}'
+eja.help.webPath='web server path'
 eja.help.webSize='web buffer size {8192}'
 
 function ejaWeb()
@@ -17,7 +17,7 @@ function ejaWeb()
  eja.web.timeout=100
  eja.web.host=eja.opt.webHost or '0.0.0.0'
  eja.web.port=eja.opt.webPort or 35248
- eja.web.path=eja.opt.webPath or '/var/www/eja/'
+ eja.web.path=eja.opt.webPath or eja.pathVar..'/web/'
 
  ejaInfo("[web] daemon on port %d and path %s",eja.web.port, eja.web.path)
  local client=nil  
