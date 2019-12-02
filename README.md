@@ -1,7 +1,7 @@
 eja
 ===
 
-a is a micro web server written in C and Lua that can serve dynamic content. 
+a micro web server written in C and Lua that can serve dynamic content. 
 
 
 INSTALLING
