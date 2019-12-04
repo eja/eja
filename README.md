@@ -10,6 +10,10 @@ INSTALLING
 If you are running any recent Debian or derivative it should be enough to run:
 
     sudo apt-get install eja
+    
+If luarocks is available:
+
+    sudo luarocks install eja
 
 Othewise:
 
