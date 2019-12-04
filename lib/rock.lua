@@ -104,7 +104,7 @@ function ejaRock()
  end
  
  function ejaSocketGetAddrInfo(host,service,protocol)
-  return sock.getaddringo(host,service,protocol)
+  return sock.getaddrinfo(host,service,protocol)
  end
  
  function ejaSocketReceive(fd,count)

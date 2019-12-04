@@ -3197,7 +3197,7 @@ function ejaRock()
  end
  
  function ejaSocketGetAddrInfo(host,service,protocol)
-  return sock.getaddringo(host,service,protocol)
+  return sock.getaddrinfo(host,service,protocol)
  end
  
  function ejaSocketReceive(fd,count)
@@ -4526,7 +4526,7 @@ function ejaUntar(fileIn, dirOut)
  return i
 end
 
-eja.version='12.1202'
+eja.version='12.1204'
 -- Copyright (C) 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
