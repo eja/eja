@@ -20,10 +20,15 @@ all: eja
 
 static:
 	make MYCFLAGS="-DLUA_USE_POSIX" MYLIBS="-static -w"
+
+eja.lua: 
+	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua
+	@ cat init.lua lib/*.lua init.lua > eja.lua
 	
+eja.eja:
+	@ cat lib/*.lua | eja --export /dev/stdin --export-name eja
 	
-eja: 
-	cat main.lua lib/*.lua main.lua > eja.lua
+eja:	eja.lua
 	@od -v -t x1 eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
 ifeq ($(PKGCONFIG_LIBS),)	
 	cd lua/src && make generic CC=$(CC) MYCFLAGS=$(MYCFLAGS) MYLIBS="$(MYLIBS)"
@@ -34,8 +39,7 @@ endif
 	
 	
 clean:
-	@- rm -f eja
-	@- rm -f eja.h 
+	@- rm -f eja eja.h eja.lua eja.eja
 ifeq ($(PKGCONFIG_LIBS),)		
 	@- cd lua && make clean
 endif	
@@ -47,10 +51,7 @@ install: eja
 	@ install doc/eja.1 $(DESTDIR)$(man1dir)
 
 
-git:
-	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua
-	@ cat main.lua lib/*.lua main.lua > eja.lua
-	@ cat lib/*.lua | eja --export /dev/stdin --export-name eja
+git:	eja.lua eja.eja
 	@ git add .
 	@- git commit
 
