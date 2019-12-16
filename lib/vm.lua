@@ -214,24 +214,9 @@ end
 
 
 function ejaVmFileLoad(f)
- local data=""
- if f:match('http%://') then
-  local bin,head=ejaWebGet(f:match('http%://.*'))
-  if bin and head then
-   if ejaSha256(bin) == ejaString(head:match('ejaSha256%: ([%x]+)')) then
-    data=bin
-   else
-    ejaError("Hash doesn't match, not loading.")
-   end
-  end
- else
-  data=ejaFileRead(f)
+ local data=ejaFileRead(f) or f:sub(#eja.pathBin+1)
+ if data and data:sub(1,5) == 'ejaVM' then
+  data=ejaVmImport(data)
  end
- if data then
-  if data:sub(1,5) == 'ejaVM' then
-   data=ejaVmImport(data)
-  end
- end
- local ejaScriptRun=assert(loadstring(data))
- if ejaScriptRun then ejaScriptRun() end
+ assert(loadstring(data))()
 end
