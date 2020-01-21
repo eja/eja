@@ -1,23 +1,3 @@
--- Copyright (C) 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
-
-
-if eja then
-
- ejaLoad()
-
-else
-
- eja={}
- eja.opt={}
- eja.lib={} 
- eja.pid={}
- eja.help={}
- eja.meta={}
- eja.mime={} 
- eja.mimeApp={}
- 
-end
-
 -- Lua 5.1+ base64 v3.0 (c) 2009 by Alex Kloss <alexthkloss@web.de>
 -- licensed under the terms of the LGPL2
 
@@ -4526,7 +4506,7 @@ function ejaUntar(fileIn, dirOut)
  return i
 end
 
-eja.version='12.1216'
+eja.version='13.0121'
 -- Copyright (C) 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
@@ -5492,23 +5472,3 @@ function ejaWebUser()
     end
 end
  
--- Copyright (C) 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
-
-
-if eja then
-
- ejaLoad()
-
-else
-
- eja={}
- eja.opt={}
- eja.lib={} 
- eja.pid={}
- eja.help={}
- eja.meta={}
- eja.mime={} 
- eja.mimeApp={}
- 
-end
-

@@ -23,10 +23,10 @@ static:
 
 eja.lua: 
 	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua
-	@ cat init.lua lib/*.lua init.lua > eja.lua
+	@ cat lib/*.lua > eja.lua
 	
-eja.eja:
-	@ cat lib/*.lua | eja --export /dev/stdin --export-name eja
+eja.eja: eja.lua
+	@ eja --export eja.lua 
 	
 eja:	eja.lua
 	@od -v -t x1 eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
