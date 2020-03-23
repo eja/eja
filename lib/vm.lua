@@ -2,8 +2,10 @@
 
 
 eja.lib.export='ejaVmFileExport'
-eja.help.export='vm file to export'
-eja.help.exportName='vm exported file name'
+eja.lib.exportLua='ejaVmExportLua'
+eja.help.export='input text eja/lua file to export into eja bytecode'
+eja.help.exportName='exported file name'
+eja.help.exportLua='export plain text eja file to lua'
 
 
 function ejaVmInt2Hex(int) 	return ejaSprintf('i%X',int) end
@@ -65,7 +67,7 @@ function ejaVmFunction(h,d,pos)	--header, data, position
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
  o[#o+1]=ejaVmInt2Hex(z);							p=p+h.int;	--length of Instruction block
  for n=1,z do
-  o[#o+1]=ejaVmInstr2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.Instr-1)));	p=p+h.Instr;	--Instruction
+  o[#o+1]=ejaVmInstr2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.Instr-1)));	p=p+h.Instr;		--instruction
  end
 
  if debug then o[#o+1]='\nconst\n' end	
@@ -73,21 +75,21 @@ function ejaVmFunction(h,d,pos)	--header, data, position
  o[#o+1]=ejaVmInt2Hex(z);							p=p+h.int;	--length of constant
  for n=1,z do
   local cType=d:byte(p);
-  o[#o+1]=ejaVmByte2Hex(cType);						p=p+1;		--const type
+  o[#o+1]=ejaVmByte2Hex(cType);						p=p+1;			--const type
   if cType == 4 then
    local l=ejaVmByte2Int(h.endian,d:sub(p,p+h.size-1));
-   o[#o+1]=ejaVmSize2Hex(l);						p=p+h.size;	--string length
+   o[#o+1]=ejaVmSize2Hex(l);						p=p+h.size;		--string length
    if l > 0 then
-    o[#o+1]=ejaVmString2Hex(d:sub(p,p+l-1));				p=p+l;		--string
+    o[#o+1]=ejaVmString2Hex(d:sub(p,p+l-1));				p=p+l;			--string
    end
   end
   if cType == 3 then
-   o[#o+1]=ejaVmNum2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.num-1)));	p=p+h.num;	--number
+   o[#o+1]=ejaVmNum2Hex(ejaVmByte2Int(h.endian,d:sub(p,p+h.num-1)));	p=p+h.num;		--number
   end
   if cType == 1 then
-   o[#o+1]=ejaVmByte2Hex(d:byte(p));					p=p+1;		--boolean
+   o[#o+1]=ejaVmByte2Hex(d:byte(p));					p=p+1;			--boolean
   end
-  if cType == 0 then end								--nil
+  if cType == 0 then end									--nil
  end
 
  if debug then o[#o+1]='\nproto\n' end	
@@ -103,22 +105,22 @@ function ejaVmFunction(h,d,pos)	--header, data, position
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
  o[#o+1]=ejaVmInt2Hex(z);							p=p+h.int;	--length of upvalues
  for n=1,z do
-  o[#o+1]=ejaVmByte2Hex(d:byte(p));					p=p+1;		--stack
-  o[#o+1]=ejaVmByte2Hex(d:byte(p));					p=p+1;		--idx
+  o[#o+1]=ejaVmByte2Hex(d:byte(p));					p=p+1;			--stack
+  o[#o+1]=ejaVmByte2Hex(d:byte(p));					p=p+1;			--idx
  end
 
  if debug then o[#o+1]='\nsource\n' end	
  l=ejaVmByte2Int(h.endian,d:sub(p,p+h.size-1));
  o[#o+1]=ejaVmSize2Hex(0);							p=p+h.size;	--string length
  if l > 0 then
-  p=p+l;										--string
+  p=p+l;											--string
  end
  
  if debug then o[#o+1]='\nline info\n' end
  z=ejaVmByte2Int(h.endian,d:sub(p,p+h.int-1));
  o[#o+1]=ejaVmInt2Hex(0);							p=p+h.int;	--length of line
  for n=1,z do
-  p=p+h.int;										--begin
+  p=p+h.int;											--begin
  end
 
   
@@ -127,12 +129,12 @@ function ejaVmFunction(h,d,pos)	--header, data, position
  o[#o+1]=ejaVmInt2Hex(0);							p=p+h.int;	--length of local vars
  for n=1,z do
   local l=ejaVmByte2Int(h.endian,d:sub(p,p+h.size-1));
-   p=p+h.size;										--string length
+   p=p+h.size;											--string length
   if l > 0 then
-   p=p+l;										--string
+   p=p+l;											--string
   end
-  p=p+h.int;										--begin
-  p=p+h.int;										--end
+  p=p+h.int;											--begin
+  p=p+h.int;											--end
  end
 
  if debug then o[#o+1]='\nupvalues\n' end
@@ -140,8 +142,8 @@ function ejaVmFunction(h,d,pos)	--header, data, position
  o[#o+1]=ejaVmInt2Hex(0);							p=p+h.int;	--length of upvalues
  for n=1,z do
   local l=ejaVmByte2Int(h.endian,d:sub(p,p+h.size-1));
-  p=p+h.size;										--string length
-  p=p+l;										--string
+  p=p+h.size;											--string length
+  p=p+l;											--string
  end
 
  return table.concat(o),p-pos
@@ -171,7 +173,8 @@ end
 
 
 function ejaVmImport(data)
- if data:sub(1,5) == 'ejaVM' then
+ local out=nil
+ if data:match('^ejaVM') then
   local o={}
   local h=''
   o[#o+1]=string.dump(load("do end")):sub(1,18)
@@ -190,13 +193,29 @@ function ejaVmImport(data)
   end 
   return table.concat(o)
  else
-  return nil
+  return ejaVmToLua(data)
+ end
+end
+
+
+function ejaVmExportLua(inputFile,outputName)
+ local outputName=outputName or eja.opt.exportName or nil
+ local inputFile=inputFile or eja.opt.exportLua
+ local data=ejaFileRead(inputFile)
+ if data then
+  if outputName then
+   ejaFileWrite(outputName..".lua",ejaVmToLua(data))
+  else
+   print(ejaVmToLua(data))
+  end
+ else
+  ejaError('[eja] vm, input file not found.')
  end
 end
 
 
 function ejaVmFileExport(inputFile,outputName)
- local outputName=outPut or eja.opt.exportName or eja.opt.export or nil
+ local outputName=outputName or eja.opt.exportName or eja.opt.export or nil
  local inputFile=inputFile or eja.opt.export
  if outputName then
   local data=ejaFileRead(inputFile) 
@@ -204,14 +223,10 @@ function ejaVmFileExport(inputFile,outputName)
    if outputName:match('%.lua$') then 
     outputName=outputName:sub(1,-5) 
     data=ejaVmExport(string.dump(load(data)))			--lua
-   elseif outputName:match('%.luac$') then
-    outputName=outputName:sub(1,-6) 
-    data=ejaVmExport(data)					--luac
-   elseif not data:match('^ejaVM') then				--eja clear
+   elseif not data:match('^ejaVM') then				--eja (no bytecode)
     data=ejaVmExport(string.dump(load(ejaVmToLua(data))))
-    outputName=outputName:sub(1,-5)
    else
-    ejaWarn('[eja] vm, input file not supported or already compiled.')
+    ejaWarn('[eja] vm, input file not supported or already in eja bytecode.')
    end
   end
   if data and outputName then
@@ -318,6 +333,14 @@ function ejaVmToLua(text)
    line=""
    aIn[k+1].data="elseif";
   end
+  
+  if (v.type == "operator" and aIn[k-1] and aIn[k-1].type == "ident") then
+   if v.data == "+=" then 	line="="..aIn[k-1].data.."+"; 	end 
+   if v.data == "-=" then 	line="="..aIn[k-1].data.."-"; 	end 
+   if v.data == "*=" then 	line="="..aIn[k-1].data.."*"; 	end 
+   if v.data == "/=" then 	line="="..aIn[k-1].data.."/"; 	end 
+  end
+  
   
   --function
   if (functionArray[functionCount] >= 3 and v.type == "symbol" and v.data == "}") then
