@@ -49,3 +49,30 @@ in this case opening the url http://localhost:35248/sum.eja?a=3&b=4 would return
 
     The sum is 7
 
+SYNTAX
+------
+
+Apart from being able to execute plain text Lua scripts, eja has also its own special syntax, for this reason any file ending in .eja must be either a portable eja bytecode (--export) or must follow the below rules:
+
+|Lua|eja|
+|---|---|
+|and|&&|
+|or|\|\||
+|not|!|
+|x=x+1|x+=1|
+|x=x-1|x-=1|
+|x=x\*1|x*=1|
+|x=x/1|x/=1|
+
+also () are mandatory and {} are used to replace *then*, *do*, *end* using the following syntax:
+
+    function sum(a,b) { return a+b; }
+    
+    if (x==1) { print("one"); } elseif (x==2) { print("two"); } else { print("neither one nor two..."); }
+    
+    for (i=1,10) { print(i); }
+    
+    for (k,v in next,{1,2,3}) { print(k,v); }
+    
+    i=0; while(i<10) { i+=1; print(i); }
+    
