@@ -54,7 +54,7 @@ SYNTAX
 
 Apart from being able to execute plain text Lua scripts, eja has also its own special syntax, for this reason any file ending in .eja must be either a portable eja bytecode (--export) or must follow the below rules:
 
-|Lua|eja|
+|lua|eja|
 |---|---|
 |and|&&|
 |or|\|\||
@@ -64,7 +64,7 @@ Apart from being able to execute plain text Lua scripts, eja has also its own sp
 |x=x\*1|x*=1|
 |x=x/1|x/=1|
 
-also () are mandatory and {} are used to replace *then*, *do*, *end* using the following syntax:
+also **()** are mandatory and **{}** are used to replace **then**, **do**, **end** using the following syntax:
 
     function sum(a,b) { return a+b; }
     
