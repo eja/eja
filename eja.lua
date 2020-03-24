@@ -5637,6 +5637,8 @@ function ejaWebThread(client,ip,port)
    if web.path:sub(-1) == "/" then 
     if ejaFileCheck(eja.web.path..web.path..'index.eja') then
      web.path = web.path.."index.eja" 
+    elseif ejaFileCheck(eja.web.path..web.path..'index.lua') then
+     web.path = web.path.."index.lua"
     else
      web.path = web.path.."index.html" 
     end
@@ -5644,16 +5646,21 @@ function ejaWebThread(client,ip,port)
    local ext=web.path:match("([^.]+)$")
    web.headerOut['Content-Type']=eja.mime[ext]
    if ext == "eja" then web.headerOut['Content-Type']="application/eja" end
+   if ext == "lua" then web.headerOut['Content-Type']="application/lua" end
    if not web.headerOut['Content-Type'] then web.headerOut['Content-Type']="application/octet-stream" end
-   if web.headerOut['Content-Type']=="application/eja" then
+   if web.headerOut['Content-Type']=="application/eja" or web.headerOut['Content-Type']=="application/lua" then
     local run=nil
     local file=ejaSprintf("%s%s",eja.web.path,web.path:sub(2))
     if ejaFileCheck(file) then
-     web.headerOut['Content-Type']="text/html"
      local data=ejaFileRead(file)
      if data then
-      loadstring(ejaVmImport(data) or data)(web)
+      if web.headerOut['Content-Type']=="application/lua" then
+       load(data)(web)
+      else
+       load(ejaVmImport(data))(web)
+      end
      end
+     web.headerOut['Content-Type']="text/html"
     else
      web.status='500 Internal Server Error'
     end
@@ -5694,9 +5701,11 @@ function ejaWebThread(client,ip,port)
  --4XX
  if web.status:sub(1,1) == '4' then
   local status=web.status:sub(1,3)
-  local data=ejaFileRead(ejaSprintf('%s/%s.eja',eja.web.path,status))
-  if data then 
-   loadstring(ejaVmImport(data) or data)(web)
+  local file4xxPath=ejaSprintf('%s/%s',eja.web.path,status)
+  if ejaFileStat(file4xxPath..'.eja') then
+   load(ejaVmImport(ejaFileRead(file4xxPath..'.eja')))(web)
+  elseif ejaFileStat(file4xxPath..'.lua') then
+   loadfile(file4xxPath..'.lua')(web)
   elseif ejaFileCheck(ejaSprintf('%s/%s.html',eja.web.path,status)) then 
    web.status='301 Moved Permanently'
    web.headerOut['Location']=ejaSprintf('/%s.html',status)
