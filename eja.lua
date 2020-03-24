@@ -4535,28 +4535,6 @@ function ejaSha1(value)
  
 end 
  
--- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
-
-
-eja.lib.shell='ejaShell'
-eja.help.shell='interactive shell'
-
-
-function ejaShell()
- if eja.opt.shell == '' then
-  while true do 
-   io.stderr:write("> ");
-   local ejaShellInput=io.read()
-   if ejaShellInput and ejaShellInput ~= ".quit" then
-    loadstring(ejaShellInput)()
-   else 
-    break
-   end
-  end
- else
-  loadstring(eja.opt.shell)()
- end
-end
 -- Copyright (C) 2007-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
@@ -4957,7 +4935,7 @@ function ejaUntar(fileIn, dirOut)
  return i
 end
 
-eja.version='13.0323'
+eja.version='13.0324'
 -- Copyright (C) 2007-2020 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
@@ -5205,7 +5183,12 @@ function ejaVmFileLoad(fileName)
  local ff
  local dataIn=ejaFileRead(fileName) or fileName:sub(#eja.pathBin+1)
  if dataIn then
-  if fileName:match('%.eja$') then
+  if fileName:match('%.lua$') then
+   ff,ee=load(dataIn)
+   if not ff then
+    ejaError('[eja] vm, lua syntax error: %s',ee)
+   end
+  else
    if dataIn:match('^ejaVM') then
     ff,ee=load(ejaVmImport(dataIn))
     if not ff then
@@ -5216,11 +5199,6 @@ function ejaVmFileLoad(fileName)
     if not ff then
      ejaError('[eja] vm, eja syntax error: %s',ee)
     end
-   end
-  else
-   ff,ee=load(dataIn)
-   if not ff then
-    ejaError('[eja] vm, lua syntax error: %s',ee)
    end
   end
   if ff then
@@ -5250,7 +5228,7 @@ function ejaVmToLua(text)
     aIn[#aIn].space=v.data;
    else
     if v.type == "symbol" then
-     if v.data:match("};$") or v.data:match("%){$") then
+     if v.data:match("};$") or v.data:match("%){$") or v.data:match(";}$") then
       local s1,s2=v.data:match('(.-)(.)$')
       v.data=s1;
       aNext.type="symbol"
@@ -5303,22 +5281,19 @@ function ejaVmToLua(text)
   
   
   --function
-  if (functionArray[functionCount] >= 3 and v.type == "symbol" and v.data == "}") then
+  if (functionArray[functionCount] >= 2 and v.type == "symbol" and v.data == "}") then
    functionArray[functionCount]=functionArray[functionCount]-1;
-   if functionArray[functionCount] == 2 then 
+   if functionArray[functionCount] == 1 then 
     functionArray[functionCount]=0
     functionCount=functionCount-1
     line=" end ";
    end
   end
-  if (functionArray[functionCount] >= 2 and v.type == "symbol" and v.data == "{") then 
+  if (functionArray[functionCount] >= 1 and v.type == "symbol" and v.data == "{") then 
    functionArray[functionCount] = functionArray[functionCount] + 1;
-   if (functionArray[functionCount] == 3) then 
+   if (functionArray[functionCount] == 2) then 
     line="";
    end
-  end
-  if (functionArray[functionCount] == 1 and v.type == "ident") then
-   functionArray[functionCount]=2;
   end
   if (v.type == "keyword" and v.data == "function") then
    functionCount=functionCount+1;
@@ -5326,22 +5301,19 @@ function ejaVmToLua(text)
   end
 
   --while
-  if (whileArray[whileCount] >= 3 and v.type == "symbol" and v.data == "}") then
+  if (whileArray[whileCount] >= 2 and v.type == "symbol" and v.data == "}") then
    whileArray[whileCount]=whileArray[whileCount]-1;
-   if whileArray[whileCount] == 2 then 
+   if whileArray[whileCount] == 1 then 
     whileArray[whileCount]=0
     whileCount=whileCount-1
     line=" end ";
    end
   end
-  if (whileArray[whileCount] >= 2 and v.type == "symbol" and v.data == "{") then 
+  if (whileArray[whileCount] >= 1 and v.type == "symbol" and v.data == "{") then 
    whileArray[whileCount] = whileArray[whileCount] + 1;
-   if (whileArray[whileCount] == 3) then 
+   if (whileArray[whileCount] == 2) then 
     line=" do ";
    end
-  end
-  if (whileArray[whileCount] == 1 and v.type == "ident") then
-   whileArray[whileCount]=2;
   end
   if (v.type == "keyword" and v.data == "while") then
    whileCount=whileCount+1;
@@ -5382,7 +5354,7 @@ function ejaVmToLua(text)
    if conditionalArray[conditionalCount] == 1 then
     conditionalArray[conditionalCount]=0
     conditionalCount=conditionalCount-1
-    if aIn[k+1] and (aIn[k+1].data == "else" or aIn[k+1].data == "elseif")then
+    if aIn[k+1] and (aIn[k+1].data == "else" or aIn[k+1].data == "elseif") then
      line="";
     else
      line=" end "
