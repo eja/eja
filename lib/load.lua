@@ -9,7 +9,6 @@ if not eja then
  eja.help={}
  eja.mime={} 
  eja.mimeApp={}
- 
 end
 
 
@@ -17,20 +16,15 @@ function ejaLoad()
 
  if not eja.load then 
   eja.load=1
-  if not _G['ejaPid'] then
-   eja.rock=1
-  end
  else
   eja.load=eja.load+1
  end
- 
- if eja.rock and eja.load ~= 3 then return end
- if not eja.rock and eja.load ~= 4 then return end
 
- if eja.rock then
+ if eja.path or eja.load ~= 3 then return end
+
+ if not _G['ejaPid'] then
   if ejaModuleCheck("posix") then
    ejaRock()
-   eja.rock=eja.rock+1;
   else
    print("Please use eja or install luaposix.")
    os.exit()

@@ -470,20 +470,8 @@ int main (int argc, char **argv) {
  lua_pushcfunction(L, eja_socket_receive);		lua_setglobal(L, "ejaSocketReceive"); 
  lua_pushcfunction(L, eja_socket_send); 		lua_setglobal(L, "ejaSocketSend"); 
  
- lua_newtable(L);					lua_pushliteral(L,"opt");
- lua_newtable(L);	lua_settable(L,-3);		lua_pushliteral(L,"lib");
- lua_newtable(L);	lua_settable(L,-3);		lua_pushliteral(L,"help");
- lua_newtable(L);	lua_settable(L,-3);		lua_pushliteral(L,"meta");
- lua_newtable(L);	lua_settable(L,-3);		lua_pushliteral(L,"mime");
- lua_newtable(L);	lua_settable(L,-3);		lua_pushliteral(L,"mimeApp"); 
- lua_newtable(L);	lua_settable(L,-3);		lua_setglobal(L, "eja");
- 
  luaL_loadbuffer(L, luaBuf, sizeof(luaBuf), "ejaLua"); 
  lua_call(L,0,0);
-
- lua_getglobal(L, "ejaLoad");
- lua_call(L,0,0);
-
  lua_close(L);   
 }
 
