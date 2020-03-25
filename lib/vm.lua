@@ -275,6 +275,7 @@ function ejaVmToLua(text)
  local aIn={}
  local aOut={}
  local functionArray={}; functionArray[0]=0; functionCount=0;
+ local repeatArray={}; repeatArray[0]=0; repeatCount=0; 
  local whileArray={}; whileArray[0]=0; whileCount=0;
  local forArray={}; forArray[0]=0; forCount=0;
  local conditionalArray={}; conditionalArray[0]=0; conditionalCount=0;
@@ -327,6 +328,7 @@ function ejaVmToLua(text)
  
  for k,v in next,aIn do
   local line=v.data;
+  v.src=line;
   
   --check without whitespace
   if (v.type == "keyword" and v.data=="else" and aIn[k+1] and aIn[k+1].type == "keyword" and aIn[k+1].data == "if") then
@@ -360,6 +362,26 @@ function ejaVmToLua(text)
   if (v.type == "keyword" and v.data == "function") then
    functionCount=functionCount+1;
    functionArray[functionCount]=1;
+  end
+
+  --repeat
+  if (repeatArray[repeatCount] >= 2 and v.type == "symbol" and v.data == "}") then
+   repeatArray[repeatCount]=repeatArray[repeatCount]-1;
+   if repeatArray[repeatCount] == 1 then 
+    repeatArray[repeatCount]=0
+    repeatCount=repeatCount-1
+    line="";
+   end
+  end
+  if (repeatArray[repeatCount] >= 1 and v.type == "symbol" and v.data == "{") then 
+   repeatArray[repeatCount] = repeatArray[repeatCount] + 1;
+   if (repeatArray[repeatCount] == 2) then 
+    line="";
+   end
+  end
+  if (v.type == "keyword" and v.data == "repeat") then
+   repeatCount=repeatCount+1;
+   repeatArray[repeatCount]=1;
   end
 
   --while
@@ -482,7 +504,7 @@ function ejaVmToLua(text)
   if (v.line) then aOut[#aOut+1]="\n"; end
   if (v.space) then aOut[#aOut+1]=v.space; end
   if v.type and not v.type:match('string') then
-   ejaTrace('[eja] lexer syntax check: %010d %010d % 16s\t%s',ejaNumber(v.row),k,v.type,line)
+   ejaTrace('[eja] lexer syntax check: %010d %010d % 10s\t%s\t%s',ejaNumber(v.row),k,v.type,v.src,line)
   end
  end
  local out=table.concat(aOut);

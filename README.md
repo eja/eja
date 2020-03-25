@@ -76,3 +76,4 @@ also **()** are mandatory and **{}** are used to replace **then**, **do**, **end
     
     i=0; while(i<10) { i+=1; print(i); }
     
+    i=0; repeat { i+=1; print(i); } until (i>=10);
