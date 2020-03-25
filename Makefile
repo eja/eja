@@ -23,7 +23,7 @@ static:
 
 eja.lua: 
 	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua
-	@ cat lib/*.lua > eja.lua
+	@ cat lib/load.lua lib/*.lua lib/load.lua > eja.lua
 	
 eja.eja: eja.lua
 	@ eja --export eja.lua 
