@@ -99,7 +99,7 @@ ejaLoad();
 
 function ejaEncode(data, password)
  if ejaString(password) ~= "" then
-  return ejaBase64Encode(ejaAES().encrypt(password, data, 32, 2));
+  return ejaBase64Encode(ejaAES().encrypt(ejaSha256(password), data, 32, 2));
  else
   return ejaBase64Encode(data);
  end
@@ -108,7 +108,7 @@ end
 
 function ejaDecode(data, password)
  if ejaString(password) ~= "" then
-  return ejaAES().decrypt(password, ejaBase64Decode(data), 32, 2);
+  return ejaAES().decrypt(ejaSha256(password), ejaBase64Decode(data), 32, 2);
  else
   return ejaBase64Decode(data);
  end
