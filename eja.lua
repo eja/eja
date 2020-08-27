@@ -6215,7 +6215,7 @@ function ejaUntar(fileIn, dirOut)
  return i
 end
 
-eja.version='13.0325'
+eja.version='13.0827'
 -- Copyright (C) 2007-2020 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
