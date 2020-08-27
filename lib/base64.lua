@@ -2,7 +2,7 @@
 -- licensed under the terms of the LGPL2
 
 function ejaBase64Encode(data)
-    b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+ local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
     return ((data:gsub('.', function(x) 
         local r,b='',x:byte()
         for i=8,1,-1 do r=r..(b%2^i-b%2^(i-1)>0 and '1' or '0') end
@@ -16,7 +16,7 @@ function ejaBase64Encode(data)
 end
 
 function ejaBase64Decode(data)
-    b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+ local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
     data = string.gsub(data, '[^'..b..'=]', '')
     return (data:gsub('.', function(x)
         if (x == '=') then return '' end
