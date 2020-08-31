@@ -99,7 +99,7 @@ ejaLoad();
 
 function ejaEncode(data, password)
  if ejaString(password) ~= "" then
-  return ejaBase64Encode(ejaAES().encrypt(ejaSha256(password), data, 32, 2));
+  return ejaBase64Encode(ejaAES().ejaEncrypt(password, data, 32, 2));
  else
   return ejaBase64Encode(data);
  end
@@ -108,7 +108,7 @@ end
 
 function ejaDecode(data, password)
  if ejaString(password) ~= "" then
-  return ejaAES().decrypt(ejaSha256(password), ejaBase64Decode(data), 32, 2);
+  return ejaAES().ejaDecrypt(password, ejaBase64Decode(data), 32, 2);
  else
   return ejaBase64Decode(data);
  end
@@ -1228,6 +1228,63 @@ mhilbig@gmail.com
      
      return result;
  end
+ 
+ 
+ -- eja integration to comply with PKCS5 padding and sha256 password hashing
+ 
+ 
+ function public.ejaPwToKey(password,size)
+  return {string.byte(ejaSha256(password):gsub('..', function(cc) return string.char(tonumber(cc, 16)); end),1,size); }
+ end
+ 
+
+ function public.ejaEncrypt(password, data, size, mode)
+  local pBytes=(16-(#data % 16));
+  local pString="";
+  for i=1,pBytes do
+   pString=pString..string.char(pBytes);
+  end
+  paddedData=data..pString;
+
+  local key=public.ejaPwToKey(password,size)
+
+  if (mode == public.ECBMODE) then
+   return ciphermode.encryptString(key, paddedData, ciphermode.encryptECB);
+  elseif (mode == public.CBCMODE) then
+   return ciphermode.encryptString(key, paddedData, ciphermode.encryptCBC);
+  elseif (mode == public.OFBMODE) then
+   return ciphermode.encryptString(key, paddedData, ciphermode.encryptOFB);
+  elseif (mode == public.CFBMODE) then
+   return ciphermode.encryptString(key, paddedData, ciphermode.encryptCFB);
+  else
+   return nil;
+  end
+ end
+ 
+ 
+ function public.ejaDecrypt(password, data, size, mode)
+  local key=public.ejaPwToKey(password,size)
+  local plain;
+  if (mode == public.ECBMODE) then
+   plain = ciphermode.decryptString(key, data, ciphermode.decryptECB);
+  elseif (mode == public.CBCMODE) then
+   plain = ciphermode.decryptString(key, data, ciphermode.decryptCBC);
+  elseif (mode == public.OFBMODE) then
+   plain = ciphermode.decryptString(key, data, ciphermode.decryptOFB);
+  elseif (mode == public.CFBMODE) then
+   plain = ciphermode.decryptString(key, data, ciphermode.decryptCFB);
+  end
+
+  local pBytes=string.sub(plain,-1);
+  if pBytes then
+   pBytes=string.byte(pBytes);
+   if pBytes > 0 and pBytes < #plain then
+    plain=plain:sub(1,-1-pBytes);
+   end
+  end
+
+  return plain
+ end 
  
  return public;
 
@@ -6215,7 +6272,7 @@ function ejaUntar(fileIn, dirOut)
  return i
 end
 
-eja.version='13.0827'
+eja.version='13.0831'
 -- Copyright (C) 2007-2020 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
