@@ -6,6 +6,7 @@ if not eja then
  eja={}
  eja.opt={}
  eja.lib={} 
+ eja.pid={}
  eja.help={}
  eja.mime={} 
  eja.mimeApp={}
