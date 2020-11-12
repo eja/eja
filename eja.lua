@@ -32,7 +32,7 @@ function ejaLoad()
   end
  end
 
- eja.path=eja.path or _eja_path or '/'
+ eja.path=_eja_path or '/'
  eja.pathBin=eja.pathBin or eja.path..'/usr/bin/'
  eja.pathEtc=eja.pathEtc or eja.path..'/etc/eja/'
  eja.pathLib=eja.pathLib or eja.path..'/usr/lib/eja/'
@@ -2889,7 +2889,7 @@ function ejaLoad()
   end
  end
 
- eja.path=eja.path or _eja_path or '/'
+ eja.path=_eja_path or '/'
  eja.pathBin=eja.pathBin or eja.path..'/usr/bin/'
  eja.pathEtc=eja.pathEtc or eja.path..'/etc/eja/'
  eja.pathLib=eja.pathLib or eja.path..'/usr/lib/eja/'
@@ -7509,7 +7509,7 @@ function ejaLoad()
   end
  end
 
- eja.path=eja.path or _eja_path or '/'
+ eja.path=_eja_path or '/'
  eja.pathBin=eja.pathBin or eja.path..'/usr/bin/'
  eja.pathEtc=eja.pathEtc or eja.path..'/etc/eja/'
  eja.pathLib=eja.pathLib or eja.path..'/usr/lib/eja/'
