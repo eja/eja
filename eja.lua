@@ -6272,7 +6272,7 @@ function ejaUntar(fileIn, dirOut)
  return i
 end
 
-eja.version='13.0831'
+eja.version='13.1112'
 -- Copyright (C) 2007-2020 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
@@ -6520,7 +6520,7 @@ function ejaVmFileLoad(fileName)
  local ff
  local dataIn=ejaFileRead(fileName) or fileName:sub(#eja.pathBin+1)
  if dataIn then
-  if fileName:match('%.lua$') then
+  if not fileName:match('%.eja$') then
    ff,ee=load(dataIn)
    if not ff then
     ejaError('[eja] vm, lua syntax error: %s',ee)
