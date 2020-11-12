@@ -32,23 +32,13 @@ function ejaLoad()
   end
  end
 
- eja.path=_eja_path or '/opt/eja.it/'
- if eja.path == '/' or not ejaFileStat(eja.path) then
-  eja.path='/'
-  eja.pathBin=eja.path..'/usr/bin/'
-  eja.pathEtc=eja.path..'/etc/eja/'
-  eja.pathLib=eja.path..'/usr/lib/eja/'
-  eja.pathVar=eja.path..'/var/eja/'
-  eja.pathTmp='/tmp/'
-  eja.pathLock='/var/lock/'
- else
-  eja.pathBin=eja.path..'/bin/'
-  eja.pathEtc=eja.path..'/etc/'
-  eja.pathLib=eja.path..'/lib/'
-  eja.pathVar=eja.path..'/var/'
-  eja.pathTmp='/tmp/'
-  eja.pathLock='/tmp/'
- end
+ eja.path=_eja_path or '/'
+ eja.pathBin=eja.path..'/usr/bin/'
+ eja.pathEtc=eja.path..'/etc/eja/'
+ eja.pathLib=eja.path..'/usr/lib/eja/'
+ eja.pathVar=eja.path..'/var/eja/'
+ eja.pathTmp='/tmp/'
+ eja.pathLock='/var/lock/'
  
  package.cpath=eja.pathLib..'?.so;'..package.cpath
  
