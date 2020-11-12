@@ -32,13 +32,13 @@ function ejaLoad()
   end
  end
 
- eja.path=_eja_path or '/'
- eja.pathBin=eja.path..'/usr/bin/'
- eja.pathEtc=eja.path..'/etc/eja/'
- eja.pathLib=eja.path..'/usr/lib/eja/'
- eja.pathVar=eja.path..'/var/eja/'
- eja.pathTmp='/tmp/'
- eja.pathLock='/var/lock/'
+ eja.path=eja.path or _eja_path or '/'
+ eja.pathBin=eja.pathBin or eja.path..'/usr/bin/'
+ eja.pathEtc=eja.pathEtc or eja.path..'/etc/eja/'
+ eja.pathLib=eja.pathLib or eja.path..'/usr/lib/eja/'
+ eja.pathVar=eja.pathVar or eja.path..'/var/eja/'
+ eja.pathTmp=eja.pathTmp or eja.path..'/tmp/'
+ eja.pathLock=eja.pathLock or eja.path..'/var/lock/'
  
  package.cpath=eja.pathLib..'?.so;'..package.cpath
  
