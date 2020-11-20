@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <net/if.h>
+#include <arpa/inet.h>
                      
 #include "lua.h"
 #include "lauxlib.h"
