@@ -368,7 +368,7 @@ function ejaWebGet(value,...)
  local data=nil
  local header=nil
  if url:match('^https') then
-  local file=os.tmpname()
+  local file=ejaFileTmp()
   local cmd=nil
   if ejaFileStat('/usr/bin/curl') then
    header="console: curl"

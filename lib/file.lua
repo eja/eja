@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2018 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2020 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 -- from eja.c
@@ -83,6 +83,15 @@ end
 function ejaFileLoad(f)
  local ejaScriptRun=assert(loadfile(f))
  if ejaScriptRun then ejaScriptRun() end
+end
+
+
+function ejaFileTmp() 
+ if (ejaFileStat("/tmp")) then
+  return os.tmpname();
+ else
+  return eja.pathTmp..'/eja.tmp.file.'..(os.time()+os.clock());
+ end
 end
 
 
