@@ -10,9 +10,34 @@ MYCFLAGS := "-DLUA_USE_POSIX -DLUA_USE_DLOPEN"
 PKGCONFIG_LIBS = $(shell pkg-config --silence-errors --libs lua5.2)
 PKGCONFIG_CFLAGS = $(shell pkg-config --silence-errors --cflags lua5.2)
 
-ifdef PREFIX
- CFLAGS+="-D_EJA_PATH=$(PREFIX)"
+ifdef EJA_PATH
+ CFLAGS+="-DEJA_PATH=$(EJA_PATH)"
 endif
+
+ifdef EJA_PATH_BIN
+ CFLAGS+="-DEJA_PATH_BIN=$(EJA_PATH_BIN)"
+endif
+
+ifdef EJA_PATH_ETC
+ CFLAGS+="-DEJA_PATH_ETC=$(EJA_PATH_ETC)"
+endif
+
+ifdef EJA_PATH_LIB
+ CFLAGS+="-DEJA_PATH_LIB=$(EJA_PATH_LIB)"
+endif
+
+ifdef EJA_PATH_VAR
+ CFLAGS+="-DEJA_PATH_VAR=$(EJA_PATH_VAR)"
+endif
+
+ifdef EJA_PATH_TMP
+ CFLAGS+="-DEJA_PATH_TMP=$(EJA_PATH_TMP)"
+endif
+
+ifdef EJA_PATH_LOCK
+ CFLAGS+="-DEJA_PATH_LOCK=$(EJA_PATH_LOCK)"
+endif
+
 
 
 all: eja

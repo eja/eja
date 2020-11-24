@@ -17,6 +17,9 @@
 #include "lauxlib.h"
 #include "eja.h"
 
+#define xstr(s) str(s)
+#define str(s) #s
+
 
 static int eja_fork(lua_State *L) {
  lua_pushinteger(L, fork() );
@@ -442,11 +445,39 @@ int main (int argc, char **argv) {
  }
  lua_setglobal(L, "arg");
  
- #ifdef _EJA_PATH
- #define xstr(s) str(s)
- #define str(s) #s
-  lua_pushstring(L, xstr(_EJA_PATH) );
+ #ifdef EJA_PATH
+  lua_pushstring(L, xstr(EJA_PATH) );
   lua_setglobal(L, "_eja_path");
+ #endif   
+
+ #ifdef EJA_PATH_BIN
+  lua_pushstring(L, xstr(EJA_PATH_BIN) );
+  lua_setglobal(L, "_eja_path_bin");
+ #endif   
+
+ #ifdef EJA_PATH_ETC
+  lua_pushstring(L, xstr(EJA_PATH_ETC) );
+  lua_setglobal(L, "_eja_path_etc");
+ #endif   
+
+ #ifdef EJA_PATH_LIB
+  lua_pushstring(L, xstr(EJA_PATH_LIB) );
+  lua_setglobal(L, "_eja_path_LIB");
+ #endif   
+
+ #ifdef EJA_PATH_VAR
+  lua_pushstring(L, xstr(EJA_PATH_VAR) );
+  lua_setglobal(L, "_eja_path_VAR");
+ #endif   
+
+ #ifdef EJA_PATH_TMP
+  lua_pushstring(L, xstr(EJA_PATH_TMP) );
+  lua_setglobal(L, "_eja_path_tmp");
+ #endif   
+
+ #ifdef EJA_PATH_LOCK
+  lua_pushstring(L, xstr(EJA_PATH_LOCK) );
+  lua_setglobal(L, "_eja_path_lock");
  #endif   
 
  lua_pushcfunction(L, eja_pid);				lua_setglobal(L, "ejaPid");
