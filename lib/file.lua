@@ -168,3 +168,13 @@ function ejaDirTree(path)
  end
  return out
 end
+
+
+function ejaDirCheck(path)
+ local stat=ejaFileStat(path);
+ if stat and ejaSprintf('%o',stat.mode):sub(-5,1) == '4' then
+  return true
+ else
+  return false
+ end
+end

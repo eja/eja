@@ -1571,6 +1571,16 @@ function ejaDirTree(path)
  end
  return out
 end
+
+
+function ejaDirCheck(path)
+ local stat=ejaFileStat(path);
+ if stat and ejaSprintf('%o',stat.mode):sub(-5,1) == '4' then
+  return true
+ else
+  return false
+ end
+end
 -- Copyright (C) 2019 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
@@ -6263,7 +6273,7 @@ function ejaUntar(fileIn, dirOut)
  return i
 end
 
-eja.version='13.1124'
+eja.version='13.1125'
 -- Copyright (C) 2007-2020 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
@@ -6790,16 +6800,33 @@ eja.help.webPort='web server port {35248}'
 eja.help.webHost='web server ip {0.0.0.0}'
 eja.help.webPath='web server path'
 eja.help.webSize='web buffer size {8192}'
+eja.help.webList='directory list mode [y/n] {n}'
+eja.help.web='web server start in foreground {current path, directory list}'
+
 
 function ejaWeb()
  eja.web={}
  eja.web.count=0
  eja.web.timeout=100
+ eja.web.list=eja.opt.webList or nil
  eja.web.host=eja.opt.webHost or '0.0.0.0'
  eja.web.port=eja.opt.webPort or 35248
  eja.web.path=eja.opt.webPath or eja.pathVar..'/web/'
 
- ejaInfo("[web] daemon on port %d and path %s",eja.web.port, eja.web.path)
+ if ejaString(eja.opt.webList) ~= "y" then 
+  eja.web.list=false; 
+ else 
+  eja.web.list=true;
+ end
+
+ if eja.opt.web then
+  if not eja.opt.webPath then eja.web.path="./"; end
+  if ejaString(eja.opt.webList) ~= "n" then eja.web.list=true; end
+ end
+
+ ejaInfo("[web] daemon on port %d and path %s",eja.web.port, eja.web.path);
+ ejaDebug("[web] host: %s, directory list: %s", eja.web.host, eja.web.list);
+
  local client=nil  
  local s=ejaSocketOpen(AF_INET,SOCK_STREAM,0)
  ejaSocketOptionSet(s,SOL_SOCKET,SO_REUSEADDR,1) 
@@ -7010,8 +7037,12 @@ function ejaWebThread(client,ip,port)
       end
      end
      if not stat or not web.file then
-      web.file=''
-      web.status='404 Not Found'
+      if eja.web.list and (stat or web.file:match('index.html$')) then
+	web.data=ejaWebList(eja.web.path, web.path);       
+      else
+       web.status='404 Not Found'
+      end
+      web.file=''  
      else
       web.headerOut['Cache-Control']='max-age=3600'
      end
@@ -7149,18 +7180,18 @@ function ejaWebGet(value,...)
  local header=nil
  if url:match('^https') then
   local file=ejaFileTmp()
-  local cmd=nil
-  if ejaFileStat('/usr/bin/curl') then
+  ejaExecute([[curl -s "%s" > %s]],url,file);
+  data=ejaFileRead(file);
+  if data then
    header="console: curl"
-   cmd=ejaSprintf([[curl -s "%s" > %s]],url,file)
-  elseif ejaFileStat('/usr/bin/wget') or ejaFileStat('/bin/wget') then
-   header="console: wget"
-   cmd=ejaSprintf([[wget -qO %s "%s"]],file,url)
+  else
+   ejaExecute([[wget -qO %s "%s"]],file,url);
+   data=ejaFileRead(file);
+   if data then
+    header="console: wget"
+   end
   end
-  if cmd then
-   ejaTrace('[web] web get cmd: %s',cmd)
-   ejaExecute(cmd)
-   data=ejaFileRead(file)
+  if data then 
    ejaFileRemove(file)
   end
  else 
@@ -7244,6 +7275,22 @@ function ejaWebSocketProxy(lHost, lPort, rHost, rPort, inMode, outMode, lTimeout
    end
   end
  end
+end
+
+
+function ejaWebList(pathLocal, pathWeb)
+ local a={}
+ local path=pathLocal..ejaString(pathWeb):gsub("index.html$","")..("/"):gsub("//","");
+ 
+ a[#a+1]='<html><body><ul>\n';
+ for k,v in next,ejaDirTableSort(path) do
+  local file=(path.."/"..v):gsub("//","/"):gsub("//","/"):gsub("//","/"); 
+  if ejaDirCheck(file) then v=v..'/'; end
+  a[#a+1]=ejaSprintf('<li><a href="%s">%s</a></li>\n',v,v);
+ end
+ a[#a+1]='</ul></body></html>';
+
+ return table.concat(a);
 end
 -- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
 
