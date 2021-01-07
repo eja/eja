@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2020 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2021 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.lib.help='ejaHelp'
@@ -39,10 +39,19 @@ end
 
 
 function ejaRun(opt)
+ local a={}
  for k,v in next,opt do
   if eja.lib[k] and type(_G[eja.lib[k]]) == 'function' then 
-   _G[eja.lib[k]]()
+   if tonumber(v) then
+    a[v]=k;
+   else
+    a[#a+1]=k;
+   end
   end 
+ end
+ for k,v in next,a do
+  ejaTrace('[eja] running function %s with id %s',v,k);
+  _G[eja.lib[v]]()
  end
 end
 
