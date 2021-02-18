@@ -6282,8 +6282,8 @@ function ejaUntar(fileIn, dirOut)
  return i
 end
 
-eja.version='14.0107'
--- Copyright (C) 2007-2020 by Ubaldo Porcheddu <ubaldo@eja.it>
+eja.version='14.0218'
+-- Copyright (C) 2007-2021 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.lib.export='ejaVmFileExport'
@@ -6459,7 +6459,7 @@ end
 
 function ejaVmImport(data)
  local out=nil
- if data:match('^ejaVM') then
+ if data:sub(0,5) == 'ejaVM' then
   local o={}
   local h=''
   o[#o+1]=string.dump(load("do end")):sub(1,18)
@@ -6478,7 +6478,11 @@ function ejaVmImport(data)
   end 
   return table.concat(o)
  else
-  return ejaVmToLua(data)
+  if data:sub(0,9) == "--[[lua]]" then
+   return data
+  else
+   return ejaVmToLua(data)
+  end
  end
 end
 
@@ -6508,7 +6512,7 @@ function ejaVmFileExport(inputFile,outputName)
    if outputName:match('%.lua$') then 
     outputName=outputName:sub(1,-5) 
     data=ejaVmExport(string.dump(load(data)))			--lua
-   elseif not data:match('^ejaVM') then				--eja (no bytecode)
+   elseif not data:sub(0,5) == 'ejaVM' then			--eja (no bytecode)
     data=ejaVmExport(string.dump(load(ejaVmToLua(data))))
    else
     ejaWarn('[eja] vm, input file not supported or already in eja bytecode.')
@@ -6530,13 +6534,13 @@ function ejaVmFileLoad(fileName)
  local ff
  local dataIn=ejaFileRead(fileName) or fileName:sub(#eja.pathBin+1)
  if dataIn then
-  if not fileName:match('%.eja$') then
+  if not fileName:match('%.eja$') or dataIn:sub(0,9) == "--[[lua]]" then
    ff,ee=load(dataIn)
    if not ff then
     ejaError('[eja] vm, lua syntax error: %s',ee)
    end
   else
-   if dataIn:match('^ejaVM') then
+   if dataIn:sub(0,5) == 'ejaVM' then
     ff,ee=load(ejaVmImport(dataIn))
     if not ff then
      ejaError('[eja] vm, corrupted vm file: %s',ee)
