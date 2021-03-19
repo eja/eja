@@ -6282,7 +6282,7 @@ function ejaUntar(fileIn, dirOut)
  return i
 end
 
-eja.version='14.0218'
+eja.version='14.0319'
 -- Copyright (C) 2007-2021 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
@@ -7305,55 +7305,62 @@ function ejaWebList(pathLocal, pathWeb)
 
  return table.concat(a);
 end
--- Copyright (C) 2007-2014 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2021 by Ubaldo Porcheddu <ubaldo@eja.it>
+
+
+function ejaWebAuthHashCheck(key, path, ip, hash)
+ local auth=-1;
+ local path=path or "";
+ local hash=hash or "";
+ local key=key or "";
+ local ip=ip or "";
+ for i=10,5,-1 do
+  timeN=ejaString(os.time()):sub(0, i);
+  timeA=ejaNumber(timeN)-1;
+  timeZ=ejaNumber(timeN)+1;
+  if ejaSha256(key..ip..timeN..path) == hash or ejaSha256(key..ip..timeA..path) == hash or ejaSha256(key..ip..timeZ..path) == hash then
+   auth=i-4;
+   break;
+  end
+ end
+ if auth < 1 and ejaSha256(key..ip..path) == hash then
+  auth=1;
+ end
+ return auth;
+end
+
+
+function ejaWebAuthHashCreate(key, path, ip, power)
+ local path=path or "";
+ local key=key or "";
+ local ip=ip or "";
+ return ejaSha256(key..ip..ejaString(os.time()):sub(1, ejaNumber(power))..path);
+end
+
 
 function ejaWebAuth(web)
- local auth=web.path:match('^/(%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x)/')  
- if auth then
-  web.auth=-1
-  web.path=web.path:sub(66)
-  local authData=ejaFileRead(eja.pathEtc..'eja.web')
-  local check=web.uri:sub(66)
-  local powerMax=5
-  for k,v in authData:gmatch('([%x]+) ?([0-9]*)\n?') do
-   if ejaNumber(v) > powerMax then powerMax=ejaNumber(v) end
-   if ejaSha256(k..web.remoteIp..check)==auth then 
-    web.auth=1*v; 
-    web.authKey=k;
-    break
-   elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,6)-1)..check)==auth then
-    web.auth=2*v
-    web.authKey=k;
-    break
-   elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,6)+1)..check)==auth then
-    web.auth=2*v
-    web.authKey=k;
-    break
-   elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,6)-0)..check)==auth then
-    web.auth=3*v
-    web.authKey=k;
-    break
-   elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,7)-0)..check)==auth then
-    web.auth=4*v
-    web.authKey=k;
-    break
-   elseif ejaSha256(k..web.remoteIp..(tostring(os.time()):sub(0,8)-0)..check)==auth then
-    web.auth=5*v
-    web.authKey=k;
-    break
-   end
-  end
-  if web.path:sub(-1) == "/" then
-   if web.auth >= powerMax then
-    ejaRun(web.opt)
-    web.headerOut['Connection']='Close'
-   else
-    web.status='419 Authentication Timeout'
+ local auth,path=web.path:match('^/('..string.rep('%x',64)..')(/.*)$');
+ if auth and path then
+  web.auth=-1;
+  web.path=path;
+  local powerMax=5;
+  local authData=ejaFileRead(eja.pathEtc..'eja.web');
+  local ip=web.remoteIp;
+  if authData then
+   for k,v in authData:gmatch('([%x]+) ?([0-9]*)\n?') do
+    if ejaNumber(v) > powerMax then powerMax=v; end
+    local value=ejaWebAuthHashCheck(k, path, ip, auth);
+    if value > 0 then
+     web.auth=value*v;
+     web.authKey=k;
+     break;
+    end
    end
   end
  end
  return web
 end
+
 -- Copyright (C) 2019 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
