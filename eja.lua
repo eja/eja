@@ -3012,7 +3012,7 @@ function ejaTrace(value,...)
 end
 
 
--- Copyright (C) 2018-2019 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2018-2021 by Ubaldo Porcheddu <ubaldo@eja.it>
 --
 -- die Räubertochter
 
@@ -3022,7 +3022,7 @@ eja.maria = {
 }
 
 
-function ejaMariaOpen(host,port,user,pass,database,charset)
+function ejaMariaOpen(host, port, user, pass, database, charset, size)
  local db=ejaMaria():new()
  db:connect({
   host=host or "127.0.0.1",
@@ -3030,7 +3030,8 @@ function ejaMariaOpen(host,port,user,pass,database,charset)
   user=user,
   password=pass,
   database=database,
-  charset=charset or "utf8"
+  charset=charset or "utf8",
+  max_packet_size=size or (1024*1024)
  })
  if db and ejaNumber(db.state) > 0 then
   eja.maria.db=db
@@ -6282,7 +6283,7 @@ function ejaUntar(fileIn, dirOut)
  return i
 end
 
-eja.version='14.0319'
+eja.version='14.0330'
 -- Copyright (C) 2007-2021 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
