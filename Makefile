@@ -54,7 +54,7 @@ eja.eja: eja.lua
 	@ eja --export eja.lua 
 	
 eja:	eja.lua
-	@od -v -t x1 eja.lua | awk '{for(i=2;i<=NF;i++){o=o",0x"$$i}}END{print"char luaBuf[]={"substr(o,2)"};";}' > eja.h
+	@od -v -t x1 -A n -w1 eja.lua | awk 'BEGIN{printf"char luaBuf[]={"}{printf"0x%s,",$$1}END{printf"0x0A};";}' > eja.h
 ifeq ($(PKGCONFIG_LIBS),)	
 	cd lua/src && make generic CC=$(CC) MYCFLAGS=$(MYCFLAGS) MYLIBS="$(MYLIBS)"
 	$(CC) $(CFLAGS) $(CPPFLAGS) -g -o eja eja.c lua/src/liblua.a -Ilua/src/ -lm $(MYLIBS) $(LDFLAGS)
