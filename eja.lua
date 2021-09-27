@@ -5163,7 +5163,7 @@ function ejaSha256(value)
  -- append length of message (before pre-processing), in bits, as 64-bit
  -- big-endian integer
  local function preproc (msg, len)
-  local extra = 64 - ((len + 1 + 8) % 64)
+  local extra = -(len + 1 + 8) % 64
   len = num2s(8 * len, 8)    -- original len in bits, coded
   msg = msg .. "\128" .. string.rep("\0", extra) .. len
   assert(#msg % 64 == 0)
@@ -6283,7 +6283,7 @@ function ejaUntar(fileIn, dirOut)
  return i
 end
 
-eja.version='14.0622'
+eja.version='14.0927'
 -- Copyright (C) 2007-2021 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
