@@ -82,6 +82,7 @@ git:	eja.lua eja.eja
 
 
 update: clean git
+	@ git remote set-url origin git@github.com:eja/eja.git
 	@ git push
 	
 
