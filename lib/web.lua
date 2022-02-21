@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2020 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2022 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.lib.web='ejaWeb'
@@ -225,37 +225,36 @@ function ejaWebThread(client,ip,port)
        load(ejaVmImport(data))(web)
       end
      end
-     web.headerOut['Content-Type']="text/html"
+     if ejaString(web.headerOut['Content-Type']) == "" then
+      web.headerOut['Content-Type']="text/html"
+     end
     else
      web.status='500 Internal Server Error'
     end
    elseif eja.mimeApp[web.headerOut['Content-Type']] then
     web=_G[eja.mimeApp[web.headerOut['Content-Type']]](web)
    else
-    if eja.opt.webCns then web=ejaWebCns(web) end
-    if not web.cns then
-     web.file=ejaSprintf('%s/%s',eja.web.path,web.path)
-     local stat=ejaFileStat(web.file)
-     if stat then
-      if ejaSprintf('%o',stat.mode):sub(-5,1)=='4' then 
-       web.file=ejaSprintf('%s/%s/index.html',eja.web.path,web.path)
-       if not ejaFileStat(web.file) then 
-        web.file=nil
-       else
-        web.headerOut['Content-Type']="text/html"
-       end
-      end
-     end
-     if not stat or not web.file then
-      if eja.web.list and (stat or web.file:match('index.html$')) then
-	web.data=ejaWebList(eja.web.path, web.path);       
+    web.file=ejaSprintf('%s/%s',eja.web.path,web.path)
+    local stat=ejaFileStat(web.file)
+    if stat then
+     if ejaSprintf('%o',stat.mode):sub(-5,1)=='4' then 
+      web.file=ejaSprintf('%s/%s/index.html',eja.web.path,web.path)
+      if not ejaFileStat(web.file) then 
+       web.file=nil
       else
-       web.status='404 Not Found'
+       web.headerOut['Content-Type']="text/html"
       end
-      web.file=''  
-     else
-      web.headerOut['Cache-Control']='max-age=3600'
      end
+    end
+    if not stat or not web.file then
+     if eja.web.list and (stat or web.file:match('index.html$')) then
+      web.data=ejaWebList(eja.web.path, web.path);       
+     else
+      web.status='404 Not Found'
+     end
+     web.file=''  
+    else
+     web.headerOut['Cache-Control']='max-age=3600'
     end
    end
       
