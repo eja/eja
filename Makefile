@@ -75,19 +75,3 @@ install: eja
 	@ install eja $(DESTDIR)$(bindir)
 	@ install doc/eja.1 $(DESTDIR)$(man1dir)
 
-
-git:	eja.lua eja.eja
-	@ git add .
-	@- git commit
-
-
-update: clean git
-	@ git remote set-url origin git@github.com:eja/eja.git
-	@ git push
-	
-
-release: clean git 
-	make update
-	tar zcR ../eja > /tmp/eja-$(shell cat .version).tar.gz
-	scp /tmp/eja-$(shell cat .version).tar.gz ubaldu@frs.sourceforge.net:/home/frs/project/eja/		
-
