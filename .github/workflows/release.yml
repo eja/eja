@@ -1,0 +1,78 @@
+name: Build eja
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-linux-amd64:
+    name: Build for Linux AMD64
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Build eja for Linux AMD64
+        run: make static 
+        
+      - name: Compress artifact
+        run: tar -czvf eja-linux-amd64.tar.gz eja
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: eja-linux-amd64.tar.gz
+          asset_name: eja-linux-amd64.tar.gz
+          asset_content_type: application/octet-stream
+
+  build-linux-arm64:
+    name: Build for Linux ARM64
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Build eja for Linux ARM64
+        run: make static
+
+      - name: Compress artifact
+        run: tar -czvf eja-linux-arm64.tar.gz eja
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: eja-linux-arm64.tar.gz
+          asset_name: eja-linux-arm64.tar.gz
+          asset_content_type: application/octet-stream
+
+  build-linux-arm32:
+    name: Build for Linux ARM32
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Install ARM32 cross-compiler
+        run: sudo apt-get update && sudo apt-get install -y gcc-arm-linux-gnueabi
+
+      - name: Build eja for Linux ARM32
+        run: CC=arm-linux-gnueabi-gcc make static
+
+      - name: Compress artifact
+        run: tar -czvf eja-linux-arm32.tar.gz eja
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: eja-linux-arm32.tar.gz
+          asset_name: eja-linux-arm32.tar.gz
+          asset_content_type: application/octet-stream
