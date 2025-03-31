@@ -17,7 +17,7 @@ If luarocks is available:
 
 Othewise:
 
-    git clone https://github.com/ubaldus/eja.git
+    git clone https://github.com/eja/eja.git
     cd eja
     make
     sudo make install
