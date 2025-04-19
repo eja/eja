@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2021 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2025 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.lib.help='ejaHelp'
@@ -15,7 +15,7 @@ eja.help.init='load init configuration {eja.init}'
 
 
 function ejaHelp()      
- ejaPrintf('Copyright: 2007-2021 by Ubaldo Porcheddu <ubaldo@eja.it>\nVersion:   %s\nUsage:     eja [script] [options]\n',eja.version)
+ ejaPrintf('Copyright: 2007-2025 by Ubaldo Porcheddu <ubaldo@eja.it>\nVersion:   %s\nUsage:     eja [script] [options]\n',eja.version)
  if eja.opt.help and eja.opt.help == '' then eja.opt.help=nil end
  if not eja.opt.help or eja.opt.help == 'full' then
   for k,v in next,ejaTableKeys(ejaTableSort(eja.help)) do

@@ -4,7 +4,7 @@ sharedir = $(prefix)/share
 mandir = $(sharedir)/man
 man1dir = $(mandir)/man1
 
-MYLIBS := -O2 -ldl -Wl,-E -w
+MYLIBS := -O2 -ldl -w
 MYCFLAGS := "-DLUA_USE_POSIX -DLUA_USE_DLOPEN"
 
 PKGCONFIG_LIBS = $(shell pkg-config --silence-errors --libs lua5.2)
@@ -46,15 +46,9 @@ all: eja
 static:
 	make MYCFLAGS="-DLUA_USE_POSIX" MYLIBS="-static -w"
 
-eja.lua: 
-	@ echo "eja.version='$(shell cat .version)'" > lib/version.lua
-	@ cat lib/load.lua lib/*.lua lib/load.lua > eja.lua
-	
-eja.eja: eja.lua
-	@ eja --export eja.lua 
-	
-eja:	eja.lua
-	@od -v -t x1 -A n -w1 eja.lua | awk 'BEGIN{printf"char luaBuf[]={"}{printf"0x%s,",$$1}END{printf"0x0A};";}' > eja.h
+eja:
+	@echo "eja.version='$(shell cat .version)'" > lib/version.lua
+	@cat lib/load.lua lib/*.lua lib/load.lua | hexdump -v -e '1/1 "0x%02x,\n"' | awk 'BEGIN{printf "char luaBuf[]={"}{printf "%s",$$0}END{printf "0x0A};"}' > eja.h
 ifeq ($(PKGCONFIG_LIBS),)	
 	cd lua/src && make generic CC=$(CC) MYCFLAGS=$(MYCFLAGS) MYLIBS="$(MYLIBS)"
 	$(CC) $(CFLAGS) $(CPPFLAGS) -g -o eja eja.c lua/src/liblua.a -Ilua/src/ -lm $(MYLIBS) $(LDFLAGS)
@@ -64,7 +58,8 @@ endif
 	
 	
 clean:
-	@- rm -f eja eja.h eja.lua eja.eja
+	@- rm -f eja eja.h
+	@- rm -rf eja.dSYM
 ifeq ($(PKGCONFIG_LIBS),)		
 	@- cd lua && make clean
 endif	

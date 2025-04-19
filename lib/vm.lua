@@ -1,11 +1,9 @@
--- Copyright (C) 2007-2021 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2025 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.lib.export='ejaVmFileExport'
-eja.lib.exportLua='ejaVmExportLua'
-eja.help.export='input text eja/lua file to export into eja bytecode'
+eja.help.export='input lua file to export as eja bytecode'
 eja.help.exportName='exported file name'
-eja.help.exportLua='export plain text eja file to lua'
 
 
 function ejaVmInt2Hex(int) 	return ejaSprintf('i%X',int) end
@@ -201,23 +199,6 @@ function ejaVmImport(data)
  end
 end
 
-
-function ejaVmExportLua(inputFile,outputName)
- local outputName=outputName or eja.opt.exportName or nil
- local inputFile=inputFile or eja.opt.exportLua
- local data=ejaFileRead(inputFile)
- if data then
-  if outputName then
-   ejaFileWrite(outputName..".lua",ejaVmToLua(data))
-  else
-   print(ejaVmToLua(data))
-  end
- else
-  ejaError('[eja] vm, input file not found.')
- end
-end
-
-
 function ejaVmFileExport(inputFile,outputName)
  local outputName=outputName or eja.opt.exportName or eja.opt.export or nil
  local inputFile=inputFile or eja.opt.export
@@ -226,9 +207,7 @@ function ejaVmFileExport(inputFile,outputName)
   if data then
    if outputName:match('%.lua$') then 
     outputName=outputName:sub(1,-5) 
-    data=ejaVmExport(string.dump(load(data)))			--lua
-   elseif not data:sub(0,5) == 'ejaVM' then			--eja (no bytecode)
-    data=ejaVmExport(string.dump(load(ejaVmToLua(data))))
+    data=ejaVmExport(string.dump(load(data)))
    else
     ejaWarn('[eja] vm, input file not supported or already in eja bytecode.')
    end
@@ -275,7 +254,6 @@ end
 
 
 function ejaVmToLua(text)
- local a=ejaLuaLexer(text);
  local aIn={}
  local aOut={}
  local functionArray={}; functionArray[0]=0; functionCount=0;
@@ -286,7 +264,7 @@ function ejaVmToLua(text)
  local elseArray={}; elseArray[0]=0; elseCount=0;
  local elseifArray={}; elseifArray[0]=0; elseifCount=0;
 
- for rowNumber,row in next,a do 
+ for rowNumber,row in next,text do 
   for k,v in next,row do
    v.row=rowNumber
   --check with whitespace
