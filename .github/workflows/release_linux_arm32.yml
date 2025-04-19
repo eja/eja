@@ -10,7 +10,6 @@ env:
 
 jobs:
   build:
-    name: Build for Linux ARM32
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -20,7 +19,7 @@ jobs:
         run: |
             sudo apt-get update && sudo apt-get install -y gcc-arm-linux-gnueabi
             CC=arm-linux-gnueabi-gcc make static 
-            tar -czvf ${{ env.ASSET_NAME }} ${{ env.ASSET_FILES }}
+            tar -czvf $ASSET_NAME $ASSET_FILES
 
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
@@ -28,7 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.ASSET_NAME }}
-          asset_name: ${{ env.ASSET_NAME }}
+          asset_path: $ASSET_NAME
+          asset_name: $ASSET_NAME
           asset_content_type: application/octet-stream
 

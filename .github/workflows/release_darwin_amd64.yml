@@ -10,7 +10,6 @@ env:
 
 jobs:
   build:
-    name: Build for Darwin AMD64
     runs-on: macos-13
     steps:
       - name: Checkout repository
@@ -19,7 +18,7 @@ jobs:
       - name: Build and create archive
         run: |
             make
-            tar -czvf ${{ env.ASSET_NAME }} ${{ env.ASSET_FILES }}
+            tar -czvf $ASSET_NAME $ASSET_FILES
 
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
@@ -27,7 +26,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.ASSET_NAME }}
-          asset_name: ${{ env.ASSET_NAME }}
+          asset_path: $ASSET_NAME
+          asset_name: $ASSET_NAME
           asset_content_type: application/octet-stream
 
