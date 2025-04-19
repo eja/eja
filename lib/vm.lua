@@ -1,4 +1,4 @@
--- Copyright (C) 2007-2021 by Ubaldo Porcheddu <ubaldo@eja.it>
+-- Copyright (C) 2007-2025 by Ubaldo Porcheddu <ubaldo@eja.it>
 
 
 eja.lib.export='ejaVmFileExport'
