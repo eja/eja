@@ -1,7 +1,8 @@
-/* Copyright (C) 2007-2020 by Ubaldo Porcheddu <ubaldo@eja.it> */
+/* Copyright (C) 2007-2025 by Ubaldo Porcheddu <ubaldo@eja.it> */
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <math.h>
 #include <sys/wait.h>
 #include <netdb.h>
@@ -10,11 +11,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <signal.h>
 #include <net/if.h>
 #include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
                      
 #include "lua.h"
 #include "lauxlib.h"
+#include "lualib.h"
 #include "eja.h"
 
 #define xstr(s) str(s)
@@ -297,36 +302,60 @@ static int eja_socket_write(lua_State *L) {
  return 1;
 }
 
-
 static int eja_socket_get_addr_info(lua_State *L) {
- int r;
- int n=1;
- struct addrinfo *res, *rp, *hints=NULL;
- const char *host=luaL_checkstring(L, 1);
- const char *service=lua_tostring(L, 2);
+    int n = 1;
+    struct addrinfo hints;
+    struct addrinfo *res = NULL, *rp = NULL;
+    const char *host = luaL_checkstring(L, 1);
+    const char *service = luaL_optstring(L, 2, NULL);
 
- memset(&hints, 0, sizeof hints);
- hints=alloca(sizeof *hints);
- lua_getfield(L, 3, "family"); hints->ai_family=lua_tonumber(L, -1); lua_pop(L, 1);
- lua_getfield(L, 3, "flags"); hints->ai_flags=lua_tonumber(L, -1); lua_pop(L, 1);
- lua_getfield(L, 3, "socktype"); hints->ai_socktype=lua_tonumber(L, -1); lua_pop(L, 1);
- lua_getfield(L, 3, "protocol"); hints->ai_protocol=lua_tonumber(L, -1); lua_pop(L, 1);
- r=getaddrinfo(host, service, hints, &res);
- if(r != 0) {
-  lua_pushnil(L);
- } else {
-  lua_newtable(L);
-  for (rp=res; rp != NULL; rp=rp->ai_next) {
-   lua_pushnumber(L, n++);
-   eja_socket_address_in(L, rp->ai_family, rp->ai_addr);
-   lua_pushnumber(L, rp->ai_socktype); lua_setfield(L, -2, "socktype");
-   lua_pushstring(L, rp->ai_canonname); lua_setfield(L, -2, "canonname");
-   lua_pushnumber(L, rp->ai_protocol); lua_setfield(L, -2, "protocol");
-   lua_settable(L, -3);
-  }
-  freeaddrinfo(res);
- }
- return 1;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+
+    if (lua_type(L, 3) == LUA_TTABLE) {
+        lua_getfield(L, 3, "family");
+        hints.ai_family = luaL_optinteger(L, -1, AF_UNSPEC);
+        lua_pop(L, 1);
+
+        lua_getfield(L, 3, "flags");
+        hints.ai_flags = luaL_optinteger(L, -1, 0);
+        lua_pop(L, 1);
+
+        lua_getfield(L, 3, "socktype");
+        hints.ai_socktype = luaL_optinteger(L, -1, 0);
+        lua_pop(L, 1);
+
+        lua_getfield(L, 3, "protocol");
+        hints.ai_protocol = luaL_optinteger(L, -1, 0);
+        lua_pop(L, 1);
+    }
+
+    if (getaddrinfo(host, service, &hints, &res) != 0) {
+        lua_pushnil(L);
+        return 1;
+    } else {
+        lua_newtable(L);
+        for (rp = res; rp != NULL; rp = rp->ai_next) {
+            lua_pushinteger(L, n++);
+            eja_socket_address_in(L, rp->ai_family, rp->ai_addr);
+            lua_pushinteger(L, rp->ai_socktype);
+            lua_setfield(L, -2, "socktype");
+
+            if (rp->ai_canonname) {
+                lua_pushstring(L, rp->ai_canonname);
+            } else {
+                lua_pushnil(L);
+            }
+            lua_setfield(L, -2, "canonname");
+
+            lua_pushinteger(L, rp->ai_protocol);
+            lua_setfield(L, -2, "protocol");
+
+            lua_settable(L, -3);
+        }
+        freeaddrinfo(res);
+        return 1;
+    }
 }
 
 
@@ -392,11 +421,13 @@ static int eja_socket_option_set(lua_State *L) {
   len=sizeof(tv);
  }
  
+ #ifdef __linux__
  if (level == SOL_SOCKET && optname == SO_BINDTODEVICE) {
   strncpy(ifr.ifr_name, luaL_checkstring(L, 4), IFNAMSIZ);
   val = &ifr;
   len = sizeof(ifr);
  }
+ #endif
 
  if (level == IPPROTO_IPV6 && (optname == IPV6_JOIN_GROUP || optname == IPV6_LEAVE_GROUP)) {
   memset(&mreq6, 0, sizeof mreq6);
@@ -420,14 +451,17 @@ static int eja_socket_option_set(lua_State *L) {
 static int eja_socket_define(lua_State *L) {
  lua_pushnumber(L, AF_INET);		lua_setglobal(L, "AF_INET");
  lua_pushnumber(L, AF_INET6);		lua_setglobal(L, "AF_INET6");
+ lua_pushnumber(L, AF_UNSPEC);		lua_setglobal(L, "AF_UNSPEC");
  lua_pushnumber(L, SOCK_STREAM);	lua_setglobal(L, "SOCK_STREAM");
  lua_pushnumber(L, SOCK_DGRAM);		lua_setglobal(L, "SOCK_DGRAM");
  lua_pushnumber(L, SOL_SOCKET);		lua_setglobal(L, "SOL_SOCKET");
  lua_pushnumber(L, SO_REUSEADDR);	lua_setglobal(L, "SO_REUSEADDR");
  lua_pushnumber(L, SO_RCVTIMEO);	lua_setglobal(L, "SO_RCVTIMEO");
  lua_pushnumber(L, SO_SNDTIMEO);	lua_setglobal(L, "SO_SNDTIMEO");
- lua_pushnumber(L, SO_BINDTODEVICE);	lua_setglobal(L, "SO_BINDTODEVICE");
  lua_pushnumber(L, SO_BROADCAST);	lua_setglobal(L, "SO_BROADCAST");
+ #ifdef __linux__
+ lua_pushnumber(L, SO_BINDTODEVICE);	lua_setglobal(L, "SO_BINDTODEVICE");
+ #endif
 
  return 0;
 }

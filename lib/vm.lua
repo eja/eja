@@ -275,7 +275,6 @@ end
 
 
 function ejaVmToLua(text)
- local a=ejaLuaLexer(text);
  local aIn={}
  local aOut={}
  local functionArray={}; functionArray[0]=0; functionCount=0;
@@ -286,7 +285,7 @@ function ejaVmToLua(text)
  local elseArray={}; elseArray[0]=0; elseCount=0;
  local elseifArray={}; elseifArray[0]=0; elseifCount=0;
 
- for rowNumber,row in next,a do 
+ for rowNumber,row in next,text do 
   for k,v in next,row do
    v.row=rowNumber
   --check with whitespace

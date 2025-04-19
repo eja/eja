@@ -1,5 +1,6 @@
 eja
 eja.h
+eja.dSYM
 debian/eja
 debian/eja.debhelper.log
 debian/eja.substvars

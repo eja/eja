@@ -1,0 +1,33 @@
+name: Build Linux ARM64
+
+on:
+  release:
+    types: [published]
+
+env:
+    ASSET_NAME: "eja-linux_arm64.tar.gz"
+    ASSET_FILES: "eja"
+
+jobs:
+  build:
+    name: Build for Linux ARM64
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Build and create archive
+        run: |
+            make static 
+            tar -czvf ${{ env.ASSET_NAME }} ${{ env.ASSET_FILES }}
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ env.ASSET_NAME }}
+          asset_name: ${{ env.ASSET_NAME }}
+          asset_content_type: application/octet-stream
+
