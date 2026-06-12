@@ -133,7 +133,7 @@ static int eja_socket_address_in(lua_State *L, int family, struct sockaddr *sa) 
   port=ntohs(sa6->sin6_port);
  } 
  if (family == AF_INET) {
-  sa4=(struct sockaddr_in4 *)sa;
+  sa4=(struct sockaddr_in *)sa;
   inet_ntop(family, &sa4->sin_addr, addr, sizeof addr);
   port=ntohs(sa4->sin_port);
  }
